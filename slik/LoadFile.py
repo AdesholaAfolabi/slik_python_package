@@ -1,6 +1,6 @@
 import pandas as pd
 
-class Read_file():
+class read_file():
     
     '''
     
@@ -15,15 +15,13 @@ class Read_file():
         self.input_col = input_cols
         self.data = pd.DataFrame()
         
-    def read_data(self):
+    def read_data(self):->pd.Dataframe
         
         """
-        
-        This funtion takes in a file path - CSV, excel or parquet and reads the data
-        based on the input columns specified 
+        Read a comma-separated values (csv) file, Excel file and a Parquet file into DataFrame.
         
         Returns:
-            dataset to be used for training
+            A pandas Dataframe
         
         """
         
