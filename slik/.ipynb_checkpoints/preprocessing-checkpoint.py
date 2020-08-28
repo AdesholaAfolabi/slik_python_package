@@ -60,3 +60,5 @@ class Clean(Read_file):
                 self.hash_features.append(item)
             else:
                 self.low_cat.append(item)
+                
+        print (self.hash_features)
