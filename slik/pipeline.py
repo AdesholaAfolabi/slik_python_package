@@ -1,4 +1,4 @@
-from preprocessing import Clean
+from slik.preprocessing import clean_data
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
@@ -9,7 +9,7 @@ from sklearn.feature_extraction import FeatureHasher
 from sklearn.model_selection import train_test_split
 
 
-class Build(Clean):
+class build_pipeline(clean_data):
     
     '''
     This class is where the building of the pipeline
@@ -19,7 +19,7 @@ class Build(Clean):
     
     def __init__(self, path, input_cols):
         
-        Clean.__init__(self, path, input_cols)
+        clean_data.__init__(self, path, input_cols)
         
     
     def pipeline(self, hash_size, scaling = None, normalization = None):
@@ -88,3 +88,5 @@ class Build(Clean):
         print(self.X.shape)
         return self.X, self.full_pipeline
         
+
+
