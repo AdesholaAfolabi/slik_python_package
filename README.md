@@ -1,5 +1,7 @@
 # slik_python_package
-This README documents the steps that are necessary to get the slik package up and running. The slik package is a data to pre-modeling package; what this means is that every step of the way before Data Modeling is handled in this package. Steps like NaN handling, outlier detection and removal, scaling, normaization, etc. This package was built with the aim of helping Data Scientists navigate the difficulties of data pre-processing. slik is available on PyPi and can be pip installed.
+This README documents the steps that are necessary to get the slik package up and running. The slik package is a data to pre-modeling package; what this means is that every step of the way before Data Modeling is handled in this package. Steps like NaN handling, outlier detection and removal, scaling, normaization, etc. This package was built with the aim of helping Data Scientists navigate the difficulties of data pre-processing. slik is available on PyPi and can be pip installed from the terminal. See how to pip install below:
+
+! pip install slik-preprocessing
 
 ### What is this repository for? ###
 
