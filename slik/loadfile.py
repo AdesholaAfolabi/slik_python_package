@@ -32,6 +32,12 @@ def read_file(file_path,input_col=None,**kwargs):
         data = data.reindex(columns = input_col)
         print ('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]))
         return data
+    elif file_path.endswith('.json'):
+        data = pd.read_json(file_path, usecols = input_col)
+        print('Excel file read success')
+        data = data.reindex(columns = input_col)
+        print ('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]))
+        return data
         
     else:
         return ('No CSV file or Parquet file or Excel file was passed')
