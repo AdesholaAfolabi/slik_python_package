@@ -170,9 +170,12 @@ def _age(dataframe=None, age_col=None):
     
     if dataframe is None:
         raise ValueError("dataframe: Expecting a DataFrame or Series, got 'None'")
-    if age_col is None:
-        raise ValueError("age_col: Expecting that a string of the age column will be passed, got 'None'")
     
+    if not isinstance(age_col,str):
+        errstr = f'The given type for age_col is {type(age_col).__name__}. Expected type is string'
+        raise TypeError(errstr)
+
+
     handle_nan(dataframe=dataframe)
     bin_labels = ['Toddler/Baby', 'Child', 'Young Adult', 'Mid-Age', 'Elderly']
     dataframe['Age Group'] = pd.cut(dataframe[age_col], bins = [0,2,17,30,45,99], labels = bin_labels)
