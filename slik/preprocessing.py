@@ -151,17 +151,37 @@ def detect_outliers(dataframe=None,y=None,num_features=None,n=None,remove=True):
     return df
 
 
-def _age(age):
-    if  20 <= age <= 30:
-        column = 'young'
-    elif 30 < age <=50:
-        column = 'middle_age'
-    elif age>50:
-        column = 'elder'
-    else:
-        column = 'missing'
-        #raise ValueError(f'Invalid hour: {age}')
-    return column
+def _age(dataframe=None, age_col=None):
+
+    '''
+    The age attribute is binned into 5 (baby/toddler, child, young adult, mid age and elderly).
+    Parameters:
+    ------------------------
+    dataframe: DataFrame or name Series.
+        Data set to perform operation on.
+    age_col: the name of the age column in the dataset. A string is expected
+        The column to perform the operation on.
+
+    Returns
+    -------
+        Dataframe with binned age attribute:
+            New age column called Age Group
+    '''
+    
+    if dataframe is None:
+        raise ValueError("dataframe: Expecting a DataFrame or Series, got 'None'")
+    
+    if not isinstance(age_col,str):
+        errstr = f'The given type for age_col is {type(age_col).__name__}. Expected type is string'
+        raise TypeError(errstr)
+
+
+    handle_nan(dataframe=dataframe)
+    bin_labels = ['Toddler/Baby', 'Child', 'Young Adult', 'Mid-Age', 'Elderly']
+    dataframe['Age Group'] = pd.cut(dataframe[age_col], bins = [0,2,17,30,45,99], labels = bin_labels)
+
+    return dataframe
+    
 
 # concatenating name and version to form a new single column
 def concat_feat(data):
