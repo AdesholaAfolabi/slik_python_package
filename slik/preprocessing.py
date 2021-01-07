@@ -181,16 +181,7 @@ def _age(dataframe=None, age_col=None):
     dataframe['Age Group'] = pd.cut(dataframe[age_col], bins = [0,2,17,30,45,99], labels = bin_labels)
 
     return dataframe
-    # if  20 <= age <= 30:
-    #     column = 'young'
-    # elif 30 < age <=50:
-    #     column = 'middle_age'
-    # elif age>50:
-    #     column = 'elder'
-    # else:
-    #     column = 'missing'
-    #     #raise ValueError(f'Invalid hour: {age}')
-    # return column
+    
 
 # concatenating name and version to form a new single column
 def concat_feat(data):
