@@ -28,7 +28,7 @@ def read_file(file_path,input_col=None,**kwargs):
         
     elif file_path.endswith('.xls'):
         data = pd.read_excel(file_path, usecols = input_col)
-        print('Excel file read success')
+        print('Excel file read successfully')
         data = data.reindex(columns = input_col)
         print ('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]))
         return data
