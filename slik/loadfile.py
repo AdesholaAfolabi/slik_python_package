@@ -20,7 +20,7 @@ def read_file(file_path,input_col=None,**kwargs):
             
     elif file_path.endswith('.parquet'):
         data = pd.read_parquet(file_path, engine = 'pyarrow', columns = input_col)
-        print('Parquet file read sucessfully')
+        print('\nParquet file read sucessfully')
         data.columns = data.columns.astype(str)
         data = data.reindex(columns = input_col)
         print ('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]))
@@ -28,14 +28,14 @@ def read_file(file_path,input_col=None,**kwargs):
         
     elif file_path.endswith('.xls'):
         data = pd.read_excel(file_path, usecols = input_col)
-        print('Excel file read successfully')
+        print('\nExcel file read successfully')
         data = data.reindex(columns = input_col)
         print ('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]))
         return data
         
     elif file_path.endswith('.json'):
         data = pd.read_json(file_path, orient='index')
-        print('Json file read success')
+        print('\nJson file read successfully')
         data = data.reindex(columns = input_col)
         print ('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]))
         return data
