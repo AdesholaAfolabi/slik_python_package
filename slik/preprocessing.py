@@ -40,8 +40,6 @@ def get_attributes(data=None,target_column=None):
     
     if target_column:
         num_attributes.remove(target_column)
-    get_attributes.num_attributes = num_attributes
-    get_attributes.cat_attributes = cat_attributes
     return num_attributes, cat_attributes
 
 def identify_columns(data=None,target_column=None, high_dim=100, verbose=True, save_output=True):
@@ -192,13 +190,13 @@ def age(dataframe=None, age_col=None):
     if not isinstance(age_col,str):
         errstr = f'The given type for age_col is {type(age_col).__name__}. Expected type is string'
         raise TypeError(errstr)
-
-
-    handle_nan(dataframe=dataframe)
+        
+    data = dataframe.copy()
     bin_labels = ['Toddler/Baby', 'Child', 'Young Adult', 'Mid-Age', 'Elderly']
-    dataframe['Age Group'] = pd.cut(dataframe[age_col], bins = [0,2,17,30,45,99], labels = bin_labels)
+    data['Age Group'] = pd.cut(data[age_col], bins = [0,2,17,30,45,99], labels = bin_labels)
+    data['Age Group'] = data['Age Group'].astype(str)
 
-    return dataframe
+    return data
     
 
 # concatenating name and version to form a new single column
@@ -300,29 +298,28 @@ def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
     if drop_outliers:
         if target_name is None:
             raise ValueError("target_name: Expecting a str for the target_name, got 'None'")
-        data = detect_outliers(data,target_name,verbose,**kwargs)
+        data = detect_outliers(data,target_name,**kwargs)
 
-    num_attr = get_attributes.num_attributes
-    cat_attr = get_attributes.cat_attributes
+    num_attributes, cat_attributes = get_attributes(data,target_name)
 
     if strategy == 'mean':
-        for item in num_attr:
+        for item in num_attributes:
             data.loc[:,item] = data[item].fillna(data[item].mean())
             
     elif strategy == 'median':
-        for item in num_attr:
+        for item in num_attributes:
             median = data[item].median()
             data.loc[:,item] = data[item].fillna(median)
             
     elif strategy == 'mode':
-        for item in num_attr:
+        for item in num_attributes:
             mode = data[item].mode()[0]
             data.loc[:,item] = data[item].fillna(mode)
    
     else:
         raise ValueError("method: must specify a fill method, one of [mean, mode or median]'")
         
-    data = handle_cat_feat(data,fillna,cat_attr)
+    data = handle_cat_feat(data,fillna,cat_attributes)
             
     return data
 
