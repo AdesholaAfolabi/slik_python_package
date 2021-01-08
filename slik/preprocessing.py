@@ -192,8 +192,6 @@ def age(dataframe=None, age_col=None):
         raise TypeError(errstr)
         
     data = dataframe.copy()
-    
-#     handle_nan(dataframe=dataframe)
     bin_labels = ['Toddler/Baby', 'Child', 'Young Adult', 'Mid-Age', 'Elderly']
     data['Age Group'] = pd.cut(data[age_col], bins = [0,2,17,30,45,99], labels = bin_labels)
     data['Age Group'] = data['Age Group'].astype(str)
