@@ -35,7 +35,7 @@ def read_file(file_path,input_col=None,**kwargs):
         
     elif file_path.endswith('.json'):
         data = pd.read_json(file_path, orient='index')
-        print('Json file read successfully')
+        print('\nJson file read successfully')
         data = data.reindex(columns = input_col)
         print ('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]))
         return data
