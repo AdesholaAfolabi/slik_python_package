@@ -38,8 +38,7 @@ def get_attributes(data=None,target_column=None):
     num_attributes = data.select_dtypes(exclude=['object', 'datetime64']).columns.tolist()
     cat_attributes = data.select_dtypes(include=['object']).columns.tolist()
     
-    if target_column:
-        num_attributes.remove(target_column)
+    num_attributes.remove(target_column)
     return num_attributes, cat_attributes
 
 def identify_columns(data=None,target_column=None, high_dim=100, verbose=True, save_output=True):
@@ -87,6 +86,7 @@ def identify_columns(data=None,target_column=None, high_dim=100, verbose=True, s
         dict_file['hash_feat'] = hash_features
         dict_file['lower_cat'] = low_cat
         dict_file['input_columns'] = input_columns
+        dict_file['target_column'] = target_column
         store_attribute(dict_file)
         
         print_devider('Saving Attributes in Yaml file')
@@ -127,8 +127,6 @@ def detect_outliers(dataframe=None,y=None,num_features=None,n=None,remove=True):
     
     outlier_indices = []
     
-    df = data.copy()
-    
     if num_features is None:
         num_attributes, cat_attributes = get_attributes(data,y)
     else:
@@ -155,7 +153,7 @@ def detect_outliers(dataframe=None,y=None,num_features=None,n=None,remove=True):
         outlier_indices.extend(outlier_list_col)
         
         if remove:
-            df.loc[:,column] = df[column].apply(lambda x : mean 
+            data.loc[:,column] = data[column].apply(lambda x : mean 
                                                         if x < lower or x > upper else x)
 
     # select observations containing more than 2 outliers
@@ -164,13 +162,13 @@ def detect_outliers(dataframe=None,y=None,num_features=None,n=None,remove=True):
     print_devider('Table idenifying Outliers present')
     display(data.loc[multiple_outliers])
 
-    return df
+    return data
 
 
-def age(dataframe=None, age_col=None):
+def bin_age(dataframe=None, age_col=None):
 
     '''
-    The age attribute is binned into 5 (baby/toddler, child, young adult, mid age and elderly).
+    The age attribute is binned into 5 categories (baby/toddler, child, young adult, mid age and elderly).
     Parameters:
     ------------------------
     dataframe: DataFrame or name Series.
@@ -192,10 +190,10 @@ def age(dataframe=None, age_col=None):
         raise TypeError(errstr)
         
     data = dataframe.copy()
+    
     bin_labels = ['Toddler/Baby', 'Child', 'Young Adult', 'Mid-Age', 'Elderly']
     data['Age Group'] = pd.cut(data[age_col], bins = [0,2,17,30,45,99], labels = bin_labels)
     data['Age Group'] = data['Age Group'].astype(str)
-
     return data
     
 
@@ -241,7 +239,6 @@ def check_nan(dataframe=None, plot=False, verbose=True):
         plot_nan(nan_values)
     if verbose:
         display(df)
-        
     check_nan.df = df
     
 def handle_cat_feat(data,fillna,cat_attr):
@@ -255,7 +252,7 @@ def handle_cat_feat(data,fillna,cat_attr):
     return data
 
 def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
-               drop_outliers=False,thresh_y=None,thresh_x=None, verbose =False,
+               drop_outliers=True,thresh_y=None,thresh_x=None, verbose =False,
                **kwargs):
     
     """
@@ -271,12 +268,18 @@ def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
     fillna: str
         Method of filling categorical features
     drop_outliers: bool, Default False
-            Drops outliers present in the data.
+        Drops outliers present in the data.
     thresh_x: Int.
-            Threshold for dropping rows with missing values 
+        Threshold for dropping rows with missing values 
     thresh_y: Int.
-            Threshold for dropping columns with missing value   
+        Threshold for dropping columns with missing value
+            
+    Returns
+    -------
+        Pandas Dataframe:
+            A new dataframe without the dropped features
     """
+    
     if dataframe is None:
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
         
@@ -320,10 +323,9 @@ def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
         raise ValueError("method: must specify a fill method, one of [mean, mode or median]'")
         
     data = handle_cat_feat(data,fillna,cat_attributes)
-            
     return data
 
-def drop_cols(dataframe=None,features=None):
+def drop_cols(dataframe=None,columns=None):
     
     '''
     Drop features from a pandas dataframe.
@@ -335,21 +337,34 @@ def drop_cols(dataframe=None,features=None):
     Returns
     -------
         Pandas Dataframe:
-            A new dataframe without the dropped features
+            A new dataframe after dropping columns
     '''
     
     if dataframe is None:
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
     
-    if features is None:
+    if columns is None:
         raise ValueError("data: Expecting a list, got 'None'")
-        
+      
     data = dataframe.copy()
-    data = data.drop(features,axis=1)
+    data = data.drop(columns,axis=1)
     return data
     
 def map_column(data=None,column_name=None,items=None):
     
+    '''
+    Map values in  a pandas dataframe column with a dict.
+    Parameters
+    ----------
+        data: DataFrame or named Series
+        column_name: Name of pandas dataframe column to be mapped
+        items: A dict with key and value to be mapped 
+    
+    Returns
+    -------
+        Pandas Dataframe:
+            A new dataframe without the dropped features
+    '''
     if data is None:
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
     
