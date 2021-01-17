@@ -18,8 +18,10 @@ def get_attributes(data=None,target_column=None):
     Returns the categorical features and Numerical features in a data set
     Parameters:
     -----------
-        data: DataFrame or named Series 
-        target_column: Label or Target.
+        data: DataFrame or named Series
+            Data set to perform operation on.
+        target_column: str
+            Label or Target column
     Returns:
     -------
         List
@@ -38,16 +40,24 @@ def get_attributes(data=None,target_column=None):
     
     if target_column:
         num_attributes.remove(target_column)
-    get_attributes.num_attributes = num_attributes
-    get_attributes.cat_attributes = cat_attributes
     return num_attributes, cat_attributes
 
 def identify_columns(data=None,target_column=None, high_dim=100, verbose=True, save_output=True):
     
     """
-        This funtion takes in the data, identify the numerical and categorical
-        attributes and stores them in a list
-        
+        Identifies numerical attributes ,categorical attributes with sparse features and categorical attributes with lower features
+        present in the data with an option to save them in a yaml file.
+     Parameters:
+    -----------
+        data: DataFrame or named Series 
+        target_column: str
+            Label or Target column.
+        high_dim: int, default 100
+            Number to identify categorical attributes greater than 100 features
+        verbose: Bool, default=True
+            display print statement
+        save_output: Bool, default = True
+            save output in the data path.   
     """
     if data is None:
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
@@ -96,6 +106,12 @@ def detect_outliers(dataframe=None,y=None,num_features=None,n=None,remove=True):
         Values used in searching for outliers
     remove: bool, Default True
         Remove outliers detected in the data.
+
+    Returns:
+    -------
+        Dataframe
+            A new dataframe after removing outliers.
+    
     '''
     if dataframe is None:
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
@@ -151,7 +167,7 @@ def detect_outliers(dataframe=None,y=None,num_features=None,n=None,remove=True):
     return df
 
 
-def _age(dataframe=None, age_col=None):
+def age(dataframe=None, age_col=None):
 
     '''
     The age attribute is binned into 5 (baby/toddler, child, young adult, mid age and elderly).
@@ -174,13 +190,13 @@ def _age(dataframe=None, age_col=None):
     if not isinstance(age_col,str):
         errstr = f'The given type for age_col is {type(age_col).__name__}. Expected type is string'
         raise TypeError(errstr)
-
-
-    handle_nan(dataframe=dataframe)
+        
+    data = dataframe.copy()
     bin_labels = ['Toddler/Baby', 'Child', 'Young Adult', 'Mid-Age', 'Elderly']
-    dataframe['Age Group'] = pd.cut(dataframe[age_col], bins = [0,2,17,30,45,99], labels = bin_labels)
+    data['Age Group'] = pd.cut(data[age_col], bins = [0,2,17,30,45,99], labels = bin_labels)
+    data['Age Group'] = data['Age Group'].astype(str)
 
-    return dataframe
+    return data
     
 
 # concatenating name and version to form a new single column
@@ -190,7 +206,7 @@ def concat_feat(data):
     data['age_bucket'] = data.apply(lambda x: _age(x['age']), axis=1)
 #         data['interactions'] = data['gender'] + data['age_bucket']
     
-def check_nan(dataframe=None, plot=False):
+def check_nan(dataframe=None, plot=False, verbose=True):
     
     '''
     Display missing values as a pandas dataframe.
@@ -199,6 +215,8 @@ def check_nan(dataframe=None, plot=False):
         data: DataFrame or named Series
         plot: bool, Default False
             Plots missing values in dataset as a heatmap
+        verbose: bool, Default False
+            
     
     Returns
     -------
@@ -221,13 +239,24 @@ def check_nan(dataframe=None, plot=False):
     print_devider('Count and Percentage of missing value')
     if plot:
         plot_nan(nan_values)
-    else:
+    if verbose:
         display(df)
         
     check_nan.df = df
+    
+def handle_cat_feat(data,fillna,cat_attr):
+    if fillna == 'mode':
+        for item in cat_attr:
+            data.loc[:,item] = data[item].fillna(data[item].value_counts().index[0])
+            
+    else:
+        for item in cat_attr:
+            data.loc[:,item] = data[item].fillna(fillna)
+    return data
 
 def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
-               drop_outliers=False,thresh_y=None,thresh_x=None,**kwargs):
+               drop_outliers=False,thresh_y=None,thresh_x=None, verbose =False,
+               **kwargs):
     
     """
     Fill missing values of categorical features and numerical features.
@@ -243,15 +272,16 @@ def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
         Method of filling categorical features
     drop_outliers: bool, Default False
             Drops outliers present in the data.
-    thresh_y: Int.
-            Threshold for dropping rows with missing values across the column
     thresh_x: Int.
+            Threshold for dropping rows with missing values 
+    thresh_y: Int.
             Threshold for dropping columns with missing value   
     """
     if dataframe is None:
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
         
     data = dataframe.copy()
+    check_nan(data,verbose=verbose)
     df = check_nan.df
     
     if thresh_x:
@@ -270,33 +300,26 @@ def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
             raise ValueError("target_name: Expecting a str for the target_name, got 'None'")
         data = detect_outliers(data,target_name,**kwargs)
 
-    num_attr = get_attributes.num_attributes
-    cat_attr = get_attributes.cat_attributes
+    num_attributes, cat_attributes = get_attributes(data,target_name)
 
     if strategy == 'mean':
-        for item in num_attr:
+        for item in num_attributes:
             data.loc[:,item] = data[item].fillna(data[item].mean())
             
-#     elif strategy == 'median':
-#         for item in num_attr:
-#             median = data[item].median()
-#             data.loc[:,item] = data[item].fillna(median)
+    elif strategy == 'median':
+        for item in num_attributes:
+            median = data[item].median()
+            data.loc[:,item] = data[item].fillna(median)
             
-#     elif strategy == 'mode':
-#         for item in num_attr:
-#             mode = data[item].mode()[0]
-#             data.loc[:,item] = data[item].fillna(mode)
-#     else:
-#         raise ValueError("method: must specify a fill method, one of [mean, mode or median]'")
-            
-    if fillna == 'mode':
-        for item in cat_attr:
-            
-            data.loc[:,item] = data[item].fillna(data[item].mode()[0])
-            
+    elif strategy == 'mode':
+        for item in num_attributes:
+            mode = data[item].mode()[0]
+            data.loc[:,item] = data[item].fillna(mode)
+   
     else:
-        for item in cat_attr:
-            data.loc[:,item] = data[item].fillna(fillna)
+        raise ValueError("method: must specify a fill method, one of [mean, mode or median]'")
+        
+    data = handle_cat_feat(data,fillna,cat_attributes)
             
     return data
 
