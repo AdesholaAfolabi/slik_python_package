@@ -38,7 +38,7 @@ def get_attributes(data=None,target_column=None):
     num_attributes = data.select_dtypes(exclude=['object', 'datetime64']).columns.tolist()
     cat_attributes = data.select_dtypes(include=['object']).columns.tolist()
     
-    num_attributes.remove(target_column)
+    #num_attributes.remove(target_column)
     return num_attributes, cat_attributes
 
 def identify_columns(data=None,target_column=None, high_dim=100, verbose=True, save_output=True):
@@ -130,7 +130,7 @@ def detect_outliers(dataframe=None,y=None,num_features=None,n=None,remove=True):
     if num_features is None:
         num_attributes, cat_attributes = get_attributes(data,y)
     else:
-        num_attributes = features
+        num_attributes = num_features
 
     for column in num_attributes:
         
