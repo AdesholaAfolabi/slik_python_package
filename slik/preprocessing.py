@@ -52,9 +52,6 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
     
     return data
 
-    num_attributes.remove(target_column)
-    return num_attributes, cat_attributes
-
 
 # concatenating name and version to form a new single column
 def concat_feat(data):
