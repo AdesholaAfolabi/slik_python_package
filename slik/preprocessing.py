@@ -51,7 +51,10 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
     data[prefix_name] = data[prefix_name].astype(str)
     
     return data
-    
+
+    num_attributes.remove(target_column)
+    return num_attributes, cat_attributes
+
 
 # concatenating name and version to form a new single column
 def concat_feat(data):
@@ -137,7 +140,7 @@ def detect_outliers(dataframe=None,y=None,num_features=None,n=None,remove=True):
     if num_features is None:
         num_attributes, cat_attributes = get_attributes(data,y)
     else:
-        num_attributes = features
+        num_attributes = num_features
 
     for column in num_attributes:
         
