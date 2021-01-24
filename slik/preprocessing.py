@@ -1,4 +1,6 @@
 import pandas as pd
+# pd.options.mode.chained_assignment = None
+import re
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from collections import Counter
@@ -12,160 +14,8 @@ from .utils import store_attribute,print_devider
 from .plot_funcs import plot_nan
 # from utils.config import TRAIN_PATH_CLICK,TRAIN_PATH_SMS,TEST_PATH,PROCESSED_TRAIN_PATH,PROCESSED_TEST_PATH
 
-def get_attributes(data=None,target_column=None):
-    
-    '''
-    Returns the categorical features and Numerical features in a data set
-    Parameters:
-    -----------
-        data: DataFrame or named Series
-            Data set to perform operation on.
-        target_column: str
-            Label or Target column
-    Returns:
-    -------
-        List
-            A list of all the categorical features and numerical features in a dataset.
-    '''
-    
-    if data is None:
-        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
-        
-    if not isinstance(target_column,str):
-        errstr = f'The given type for target_column is {type(target_column).__name__}. Expected type is str'
-        raise TypeError(errstr)
-        
-    num_attributes = data.select_dtypes(exclude=['object', 'datetime64']).columns.tolist()
-    cat_attributes = data.select_dtypes(include=['object']).columns.tolist()
-    
-    #num_attributes.remove(target_column)
-    return num_attributes, cat_attributes
 
-def identify_columns(data=None,target_column=None, high_dim=100, verbose=True, save_output=True):
-    
-    """
-        Identifies numerical attributes ,categorical attributes with sparse features and categorical attributes with lower features
-        present in the data with an option to save them in a yaml file.
-     Parameters:
-    -----------
-        data: DataFrame or named Series 
-        target_column: str
-            Label or Target column.
-        high_dim: int, default 100
-            Number to identify categorical attributes greater than 100 features
-        verbose: Bool, default=True
-            display print statement
-        save_output: Bool, default = True
-            save output in the data path.   
-    """
-    if data is None:
-        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
-    
-    if not isinstance(target_column,str):
-        errstr = f'The given type for target_column is {type(target_column).__name__}. Expected type is str'
-        raise TypeError(errstr)
-        
-    num_attributes, cat_attributes = get_attributes(data,target_column)
-        
-    low_cat = []
-    hash_features = []
-    dict_file = {}
-    input_columns = [cols for cols in data.columns]
-    input_columns.remove(target_column)
-  
-    for item in cat_attributes:
-        if data[item].nunique() > high_dim:
-            if verbose:
-                print('\n {} has a high cardinality. It has {} unique attributes'.format(item, data[item].nunique()))
-            hash_features.append(item)
-        else:
-            low_cat.append(item)
-    if save_output:
-        dict_file['num_feat'] = num_attributes
-        dict_file['cat_feat'] = cat_attributes
-        dict_file['hash_feat'] = hash_features
-        dict_file['lower_cat'] = low_cat
-        dict_file['input_columns'] = input_columns
-        dict_file['target_column'] = target_column
-        store_attribute(dict_file)
-        
-        print_devider('Saving Attributes in Yaml file')
-        print('\nDone!. Data columns successfully identified and attributes are stored in data/')
-        
-def detect_outliers(dataframe=None,y=None,num_features=None,n=None,remove=True):
-        
-    '''
-    Detect outliers present in the numerical features and includes an option of removal.
-    Parameters:
-    ------------------------
-    data: DataFrame or name Series.
-        Data set to perform operation on.
-    num_features: List, Series, Array.
-        Numerical features to perform operation on. If not provided, we automatically infer from the dataset.
-    n: int.
-        Values used in searching for outliers
-    remove: bool, Default True
-        Remove outliers detected in the data.
-
-    Returns:
-    -------
-        Dataframe
-            A new dataframe after removing outliers.
-    
-    '''
-    if dataframe is None:
-        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
-        
-    if not isinstance(y,str):
-        errstr = f'The given type for target_column is {type(y).__name__}. Expected type is str'
-        raise TypeError(errstr)
-        
-    data = dataframe.copy()
-    
-    if n is None:
-        n = 2
-    
-    outlier_indices = []
-    
-    if num_features is None:
-        num_attributes, cat_attributes = get_attributes(data,y)
-    else:
-        num_attributes = num_features
-
-    for column in num_attributes:
-        
-        data.loc[:,column] = abs(data[column])
-        mean = data[column].mean()
-
-        #calculate the interquartlie range
-        q25, q75 = np.percentile(data[column].dropna(), 25), np.percentile(data[column].dropna(), 75)
-        iqr = q75 - q25
-
-        #calculate the outlier cutoff
-        cut_off = iqr * 1.5
-        lower,upper = q25 - cut_off, q75 + cut_off
-
-        #identify outliers
-        # Determine a list of indices of outliers for feature col
-        outlier_list_col = data[(data[column] < lower) | (data[column] > upper)].index
-
-        # append the found outlier indices for col to the list of outlier indices
-        outlier_indices.extend(outlier_list_col)
-        
-        if remove:
-            data.loc[:,column] = data[column].apply(lambda x : mean 
-                                                        if x < lower or x > upper else x)
-
-    # select observations containing more than 2 outliers
-    outlier_indices = Counter(outlier_indices)
-    multiple_outliers = list(k for k, v in outlier_indices.items() if v > n)
-    print_devider('Table idenifying Outliers present')
-    display(data.loc[multiple_outliers])
-
-    return data
-
-
-def bin_age(dataframe=None, age_col=None):
+def bin_age(dataframe=None, age_col=None, add_prefix=True):
 
     '''
     The age attribute is binned into 5 categories (baby/toddler, child, young adult, mid age and elderly).
@@ -175,11 +25,11 @@ def bin_age(dataframe=None, age_col=None):
         Data set to perform operation on.
     age_col: the name of the age column in the dataset. A string is expected
         The column to perform the operation on.
-
+    add_prefix: Bool. Default is set to True
+        add prefix to the column name. 
     Returns
     -------
-        Dataframe with binned age attribute:
-            New age column called Age Group
+        Dataframe with binned age attribute
     '''
     
     if dataframe is None:
@@ -191,11 +41,17 @@ def bin_age(dataframe=None, age_col=None):
         
     data = dataframe.copy()
     
-    bin_labels = ['Toddler/Baby', 'Child', 'Young Adult', 'Mid-Age', 'Elderly']
-    data['Age Group'] = pd.cut(data[age_col], bins = [0,2,17,30,45,99], labels = bin_labels)
-    data['Age Group'] = data['Age Group'].astype(str)
-    return data
+    if add_prefix:
+        prefix_name = f'transformed_{age_col}'
+    else:
+        prefix_name = age_col
     
+    bin_labels = ['Toddler/Baby', 'Child', 'Young Adult', 'Mid-Age', 'Elderly']
+    data[prefix_name] = pd.cut(data[age_col], bins = [0,2,17,30,45,99], labels = bin_labels)
+    data[prefix_name] = data[prefix_name].astype(str)
+    
+    return data
+
 
 # concatenating name and version to form a new single column
 def concat_feat(data):
@@ -241,6 +97,232 @@ def check_nan(dataframe=None, plot=False, verbose=True):
         display(df)
     check_nan.df = df
     
+def detect_outliers(dataframe=None,y=None,num_features=None,n=None,remove=True):
+        
+    '''
+    Detect outliers present in the numerical features and includes an option of removal.
+    Parameters:
+    ------------------------
+    data: DataFrame or name Series.
+        Data set to perform operation on.
+    num_features: List, Series, Array.
+        Numerical features to perform operation on. If not provided, we automatically infer from the dataset.
+    n: int.
+        Values used in searching for outliers
+    remove: bool, Default True
+        Remove outliers detected in the data.
+
+    Returns:
+    -------
+        Dataframe
+            A new dataframe after removing outliers.
+    
+    '''
+    if dataframe is None:
+        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
+        
+    if not isinstance(y,str):
+        errstr = f'The given type for target_column is {type(y).__name__}. Expected type is str'
+        raise TypeError(errstr)
+        
+    data = dataframe.copy()
+    
+    if n is None:
+        n = 2
+    
+    df = data.copy()
+    
+    outlier_indices = []
+    
+    if num_features is None:
+        num_attributes, cat_attributes = get_attributes(data,y)
+    else:
+        num_attributes = num_features
+
+    for column in num_attributes:
+        
+        data.loc[:,column] = abs(data[column])
+        mean = data[column].mean()
+
+        #calculate the interquartlie range
+        q25, q75 = np.percentile(data[column].dropna(), 25), np.percentile(data[column].dropna(), 75)
+        iqr = q75 - q25
+
+        #calculate the outlier cutoff
+        cut_off = iqr * 1.5
+        lower,upper = q25 - cut_off, q75 + cut_off
+
+        #identify outliers
+        # Determine a list of indices of outliers for feature col
+        outlier_list_col = data[(data[column] < lower) | (data[column] > upper)].index
+
+        # append the found outlier indices for col to the list of outlier indices
+        outlier_indices.extend(outlier_list_col)
+        
+        if remove:
+            df.loc[:,column] = df[column].apply(lambda x : mean 
+                                                        if x < lower or x > upper else x)
+
+    # select observations containing more than 2 outliers
+    outlier_indices = Counter(outlier_indices)
+    multiple_outliers = list(k for k, v in outlier_indices.items() if v > n)
+    print_devider('Table idenifying Outliers present')
+    display(data.loc[multiple_outliers])
+
+    return df
+
+
+def drop_cols(dataframe=None,columns=None):
+    
+    '''
+    Drop features from a pandas dataframe.
+    Parameters
+    ----------
+        data: DataFrame or named Series
+        features: list of features you want to drop
+    
+    Returns
+    -------
+        Pandas Dataframe:
+            A new dataframe after dropping columns
+    '''
+    
+    if dataframe is None:
+        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
+    
+    if columns is None:
+        raise ValueError("data: Expecting a list, got 'None'")
+      
+    data = dataframe.copy()
+    data = data.drop(columns,axis=1)
+    return data   
+
+def featurize_datetime(dataframe=None, column_name=None, drop=True):
+    
+    '''
+    Featurize datetime in the dataset to create new fields 
+    Parameters:
+    ------------------------
+    dataframe: DataFrame or name Series.
+        Data set to perform operation on.
+    column_name: the name of the datetime column in the dataset. A string is expected
+        The column to perform the operation on.
+    drop: Bool. Default is set to True
+        drop original datetime column. 
+    Returns
+    -------
+        Dataframe with new datetime fields
+            
+    '''
+    if dataframe is None:
+        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
+        
+    if not isinstance(column_name,str):
+        errstr = f'The given type is {type(column_name).__name__}. Specify target column name'
+        raise TypeError(errstr)
+        
+    df = dataframe.copy()
+    
+    fld = df[column_name]
+    if not np.issubdtype(fld.dtype, np.datetime64):
+        df.loc[:,column_name] = fld = pd.to_datetime(fld, infer_datetime_format=True)
+    targ_pre = re.sub('[Dd]ate$', '', column_name)
+    for n in ('Year', 'Month', 'Day', 'Dayofweek', 'Dayofyear',
+            'Is_month_end', 'Is_month_start', 'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start'):
+        df.loc[:,targ_pre+n] = getattr(fld.dt,n.lower())
+    for n in ['Week']:
+        df.loc[:,targ_pre+n] = getattr(fld.dt.isocalendar(),n.lower())
+    df.loc[:,targ_pre+'Elapsed'] = fld.astype(np.int64) // 10**9
+    if drop: df.drop(column_name, axis=1, inplace=True)
+    return df
+
+
+def get_attributes(data=None,target_column=None):
+    
+    '''
+    Returns the categorical features and Numerical features in a data set
+    Parameters:
+    -----------
+        data: DataFrame or named Series
+            Data set to perform operation on.
+        target_column: str
+            Label or Target column
+    Returns:
+    -------
+        List
+            A list of all the categorical features and numerical features in a dataset.
+    '''
+    
+    if data is None:
+        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
+        
+    if not isinstance(target_column,str):
+        errstr = f'The given type is {type(target_column).__name__}. Specify target column name'
+        raise TypeError(errstr)
+        
+    num_attributes = data.select_dtypes(exclude=['object', 'datetime64']).columns.tolist()
+    cat_attributes = data.select_dtypes(include=['object']).columns.tolist()
+    
+    if target_column in num_attributes:
+        num_attributes.remove(target_column)
+    else:
+        cat_attributes.remove(target_column)
+    return num_attributes, cat_attributes
+
+def identify_columns(dataframe=None,target_column=None, high_dim=100, verbose=True, save_output=True):
+    
+    """
+        Identifies numerical attributes ,categorical attributes with sparse features and categorical attributes with lower features
+        present in the data with an option to save them in a yaml file.
+     Parameters:
+    -----------
+        data: DataFrame or named Series 
+        target_column: str
+            Label or Target column.
+        high_dim: int, default 100
+            Number to identify categorical attributes greater than 100 features
+        verbose: Bool, default=True
+            display print statement
+        save_output: Bool, default = True
+            save output in the data path.   
+    """
+    if dataframe is None:
+        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
+    
+    if not isinstance(target_column,str):
+        errstr = f'The given type for target_column is {type(target_column).__name__}. Expected type is str'
+        raise TypeError(errstr)
+        
+    data = dataframe.copy()
+    num_attributes, cat_attributes = get_attributes(data,target_column)
+        
+    low_cat = []
+    hash_features = []
+    dict_file = {}
+    input_columns = [cols for cols in data.columns]
+    input_columns.remove(target_column)
+  
+    for item in cat_attributes:
+        if data[item].nunique() > high_dim:
+            if verbose:
+                print('\n {} has a high cardinality. It has {} unique attributes'.format(item, data[item].nunique()))
+            hash_features.append(item)
+        else:
+            low_cat.append(item)
+    if save_output:
+        dict_file['num_feat'] = num_attributes
+        dict_file['cat_feat'] = cat_attributes
+        dict_file['hash_feat'] = hash_features
+        dict_file['lower_cat'] = low_cat
+        dict_file['input_columns'] = input_columns
+        dict_file['target_column'] = target_column
+        store_attribute(dict_file)
+        
+        print_devider('Saving Attributes in Yaml file')
+        print('\nDone!. Data columns successfully identified and attributes are stored in data/')
+        
+
+    
 def handle_cat_feat(data,fillna,cat_attr):
     if fillna == 'mode':
         for item in cat_attr:
@@ -252,7 +334,7 @@ def handle_cat_feat(data,fillna,cat_attr):
     return data
 
 def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
-               drop_outliers=True,thresh_y=None,thresh_x=None, verbose =False,
+               drop_outliers=True,thresh_y=50,thresh_x=75, verbose = True,
                **kwargs):
     
     """
@@ -324,33 +406,8 @@ def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
         
     data = handle_cat_feat(data,fillna,cat_attributes)
     return data
-
-def drop_cols(dataframe=None,columns=None):
     
-    '''
-    Drop features from a pandas dataframe.
-    Parameters
-    ----------
-        data: DataFrame or named Series
-        features: list of features you want to drop
-    
-    Returns
-    -------
-        Pandas Dataframe:
-            A new dataframe after dropping columns
-    '''
-    
-    if dataframe is None:
-        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
-    
-    if columns is None:
-        raise ValueError("data: Expecting a list, got 'None'")
-      
-    data = dataframe.copy()
-    data = data.drop(columns,axis=1)
-    return data
-    
-def map_column(data=None,column_name=None,items=None):
+def map_column(data=None,column_name=None,items=None,add_prefix=True):
     
     '''
     Map values in  a pandas dataframe column with a dict.
@@ -375,8 +432,14 @@ def map_column(data=None,column_name=None,items=None):
     if not isinstance(items,dict):
         errstr = f'The given type for items is {type(items).__name__}. Expected type is dict'
         raise TypeError(errstr)
+        
+    if add_prefix:
+        prefix_name = f'transformed_{column_name}'
+    else:
+        prefix_name = column_name
+        
 
-    data.loc[:,column_name] = data[column_name].map(items)
+    data.loc[:,prefix_name] = data[column_name].map(items)
     
     
 # def preprocess(dataframe=None,train=True,validation_path=None):
