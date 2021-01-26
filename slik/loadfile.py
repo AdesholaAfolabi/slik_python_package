@@ -12,7 +12,7 @@ def read_file(file_path,input_col=None,**kwargs):
     """
         
     if file_path.endswith('.csv'):
-        data = pd.read_csv(file_path,usecols = input_col)
+        data = pd.read_csv(file_path, usecols = input_col)
         print('\nCSV file read sucessfully')
         data = data.reindex(columns = input_col)
         print ('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]))
@@ -32,13 +32,13 @@ def read_file(file_path,input_col=None,**kwargs):
         data = data.reindex(columns = input_col)
         print ('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]))
         return data
-        
+
     elif file_path.endswith('.json'):
         data = pd.read_json(file_path, orient='index')
         print('\nJson file read successfully')
         data = data.reindex(columns = input_col)
         print ('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]))
         return data
-        
+            
     else:
         return ('No CSV file or Parquet file or Excel file was passed')
