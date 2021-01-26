@@ -118,7 +118,14 @@ def detect_fix_outliers(dataframe=None,y=None,num_features=None,fix_method='mean
             A new dataframe after removing outliers.
     
     '''
-        
+
+    if dataframe is None:
+        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
+
+    if not isinstance(y,str):
+        errstr = f'The given type for target_column is {type(y).__name__}. Expected type is str'
+        raise TypeError(errstr)  
+    
     data = dataframe.copy()
     
     df = data.copy()
