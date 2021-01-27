@@ -125,7 +125,7 @@ def detect_fix_outliers(dataframe=None,y=None,num_features=None,fix_method='mean
     if not isinstance(y,str):
         errstr = f'The given type for target_column is {type(y).__name__}. Expected type is str'
         raise TypeError(errstr)  
-    
+
     data = dataframe.copy()
     
     df = data.copy()
@@ -172,30 +172,68 @@ def detect_fix_outliers(dataframe=None,y=None,num_features=None,fix_method='mean
     return df
 
 
-def drop_cols(dataframe=None,columns=None):
+def manage_columns(dataframe=None,columns=None, select_columns=False, drop_columns=False, drop_duplicates=False):
     
     '''
     Drop features from a pandas dataframe.
     Parameters
     ----------
         data: DataFrame or named Series
-        features: list of features you want to drop
+        columns: list of features you want to drop
+        select_columns: Boolean True or False, default is False
+            The columns you want to select from your dataframe. Requires a list to be passed into the columns param
+        drop_columns: Boolean True or False, default is False
+            The columns you want to drop from your dataset. Requires a list to be passed into the columns param
+        drop_duplicates: True/False or 'rows' or 'columns', default is False
+            Drop duplicate values across rows, columns. If columns, a list is required to be passed into the columns param
     
     Returns
     -------
         Pandas Dataframe:
-            A new dataframe after dropping columns
+            A new dataframe after dropping/selecting/removing duplicate columns or the original dataframe if params are left as default
     '''
     
     if dataframe is None:
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
-    
-    if columns is None:
-        raise ValueError("data: Expecting a list, got 'None'")
+        
+    if not isinstance(select_columns,bool):
+        errstr = f'The given type for items is {type(select_columns).__name__}. Expected type is boolean True/False'
+        raise TypeError(errstr)
+        
+    if not isinstance(drop_columns,bool):
+        errstr = f'The given type for items is {type(drop_columns).__name__}. Expected type is boolean True/False'
+        raise TypeError(errstr)
+
+    if select_columns and drop_columns == True:
+        raise ValueError("Select one of select_columns or drop_columns at a time")  
+
       
     data = dataframe.copy()
-    data = data.drop(columns,axis=1)
-    return data   
+    
+    if select_columns == True:
+        if columns is not None:
+            data = data[columns]
+        else:
+            raise ValueError("columns: A list/string is expected as part of the inputs to select columns, got 'None'") 
+    
+    if drop_columns is True:
+        if columns is not None:
+            data = data.drop(columns,axis=1)
+        else:
+            raise ValueError("columns: A list/string is expected as part of the inputs to drop columns, got 'None'") 
+        
+    if drop_duplicates is True or drop_duplicates == 'rows':
+        data = data.drop_duplicates()
+        
+    elif drop_duplicates == 'columns':
+        if columns is not None:
+            data = data.drop_duplicates(subset=columns)
+        else:
+            raise ValueError("columns: A list/string is expected as part of the inputs to drop across columns, got 'None'")
+    else:
+        raise ValueError("method: must specify a drop_duplicate method, one of [True, 'rows' or 'columns']'")
+        
+    return data
 
 def featurize_datetime(dataframe=None, column_name=None, drop=True):
     
@@ -377,7 +415,7 @@ def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
     if thresh_y:
         drop_col = df[df['missing_percent'] > thresh_y].features.to_list()
         print(f'\nMissing Columns with {thresh_y}% missing value : {drop_col}')
-        data = drop_cols(data,drop_col)
+        data = manage_columns(data,columns = drop_col, drop_columns=True)
         print(f'\nNew data shape is {data.shape}')
     
     if drop_outliers:
