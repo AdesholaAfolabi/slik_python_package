@@ -54,11 +54,11 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
 
 
 # concatenating name and version to form a new single column
-def concat_feat(data):
-    data['gender_location'] = data['gender'] + data['location_state']
-    data['os_name_version'] = data['os_name'] + data['os_version'].astype(str)
-    data['age_bucket'] = data.apply(lambda x: _age(x['age']), axis=1)
-#         data['interactions'] = data['gender'] + data['age_bucket']
+# def concat_feat(data):
+#     data['gender_location'] = data['gender'] + data['location_state']
+#     data['os_name_version'] = data['os_name'] + data['os_version'].astype(str)
+#     data['age_bucket'] = data.apply(lambda x: _age(x['age']), axis=1)
+# #         data['interactions'] = data['gender'] + data['age_bucket']
     
 def check_nan(dataframe=None, plot=False, verbose=True):
     
@@ -97,20 +97,20 @@ def check_nan(dataframe=None, plot=False, verbose=True):
         display(df)
     check_nan.df = df
     
-def detect_outliers(dataframe=None,y=None,num_features=None,n=None,remove=True):
+def detect_fix_outliers(dataframe=None,y=None,num_features=None,fix_method='mean'):
         
     '''
-    Detect outliers present in the numerical features and includes an option of removal.
+    Detect outliers present in the numerical features and fix the outliers present.
     Parameters:
     ------------------------
     data: DataFrame or name Series.
         Data set to perform operation on.
     num_features: List, Series, Array.
         Numerical features to perform operation on. If not provided, we automatically infer from the dataset.
-    n: int.
-        Values used in searching for outliers
-    remove: bool, Default True
-        Remove outliers detected in the data.
+    y: string
+        The target attribute name. Not required for fixing, so it needs to be excluded.
+    fix_method: mean or log_transformation.
+        One of the two methods that you deem fit to fix the outlier values present in the dataset.
 
     Returns:
     -------
@@ -118,17 +118,15 @@ def detect_outliers(dataframe=None,y=None,num_features=None,n=None,remove=True):
             A new dataframe after removing outliers.
     
     '''
+
     if dataframe is None:
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
-        
+
     if not isinstance(y,str):
         errstr = f'The given type for target_column is {type(y).__name__}. Expected type is str'
-        raise TypeError(errstr)
-        
+        raise TypeError(errstr)  
+
     data = dataframe.copy()
-    
-    if n is None:
-        n = 2
     
     df = data.copy()
     
@@ -159,43 +157,83 @@ def detect_outliers(dataframe=None,y=None,num_features=None,n=None,remove=True):
         # append the found outlier indices for col to the list of outlier indices
         outlier_indices.extend(outlier_list_col)
         
-        if remove:
+        #apply any of the fix methods below to handle the outlier values
+        if fix_method == 'mean':
             df.loc[:,column] = df[column].apply(lambda x : mean 
                                                         if x < lower or x > upper else x)
+        elif fix_method == 'log_transformation':
+            df.loc[:,column] = df[column].map(lambda i: np.log(i) if i > 0 else 0)
+        else:
+            raise ValueError("fix: must specify a fix method, one of [mean or log_transformation]")
 
-    # select observations containing more than 2 outliers
-    outlier_indices = Counter(outlier_indices)
-    multiple_outliers = list(k for k, v in outlier_indices.items() if v > n)
     print_devider('Table idenifying Outliers present')
-    display(data.loc[multiple_outliers])
+    display(data.loc[outlier_indices])
 
     return df
 
 
-def drop_cols(dataframe=None,columns=None):
+def manage_columns(dataframe=None,columns=None, select_columns=False, drop_columns=False, drop_duplicates=False):
     
     '''
     Drop features from a pandas dataframe.
     Parameters
     ----------
         data: DataFrame or named Series
-        features: list of features you want to drop
+        columns: list of features you want to drop
+        select_columns: Boolean True or False, default is False
+            The columns you want to select from your dataframe. Requires a list to be passed into the columns param
+        drop_columns: Boolean True or False, default is False
+            The columns you want to drop from your dataset. Requires a list to be passed into the columns param
+        drop_duplicates: True/False or 'rows' or 'columns', default is False
+            Drop duplicate values across rows, columns. If columns, a list is required to be passed into the columns param
     
     Returns
     -------
         Pandas Dataframe:
-            A new dataframe after dropping columns
+            A new dataframe after dropping/selecting/removing duplicate columns or the original dataframe if params are left as default
     '''
     
     if dataframe is None:
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
-    
-    if columns is None:
-        raise ValueError("data: Expecting a list, got 'None'")
+        
+    if not isinstance(select_columns,bool):
+        errstr = f'The given type for items is {type(select_columns).__name__}. Expected type is boolean True/False'
+        raise TypeError(errstr)
+        
+    if not isinstance(drop_columns,bool):
+        errstr = f'The given type for items is {type(drop_columns).__name__}. Expected type is boolean True/False'
+        raise TypeError(errstr)
+
+    if select_columns and drop_columns == True:
+        raise ValueError("Select one of select_columns or drop_columns at a time")  
+
       
     data = dataframe.copy()
-    data = data.drop(columns,axis=1)
-    return data   
+    
+    if select_columns == True:
+        if columns is not None:
+            data = data[columns]
+        else:
+            raise ValueError("columns: A list/string is expected as part of the inputs to select columns, got 'None'") 
+    
+    if drop_columns is True:
+        if columns is not None:
+            data = data.drop(columns,axis=1)
+        else:
+            raise ValueError("columns: A list/string is expected as part of the inputs to drop columns, got 'None'") 
+        
+    if drop_duplicates is True or drop_duplicates == 'rows':
+        data = data.drop_duplicates()
+        
+    elif drop_duplicates == 'columns':
+        if columns is not None:
+            data = data.drop_duplicates(subset=columns)
+        else:
+            raise ValueError("columns: A list/string is expected as part of the inputs to drop across columns, got 'None'")
+    else:
+        raise ValueError("method: must specify a drop_duplicate method, one of [True, 'rows' or 'columns']'")
+        
+    return data
 
 def featurize_datetime(dataframe=None, column_name=None, drop=True):
     
@@ -377,13 +415,13 @@ def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
     if thresh_y:
         drop_col = df[df['missing_percent'] > thresh_y].features.to_list()
         print(f'\nMissing Columns with {thresh_y}% missing value : {drop_col}')
-        data = drop_cols(data,drop_col)
+        data = manage_columns(data,columns = drop_col, drop_columns=True)
         print(f'\nNew data shape is {data.shape}')
     
     if drop_outliers:
         if target_name is None:
             raise ValueError("target_name: Expecting a str for the target_name, got 'None'")
-        data = detect_outliers(data,target_name,**kwargs)
+        data = detect_fix_outliers(data,target_name,**kwargs)
 
     num_attributes, cat_attributes = get_attributes(data,target_name)
 
