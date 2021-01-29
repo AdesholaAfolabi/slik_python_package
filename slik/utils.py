@@ -13,7 +13,7 @@ def store_attribute(dict_file):
     except:
         pass
     with open(r'./data/store_file.yaml', 'w') as file:
-        documents = yaml.dump(dict_file, file)
+        yaml.dump(dict_file, file)
 
 def store_model(alg,model_path):
     # save the model to disk
