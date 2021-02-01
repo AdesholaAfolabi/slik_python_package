@@ -105,7 +105,7 @@ def create_schema_file(dataframe,target_column, column_id, file_name):
     ------------------------
     dataframe: DataFrame or name Series.
         Data set to perform operation on.
-    target_column: the name of the age column in the dataset. A string is expected
+    target_column: the name of the target column in the dataset. A string is expected
         The column to perform the operation on.
     column_id: Bool. Default is set to True
         add prefix to the column name.
@@ -218,10 +218,14 @@ def detect_fix_outliers(dataframe=None,y=None,n=1,num_features=None,fix_method='
     return df
 
 def drop_uninformative_fields(dataframe):
-    """After heavy cleaning, some of the fields left in the dataset track
-    information that was never recorded for any of the loans in the dataset.
+    """
+    
+    After heavy cleaning, some of the fields left in the dataset track
+    information that was never recorded in the dataset.
     These fields have only a single unique value or are all NaN, meaning
-    that they are entirely uninformative. We drop these fields."""
+    that they are entirely uninformative. We drop these fields.
+    
+    """
     data = dataframe.copy()
     is_single = data.apply(lambda s: s.nunique()).le(1)
     single = data.columns[is_single].tolist()
