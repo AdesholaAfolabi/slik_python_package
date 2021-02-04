@@ -1,5 +1,6 @@
 import pandas as pd
 # pd.options.mode.chained_assignment = None
+import pathlib
 import re
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -36,7 +37,7 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
         raise ValueError("dataframe: Expecting a DataFrame or Series, got 'None'")
     
     if not isinstance(age_col,str):
-        errstr = f'The given type for age_col is {type(age_col).__name__}. Expected type is string'
+        errstr = f'The given type for age_col is {type(age_col).__name__}. Expected type is a string'
         raise TypeError(errstr)
         
     data = dataframe.copy()
@@ -51,14 +52,6 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
     data[prefix_name] = data[prefix_name].astype(str)
     
     return data
-
-
-# concatenating name and version to form a new single column
-# def concat_feat(data):
-#     data['gender_location'] = data['gender'] + data['location_state']
-#     data['os_name_version'] = data['os_name'] + data['os_version'].astype(str)
-#     data['age_bucket'] = data.apply(lambda x: _age(x['age']), axis=1)
-# #         data['interactions'] = data['gender'] + data['age_bucket']
     
 def check_nan(dataframe=None, plot=False, verbose=True):
     
@@ -71,7 +64,6 @@ def check_nan(dataframe=None, plot=False, verbose=True):
             Plots missing values in dataset as a heatmap
         verbose: bool, Default False
             
-    
     Returns
     -------
         Matplotlib Figure:
@@ -96,19 +88,70 @@ def check_nan(dataframe=None, plot=False, verbose=True):
     if verbose:
         display(df)
     check_nan.df = df
+
+
+def create_schema_file(dataframe,target_column, column_id, file_name):
+
+
+    """
     
-def detect_fix_outliers(dataframe=None,y=None,num_features=None,fix_method='mean'):
+    Writes a map from column name to column datatype to a YAML file for a
+    given dataframe. The schema format is as keyword arguments for the pandas
+    `read_csv` function.
+    Parameters:
+    ------------------------
+    dataframe: DataFrame or name Series.
+        Data set to perform operation on.
+    target_column: the name of the target column in the dataset. A string is expected
+        The column to perform the operation on.
+    column_id: Bool. Default is set to True
+        add prefix to the column name.
+    file_name:  str.
+        name of the schema file you want to create.
+    Output
+    -------
+        A schema filenis created in the data directory
+    """
+    
+    df = dataframe.copy()
+    # ensure file exists
+    output_path = f'./data/{file_name}'
+    output_path = pathlib.Path(output_path)
+    output_path.touch(exist_ok=True)
+
+    # get dtypes schema
+    datatype_map = {}
+    datetime_fields = []
+    for name, dtype in df.dtypes.iteritems():
+        if 'datetime64' in dtype.name:
+            datatype_map[name] = 'object'
+            datetime_fields.append(name)
+        else:
+            datatype_map[name] = dtype.name
+        
+
+    schema = dict(dtype=datatype_map, parse_dates=datetime_fields,
+                  index_col=column_id, target_col = target_column)
+    # write to YAML file
+    with output_path.open('w') as yaml_file:
+        yaml.dump(schema, yaml_file)
+
+    
+def detect_fix_outliers(dataframe=None,y=None,n=1,num_features=None,fix_method='mean'):
         
     '''
     Detect outliers present in the numerical features and fix the outliers present.
     Parameters:
     ------------------------
-    data: DataFrame or name Series.
+    dataframe: DataFrame or name Series.
         Data set to perform operation on.
-    num_features: List, Series, Array.
-        Numerical features to perform operation on. If not provided, we automatically infer from the dataset.
     y: string
         The target attribute name. Not required for fixing, so it needs to be excluded.
+    n: integar
+        A value to determine whether there are multiple outliers, which is highly dependent on the
+        number of features that are being checked. 
+    num_features: List, Series, Array.
+        Numerical features to perform operation on. If not provided, we automatically infer from the dataset.
     fix_method: mean or log_transformation.
         One of the two methods that you deem fit to fix the outlier values present in the dataset.
 
@@ -166,13 +209,49 @@ def detect_fix_outliers(dataframe=None,y=None,num_features=None,fix_method='mean
         else:
             raise ValueError("fix: must specify a fix method, one of [mean or log_transformation]")
 
+    # select observations containing more than 2 outliers
+    outlier_indices = Counter(outlier_indices)
+    multiple_outliers = list(k for k, v in outlier_indices.items() if v > n)
     print_devider('Table idenifying Outliers present')
-    display(data.loc[outlier_indices])
+    display(data.loc[multiple_outliers])
 
     return df
 
+def drop_uninformative_fields(dataframe):
 
-def manage_columns(dataframe=None,columns=None, select_columns=False, drop_columns=False, drop_duplicates=False):
+    """
+    
+    After heavy cleaning, some of the fields left in the dataset track
+    information that was never recorded in the dataset.
+    These fields have only a single unique value or are all NaN, meaning
+    that they are entirely uninformative. We drop these fields.
+    
+    """
+    data = dataframe.copy()
+    is_single = data.apply(lambda s: s.nunique()).le(1)
+    single = data.columns[is_single].tolist()
+    print_devider('Dropping useless fields')
+    print(f'Useless fields dropped:\n{single}')
+    data = manage_columns(data,single,drop_columns=True)
+    return data
+    
+
+def duplicate(data,columns,drop_duplicates=None):
+    if drop_duplicates == 'rows':
+        data = data.drop_duplicates()
+        
+    elif drop_duplicates == 'columns':
+        data = data.drop_duplicates(subset=columns)
+    
+    elif drop_duplicates ==  None:
+        pass
+
+    else:
+        raise ValueError("method: must specify a drop_duplicate method, one of ['rows' or 'columns']'")
+    return data
+
+
+def manage_columns(dataframe=None,columns=None, select_columns=False, drop_columns=False, drop_duplicates=None):
     
     '''
     Drop features from a pandas dataframe.
@@ -184,7 +263,7 @@ def manage_columns(dataframe=None,columns=None, select_columns=False, drop_colum
             The columns you want to select from your dataframe. Requires a list to be passed into the columns param
         drop_columns: Boolean True or False, default is False
             The columns you want to drop from your dataset. Requires a list to be passed into the columns param
-        drop_duplicates: True/False or 'rows' or 'columns', default is False
+        drop_duplicates: 'rows' or 'columns', default is None
             Drop duplicate values across rows, columns. If columns, a list is required to be passed into the columns param
     
     Returns
@@ -204,39 +283,26 @@ def manage_columns(dataframe=None,columns=None, select_columns=False, drop_colum
         errstr = f'The given type for items is {type(drop_columns).__name__}. Expected type is boolean True/False'
         raise TypeError(errstr)
 
-    if select_columns and drop_columns == True:
+    if columns is None:
+        raise ValueError("columns: A list/string is expected as part of the inputs to drop columns, got 'None'") 
+
+    if select_columns and drop_columns:
         raise ValueError("Select one of select_columns or drop_columns at a time")  
 
       
     data = dataframe.copy()
     
-    if select_columns == True:
-        if columns is not None:
-            data = data[columns]
-        else:
-            raise ValueError("columns: A list/string is expected as part of the inputs to select columns, got 'None'") 
+    if select_columns:
+        data = data[columns]
     
-    if drop_columns is True:
-        if columns is not None:
-            data = data.drop(columns,axis=1)
-        else:
-            raise ValueError("columns: A list/string is expected as part of the inputs to drop columns, got 'None'") 
+    if drop_columns:
+        data = data.drop(columns,axis=1)
         
-    if drop_duplicates is True or drop_duplicates == 'rows':
-        data = data.drop_duplicates()
-        
-    elif drop_duplicates == 'columns':
-        if columns is not None:
-            data = data.drop_duplicates(subset=columns)
-        else:
-            raise ValueError("columns: A list/string is expected as part of the inputs to drop across columns, got 'None'")
-    else:
-        raise ValueError("method: must specify a drop_duplicate method, one of [True, 'rows' or 'columns']'")
+    data = duplicate(data,columns,drop_duplicates)
         
     return data
 
 def featurize_datetime(dataframe=None, column_name=None, drop=True):
-    
     '''
     Featurize datetime in the dataset to create new fields 
     Parameters:
@@ -307,6 +373,7 @@ def get_attributes(data=None,target_column=None):
         cat_attributes.remove(target_column)
     return num_attributes, cat_attributes
 
+
 def identify_columns(dataframe=None,target_column=None, high_dim=100, verbose=True, save_output=True):
     
     """
@@ -355,10 +422,9 @@ def identify_columns(dataframe=None,target_column=None, high_dim=100, verbose=Tr
         dict_file['input_columns'] = input_columns
         dict_file['target_column'] = target_column
         store_attribute(dict_file)
-        
+
         print_devider('Saving Attributes in Yaml file')
         print('\nDone!. Data columns successfully identified and attributes are stored in data/')
-        
 
     
 def handle_cat_feat(data,fillna,cat_attr):
