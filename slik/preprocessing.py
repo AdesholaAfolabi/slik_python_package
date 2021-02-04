@@ -37,7 +37,7 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
         raise ValueError("dataframe: Expecting a DataFrame or Series, got 'None'")
     
     if not isinstance(age_col,str):
-        errstr = f'The given type for age_col is {type(age_col).__name__}. Expected type is string'
+        errstr = f'The given type for age_col is {type(age_col).__name__}. Expected type is a string'
         raise TypeError(errstr)
         
     data = dataframe.copy()
@@ -52,14 +52,6 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
     data[prefix_name] = data[prefix_name].astype(str)
     
     return data
-
-
-# concatenating name and version to form a new single column
-# def concat_feat(data):
-#     data['gender_location'] = data['gender'] + data['location_state']
-#     data['os_name_version'] = data['os_name'] + data['os_version'].astype(str)
-#     data['age_bucket'] = data.apply(lambda x: _age(x['age']), axis=1)
-# #         data['interactions'] = data['gender'] + data['age_bucket']
     
 def check_nan(dataframe=None, plot=False, verbose=True):
     
@@ -99,7 +91,11 @@ def check_nan(dataframe=None, plot=False, verbose=True):
 
 
 def create_schema_file(dataframe,target_column, column_id, file_name):
-    """Writes a map from column name to column datatype to a YAML file for a
+
+
+    """
+    
+    Writes a map from column name to column datatype to a YAML file for a
     given dataframe. The schema format is as keyword arguments for the pandas
     `read_csv` function.
     Parameters:
@@ -112,9 +108,9 @@ def create_schema_file(dataframe,target_column, column_id, file_name):
         add prefix to the column name.
     file_name:  str.
         name of the schema file you want to create.
-    Returns
+    Output
     -------
-        Dataframe with binned age attribute
+        A schema filenis created in the data directory
     """
     
     df = dataframe.copy()
@@ -147,12 +143,15 @@ def detect_fix_outliers(dataframe=None,y=None,n=1,num_features=None,fix_method='
     Detect outliers present in the numerical features and fix the outliers present.
     Parameters:
     ------------------------
-    data: DataFrame or name Series.
+    dataframe: DataFrame or name Series.
         Data set to perform operation on.
-    num_features: List, Series, Array.
-        Numerical features to perform operation on. If not provided, we automatically infer from the dataset.
     y: string
         The target attribute name. Not required for fixing, so it needs to be excluded.
+    n: integar
+        A value to determine whether there are multiple outliers, which is highly dependent on the
+        number of features that are being checked. 
+    num_features: List, Series, Array.
+        Numerical features to perform operation on. If not provided, we automatically infer from the dataset.
     fix_method: mean or log_transformation.
         One of the two methods that you deem fit to fix the outlier values present in the dataset.
 
@@ -219,6 +218,7 @@ def detect_fix_outliers(dataframe=None,y=None,n=1,num_features=None,fix_method='
     return df
 
 def drop_uninformative_fields(dataframe):
+
     """
     
     After heavy cleaning, some of the fields left in the dataset track
