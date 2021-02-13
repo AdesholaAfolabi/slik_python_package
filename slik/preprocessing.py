@@ -110,7 +110,7 @@ def create_schema_file(dataframe,target_column, column_id, file_name):
         name of the schema file you want to create.
     Output
     -------
-        A schema filenis created in the data directory
+        A schema file is created in the data directory
     """
     
     df = dataframe.copy()
@@ -220,7 +220,7 @@ def detect_fix_outliers(dataframe=None,y=None,n=1,num_features=None,fix_method='
 def drop_uninformative_fields(dataframe):
 
     """
-    
+
     After heavy cleaning, some of the fields left in the dataset track
     information that was never recorded in the dataset.
     These fields have only a single unique value or are all NaN, meaning
