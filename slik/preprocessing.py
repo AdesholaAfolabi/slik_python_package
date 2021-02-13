@@ -1,13 +1,16 @@
 import pandas as pd
 # pd.options.mode.chained_assignment = None
+
 import pathlib
-import re
+import re,os
+
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from collections import Counter
 from IPython.display import display
-import yaml
+import yaml,pathlib
 from numpy import percentile
+import pprint
 
 import matplotlib.pyplot as plt
 from .loadfile import read_file
@@ -90,12 +93,12 @@ def check_nan(dataframe=None, plot=False, verbose=True):
     check_nan.df = df
 
 
-def create_schema_file(dataframe,target_column, column_id, file_name):
 
-
+def create_schema_file(dataframe,target_column, column_id, file_name,save=True, verbose=True):
     """
     
     Writes a map from column name to column datatype to a YAML file for a
+
     given dataframe. The schema format is as keyword arguments for the pandas
     `read_csv` function.
     Parameters:
@@ -129,15 +132,29 @@ def create_schema_file(dataframe,target_column, column_id, file_name):
         else:
             datatype_map[name] = dtype.name
         
-
+    print_devider('Creating Schema file')
+    print('\nDone!. Schema file stored in data/')
+    
     schema = dict(dtype=datatype_map, parse_dates=datetime_fields,
                   index_col=column_id, target_col = target_column)
-    # write to YAML file
-    with output_path.open('w') as yaml_file:
-        yaml.dump(schema, yaml_file)
-
     
-def detect_fix_outliers(dataframe=None,y=None,n=1,num_features=None,fix_method='mean'):
+    if verbose:
+        display(schema)
+    # write to YAML file
+    if save:
+        with output_path.open('w') as yaml_file:
+            yaml.dump(schema, yaml_file)
+
+        
+def check_datefield(data, col):
+    try:
+        pd.to_datetime(data[col], infer_datetime_format=True)
+        return True
+    except:
+        return False
+    
+    
+def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,fix_method='mean',verbose=True):
         
     '''
     Detect outliers present in the numerical features and fix the outliers present.
@@ -145,7 +162,9 @@ def detect_fix_outliers(dataframe=None,y=None,n=1,num_features=None,fix_method='
     ------------------------
     dataframe: DataFrame or name Series.
         Data set to perform operation on.
-    y: string
+    num_features: List, Series, Array.
+        Numerical features to perform operation on. If not provided, we automatically infer from the dataset.
+    target_column: string
         The target attribute name. Not required for fixing, so it needs to be excluded.
     n: integar
         A value to determine whether there are multiple outliers, which is highly dependent on the
@@ -163,11 +182,7 @@ def detect_fix_outliers(dataframe=None,y=None,n=1,num_features=None,fix_method='
     '''
 
     if dataframe is None:
-        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
-
-    if not isinstance(y,str):
-        errstr = f'The given type for target_column is {type(y).__name__}. Expected type is str'
-        raise TypeError(errstr)  
+        raise ValueError("data: Expecting a DataFrame or Series, got 'None'") 
 
     data = dataframe.copy()
     
@@ -176,7 +191,10 @@ def detect_fix_outliers(dataframe=None,y=None,n=1,num_features=None,fix_method='
     outlier_indices = []
     
     if num_features is None:
-        num_attributes, cat_attributes = get_attributes(data,y)
+        if not isinstance(target_column,str):
+            errstr = f'The given type for target_column is {type(target_column).__name__}. Expected type is str'
+            raise TypeError(errstr) 
+        num_attributes, cat_attributes = get_attributes(data,target_column)
     else:
         num_attributes = num_features
 
@@ -212,8 +230,10 @@ def detect_fix_outliers(dataframe=None,y=None,n=1,num_features=None,fix_method='
     # select observations containing more than 2 outliers
     outlier_indices = Counter(outlier_indices)
     multiple_outliers = list(k for k, v in outlier_indices.items() if v > n)
-    print_devider('Table idenifying Outliers present')
-    display(data.loc[multiple_outliers])
+    
+    if verbose:
+        print_devider(f'Table idenifying more than {n} Outliers present in each record')
+        display(data.loc[multiple_outliers])
 
     return df
 
@@ -230,8 +250,8 @@ def drop_uninformative_fields(dataframe):
     data = dataframe.copy()
     is_single = data.apply(lambda s: s.nunique()).le(1)
     single = data.columns[is_single].tolist()
-    print_devider('Dropping useless fields')
-    print(f'Useless fields dropped:\n{single}')
+    print_devider('Dropping uninformative fields')
+    print(f'uninformative fields dropped:\n{single}')
     data = manage_columns(data,single,drop_columns=True)
     return data
     
@@ -329,14 +349,14 @@ def featurize_datetime(dataframe=None, column_name=None, drop=True):
     
     fld = df[column_name]
     if not np.issubdtype(fld.dtype, np.datetime64):
-        df.loc[:,column_name] = fld = pd.to_datetime(fld, infer_datetime_format=True)
-    targ_pre = re.sub('[Dd]ate$', '', column_name)
+        df.loc[:,column_name] = fld = pd.to_datetime(fld, infer_datetime_format=True,utc=True).dt.tz_localize(None)
+    targ_pre_ = re.sub('[Dd]ate$', '', column_name)
     for n in ('Year', 'Month', 'Day', 'Dayofweek', 'Dayofyear',
             'Is_month_end', 'Is_month_start', 'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start'):
-        df.loc[:,targ_pre+n] = getattr(fld.dt,n.lower())
+        df.loc[:,targ_pre_+n] = getattr(fld.dt,n.lower())
     for n in ['Week']:
-        df.loc[:,targ_pre+n] = getattr(fld.dt.isocalendar(),n.lower())
-    df.loc[:,targ_pre+'Elapsed'] = fld.astype(np.int64) // 10**9
+        df.loc[:,targ_pre_+n] = getattr(fld.dt.isocalendar(),n.lower())
+    df.loc[:,targ_pre_+'Elapsed'] = fld.astype(np.int64) // 10**9
     if drop: df.drop(column_name, axis=1, inplace=True)
     return df
 
@@ -360,21 +380,23 @@ def get_attributes(data=None,target_column=None):
     if data is None:
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
         
-    if not isinstance(target_column,str):
-        errstr = f'The given type is {type(target_column).__name__}. Specify target column name'
-        raise TypeError(errstr)
+#     if not isinstance(target_column,str):
+#         errstr = f'The given type is {type(target_column).__name__}. Specify target column name'
+#         raise TypeError(errstr)
         
     num_attributes = data.select_dtypes(exclude=['object', 'datetime64']).columns.tolist()
     cat_attributes = data.select_dtypes(include=['object']).columns.tolist()
     
     if target_column in num_attributes:
         num_attributes.remove(target_column)
-    else:
+    elif target_column in cat_attributes:
         cat_attributes.remove(target_column)
+    else:
+        pass
     return num_attributes, cat_attributes
 
 
-def identify_columns(dataframe=None,target_column=None, high_dim=100, verbose=True, save_output=True):
+def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=100, verbose=True, save_output=True):
     
     """
         Identifies numerical attributes ,categorical attributes with sparse features and categorical attributes with lower features
@@ -398,47 +420,60 @@ def identify_columns(dataframe=None,target_column=None, high_dim=100, verbose=Tr
         errstr = f'The given type for target_column is {type(target_column).__name__}. Expected type is str'
         raise TypeError(errstr)
         
+    if not isinstance(id_column,str):
+        errstr = f'The given type for id_column is {type(id_column).__name__}. Expected type is str'
+        raise TypeError(errstr)
+        
     data = dataframe.copy()
     num_attributes, cat_attributes = get_attributes(data,target_column)
         
     low_cat = []
     hash_features = []
-    dict_file = {}
+#     dict_file = {}
     input_columns = [cols for cols in data.columns]
     input_columns.remove(target_column)
-  
+    if id_column in num_attributes:
+        num_attributes.remove(id_column)
+    else:
+        cat_attributes.remove(id_column)
+    
+    print_devider('Identifying columns present in the data')
+    print(f'Target column is {target_column}. Attribute in target column incldes:\n{list(data[target_column].unique())}\n')
     for item in cat_attributes:
         if data[item].nunique() > high_dim:
-            if verbose:
-                print('\n {} has a high cardinality. It has {} unique attributes'.format(item, data[item].nunique()))
             hash_features.append(item)
         else:
             low_cat.append(item)
+            
+    print(f'Features with high cardinality:{hash_features}\n')        
+    dict_file = dict(num_feat=num_attributes, cat_feat=cat_attributes,
+                  hash_feat= hash_features, lower_cat = low_cat,
+                 input_columns = input_columns, target_column = target_column,
+                 id_column = id_column)
+    
+    if verbose:
+        pprint.pprint(dict_file)
+            
     if save_output:
-        dict_file['num_feat'] = num_attributes
-        dict_file['cat_feat'] = cat_attributes
-        dict_file['hash_feat'] = hash_features
-        dict_file['lower_cat'] = low_cat
-        dict_file['input_columns'] = input_columns
-        dict_file['target_column'] = target_column
         store_attribute(dict_file)
 
         print_devider('Saving Attributes in Yaml file')
         print('\nDone!. Data columns successfully identified and attributes are stored in data/')
-
+        
     
 def handle_cat_feat(data,fillna,cat_attr):
     if fillna == 'mode':
         for item in cat_attr:
             data.loc[:,item] = data[item].fillna(data[item].value_counts().index[0])
-            
+           
     else:
         for item in cat_attr:
             data.loc[:,item] = data[item].fillna(fillna)
     return data
 
+
 def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
-               drop_outliers=True,thresh_y=50,thresh_x=75, verbose = True,
+               drop_outliers=True,thresh_y=75,thresh_x=75, verbose = True,
                **kwargs):
     
     """
@@ -474,21 +509,24 @@ def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
     df = check_nan.df
     
     if thresh_x:
-        thresh_x = thresh_x/100
-        drop_row = data.shape[1] * thresh_x
+        thresh = thresh_x/100
+        initial_row = data.shape
+        drop_row = data.shape[1] * thresh
+        print(f'\nDropping rows with {thresh_x}% missing value')
         data = data.dropna(thresh=drop_row)
+        
         
     if thresh_y:
         drop_col = df[df['missing_percent'] > thresh_y].features.to_list()
-        print(f'\nMissing Columns with {thresh_y}% missing value : {drop_col}')
+        print(f'\nDropping Columns with {thresh_y}% missing value: {drop_col}')
         data = manage_columns(data,columns = drop_col, drop_columns=True)
         print(f'\nNew data shape is {data.shape}')
     
     if drop_outliers:
         if target_name is None:
             raise ValueError("target_name: Expecting a str for the target_name, got 'None'")
-        data = detect_fix_outliers(data,target_name,**kwargs)
-
+        data = detect_fix_outliers(data,target_name,verbose=verbose,**kwargs)
+        
     num_attributes, cat_attributes = get_attributes(data,target_name)
 
     if strategy == 'mean':
@@ -511,7 +549,7 @@ def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
     data = handle_cat_feat(data,fillna,cat_attributes)
     return data
     
-def map_column(data=None,column_name=None,items=None,add_prefix=True):
+def map_column(dataframe=None,column_name=None,items=None,add_prefix=True):
     
     '''
     Map values in  a pandas dataframe column with a dict.
@@ -520,13 +558,14 @@ def map_column(data=None,column_name=None,items=None,add_prefix=True):
         data: DataFrame or named Series
         column_name: Name of pandas dataframe column to be mapped
         items: A dict with key and value to be mapped 
+        add_prefix: Include a prefix of the target column in the dataset
     
     Returns
     -------
         Pandas Dataframe:
             A new dataframe without the dropped features
     '''
-    if data is None:
+    if dataframe is None:
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
     
     if not isinstance(column_name,str):
@@ -536,33 +575,248 @@ def map_column(data=None,column_name=None,items=None,add_prefix=True):
     if not isinstance(items,dict):
         errstr = f'The given type for items is {type(items).__name__}. Expected type is dict'
         raise TypeError(errstr)
-        
+     
+    data = dataframe.copy()
+    
+    print_devider('Mapping passed column')
+    for key,value in items.items():
+        print(f'{key} was mapped to {value}\n')
+    
     if add_prefix:
         prefix_name = f'transformed_{column_name}'
     else:
         prefix_name = column_name
-        
 
     data.loc[:,prefix_name] = data[column_name].map(items)
-    
-    
-# def preprocess(dataframe=None,train=True,validation_path=None):
-#     if train:
-#         dataframe = dataframe[~dataframe['customer_class'].isnull()]
+    return data
 
-#         map_target(dataframe,'event_type')
-#         dataframe = handle_nan(dataframe,fillna='missing',drop_outliers=True)
-#         dataframe = drop_cols(dataframe,columns=['msisdn.1'])
-#         dataframe.to_pickle(PROCESSED_TRAIN_PATH)
-#         print(f'\nDone!. Input data has been preprocessed successfully and stored in {PROCESSED_TRAIN_PATH}')
+
+def map_target(dataframe=None,target_column=None,add_prefix=True,drop=False):
+    
+    '''
+    Map target column in  a pandas dataframe column with a dict.
+    Parameters
+    ----------
+        data: DataFrame or named Series
+        column_name: Name of pandas dataframe column to be mapped
+        add_prefix: Include a prefix of the target column in the dataset
+    
+    Returns
+    -------
+        Pandas Dataframe:
+            A new dataframe without the dropped features
+    '''
+    if dataframe is None:
+        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
+    
+    if not isinstance(target_column,str):
+        errstr = f'The given type for column_name is {type(column_name).__name__}. Expected type is str'
+        raise TypeError(errstr)
         
-#     else:
-#         data = raw.read_data(path=validation_path)
-#         map_target(data,'event_type')
-#         data = handle_nan(data,fillna='missing',drop_outliers=True)
-#         data = drop_cols(data,columns=['msisdn.1'])
-
-#         data.to_pickle(PROCESSED_TEST_PATH)
-
-#         print(f'\nDone!. Input data has been preprocessed successfully and stored in {PROCESSED_TEST_PATH}')
+    data = dataframe.copy()
+    num_unique = data[target_column].unique()
+    elem = data[target_column].value_counts()#.index.tolist()
+    idx = elem.index.tolist()
+    if len(num_unique) == 2:
+        a = data[target_column].value_counts()[0]
+        b = data[target_column].value_counts()[1]
+        items = {}
+        if a>b:
+            items[idx[0]] = 0
+            items[idx[1]] = 1
+        else:
+            items[idx[0]] = 1
+            items[idx[1]] = 0
+            
+    elif len(num_unique) > 2:
+        counter =[]
+        for i in range(0,len(num_unique)):
+            counter.append(i)
+        items = dict(zip(num_unique,counter))
     
+    else:
+        raise ValueError("dataframe: The target column has only 1 unique value")
+    
+    print_devider('Mapping target columns')
+    for key,value in items.items():
+        print(f'{key} was mapped to {value}\n')
+    if add_prefix:
+        prefix_name = f'transformed_{target_column}'
+    else:
+        prefix_name = column_name
+    data.loc[:,prefix_name] = data[target_column].map(items)
+    
+    if drop:
+        data = manage_columns(data,target_column,drop_columns=True)
+    return data
+    
+    
+def preprocess_non_target_col(data_path=None,dataframe=None,PROCESSED_DATA_PATH=None,verbose=True,
+                              select_columns=None,**kwargs):
+    if data_path:
+        test_df = read_file(data_path,input_col= select_columns,**kwargs)
+    else:
+        test_df = dataframe
+        if select_columns:
+            train_df = manage_columns(test_df,columns=select_columns,select_columns=True)
+
+    num_attributes = test_df.select_dtypes(exclude=['object', 'datetime64']).columns.tolist()
+    
+    #how to indicate columns with outliers 
+    data = detect_fix_outliers(dataframe=test_df,num_features=num_attributes,n=3,verbose=verbose)
+    data = handle_nan(dataframe=data,n=3,drop_outliers=False,verbose=verbose,**kwargs)
+
+    for column in data.columns:
+        if 'age' in column.lower():
+            match = re.search(r'(.*?)[Aa]ge.*', column).group()
+            age_column = str(match)
+            data = bin_age(data,age_column)
+
+    for name, dtype in data.dtypes.iteritems():
+        if 'datetime64' in dtype.name:
+            print_devider('Featurize Datetime columns')
+            print(f'column with datetime type:\n[{name}]\n') 
+            data = featurize_datetime(data,name,False)#generic #methods to bin
+
+        elif 'object' in dtype.name:
+            output = check_datefield(data, name)
+            if output:
+                print_devider('Featurize Datetime columns')
+                print(f'Inferred column with datetime type:\n[{name}]\n') 
+                data = featurize_datetime(data,name,False)
+        else:
+            pass
+
+    for column in data.columns:
+        if 'gender' in column or 'sex' in column.lower():
+            num_unique = data[column].unique()
+            counter =[]
+            for i in range(0,len(num_unique)):
+                counter.append(i)
+            items = dict(zip(num_unique,counter))
+            data = map_column(data,column_name=column,items=items)
+
+    drop_uninformative_fields(data)
+    
+    if verbose:
+        print_devider('Display Top Five rows of the preprocessed data')
+        display(data.head(5))    
+    data.to_pickle(PROCESSED_DATA_PATH)
+    print_devider('Preprocessed data saved')
+    print(f'\nDone!. Input data has been preprocessed successfully and stored in {PROCESSED_DATA_PATH}')
+    
+
+
+def preprocess(dataframe=None,target_column=None,train=True,select_columns=None,data_path=None,\
+               verbose=True,processed_data_path=None,task='classification',**kwargs):
+    # 1 - infer datetime
+    #2 - pass select columns
+    #3 check passed column is in dataframe column (throw error) 
+    '''
+    Map target column in  a pandas dataframe column with a dict.
+    Parameters
+    ----------
+        data: DataFrame or named Series
+        target_column: Name of pandas dataframe column to be mapped
+        select_columns:
+        processed_data_path:
+        verbose:
+    
+    Returns
+    -------
+        Pandas Dataframe:
+            A new dataframe without the dropped features
+    '''
+    
+    if dataframe is None and data_path is None:
+        raise ValueError("dataframe: Expecting a DataFrame or Series or a data path, got None")
+    
+#     if train == False and attribute_path == None:
+#         raise ValueError("dataframe: Expecting attribue path, got None")
+        
+    if processed_data_path is None:
+        raise ValueError("dataframe: Expecting a DataFrame or Series or a data path and got None")
+        
+    if os.path.exists(processed_data_path):
+        pass
+    else:
+        os.mkdir(processed_data_path)
+        
+    print_devider(f'The task for preprocessing is {task}')    
+    
+    if task == 'classification':
+        if train:
+            if not isinstance(target_column,str):
+                errstr = f'The given type for target_column is {type(target_column).__name__}. Expected type is str'
+                raise TypeError(errstr) 
+
+            PROCESSED_TRAIN_PATH = os.path.join(processed_data_path, 'train_data.pkl')
+
+            if data_path:
+                train_df = read_file(data_path, input_col= select_columns,**kwargs)
+            else:
+                train_df = dataframe
+                if select_columns:
+                    train_df = manage_columns(train_df,columns=select_columns,select_columns=True)
+            data = handle_nan(dataframe=train_df,target_name=target_column,verbose=verbose,n=3)# change handlena to fillna #default threshold judgement
+            data = map_target(data,target_column=target_column,drop=True)
+            prefix_name = f'transformed_{target_column}'
+            for column in data.columns:
+                if 'age' in column.lower():
+                    print_devider('Bucketize Age columns')
+                    print(f'Inferred age column: [{column}]')
+                    match = re.search(r'(.*?)[Aa]ge.*', column).group()
+                    age_column = str(match)
+                    data = bin_age(data,age_column)
+
+            for name, dtype in data.dtypes.iteritems():
+                if 'datetime64' in dtype.name:
+                    print_devider('Featurize Datetime columns')
+                    print(f'column with datetime type:\n[{name}]\n') 
+                    data = featurize_datetime(data,name,False)#generic #methods to bin
+     
+                elif 'object' in dtype.name:
+                    output = check_datefield(data, name)
+                    if output:
+                        print_devider('Featurize Datetime columns')
+                        print(f'Inferred column with datetime type:\n[{name}]\n') 
+                        data = featurize_datetime(data,name,False)
+                else:
+                    pass
+
+            for column in data.columns:
+                if 'gender' in column or 'sex' in column.lower():
+                    num_unique = data[column].unique()
+                    counter =[]
+                    for i in range(0,len(num_unique)):
+                        counter.append(i)
+                    items = dict(zip(num_unique,counter))
+                    data = map_column(data,column_name=column,items=items)
+
+            drop_uninformative_fields(data)
+
+            create_schema_file(data,target_column=prefix_name,file_name='schema.yaml',\
+                               verbose=verbose,column_id=data.columns[0])
+            if verbose:
+                print_devider('\nDisplay Top Five rows of the preprocessed data')
+                display(data.head(5))    
+
+            data.to_pickle(PROCESSED_TRAIN_PATH)
+            print_devider('Preprocessed data saved')
+            print(f'\nDone!. Input data preprocessed successfully and stored in {PROCESSED_TRAIN_PATH}\n')
+        
+        else:
+            PROCESSED_TEST_PATH = os.path.join(processed_data_path, 'validation_data.pkl')
+            preprocess_non_target_col(data_path=data_path, dataframe=dataframe,\
+                                      PROCESSED_DATA_PATH = PROCESSED_TEST_PATH,verbose=verbose,\
+                                     select_columns=select_columns,**kwargs)
+    
+    elif task == 'clustering':
+        PROCESSED_CLUSTER_PATH = os.path.join(processed_data_path, 'preprocessed_cluster_data.pkl')
+        preprocess_non_target_col(data_path=data_path, dataframe=dataframe,\
+                                  PROCESSED_DATA_PATH = PROCESSED_CLUSTER_PATH,verbose=verbose,\
+                                 select_columns=select_columns,**kwargs)
+        
+    else:
+        raise ValueError("task: Expecting one of ['classification','clustering']")
+        
