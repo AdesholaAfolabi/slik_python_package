@@ -449,7 +449,7 @@ def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=
         store_attribute(dict_file)
 
         print_devider('Saving Attributes in Yaml file')
-        print('\nDone!. Data columns successfully identified and attributes are stored in data/')
+        print('\nDone!. Data columns successfully identified and attributes are stored in data/\n')
         
     
 def handle_cat_feat(data,fillna,cat_attr):
@@ -601,7 +601,7 @@ def map_target(dataframe=None,target_column=None,add_prefix=True,drop=False):
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
     
     if not isinstance(target_column,str):
-        errstr = f'The given type for column_name is {type(column_name).__name__}. Expected type is str'
+        errstr = f'The given type for column_name is {type(target_column).__name__}. Expected type is str'
         raise TypeError(errstr)
         
     data = dataframe.copy()
@@ -634,7 +634,7 @@ def map_target(dataframe=None,target_column=None,add_prefix=True,drop=False):
     if add_prefix:
         prefix_name = f'transformed_{target_column}'
     else:
-        prefix_name = column_name
+        prefix_name = target_column
     data.loc[:,prefix_name] = data[target_column].map(items)
     
     if drop:

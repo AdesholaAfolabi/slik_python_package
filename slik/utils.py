@@ -1,3 +1,5 @@
+import sys  
+sys.path.insert(0, '/Users/terra-016/Downloads/mlflow-titanic/slik_python_package/')
 import pickle,yaml,os
 
 def print_devider(title):
@@ -15,20 +17,14 @@ def store_attribute(dict_file):
     with open(r'./data/store_file.yaml', 'w') as file:
         documents = yaml.dump(dict_file, file)
 
-def store_model(alg,model_path):
+def store_pipeline(pipeline_object, pipeline_path):
     # save the model to disk
-    pickle.dump(alg, open(model_path, 'wb'))
+    
+    pickle.dump(pipeline_object, open(pipeline_path, 'wb'))
+        
+    
 
-    # save the pipeline to disk
-    pipeline = file_object[1]
-    pickle.dump(pipeline, open(pipeline_path, 'wb'))
+#     # save the pipeline to disk
+#     pipeline = file_object[1]
+#     pickle.dump(pipeline, open(pipeline_path, 'wb'))
 
-if os.path.exists("./data/store_file.yaml"):
-    config = yaml.safe_load(open("./data/store_file.yaml"))
-    numerical_attribute = config['num_feat']
-    categorical_attribute = config['lower_cat']
-    hash_features = config['hash_feat']
-    input_columns = config['input_columns']
-
-else:
-    pass
