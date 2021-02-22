@@ -423,6 +423,7 @@ def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=
 #     dict_file = {}
     input_columns = [cols for cols in data.columns]
     input_columns.remove(target_column)
+    input_columns.remove(id_column)
     if id_column in num_attributes:
         num_attributes.remove(id_column)
     else:
@@ -642,20 +643,22 @@ def map_target(dataframe=None,target_column=None,add_prefix=True,drop=False):
     return data
     
     
-def preprocess_non_target_col(data_path=None,dataframe=None,PROCESSED_DATA_PATH=None,verbose=True,
+def preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,verbose=True,
                               select_columns=None,**kwargs):
-    if data_path:
-        test_df = read_file(data_path,input_col= select_columns,**kwargs)
-    else:
-        test_df = dataframe
-        if select_columns:
-            train_df = manage_columns(test_df,columns=select_columns,select_columns=True)
+    
+    if data is not None:
+        if isinstance(data, pd.DataFrame):
+            test_df = data
+            if select_columns:
+                test_df = manage_columns(train_df,columns=select_columns,select_columns=True)
+        else:
+            test_df = read_file(data, input_col= select_columns,**kwargs)
 
     num_attributes = test_df.select_dtypes(exclude=['object', 'datetime64']).columns.tolist()
     
     #how to indicate columns with outliers 
     data = detect_fix_outliers(dataframe=test_df,num_features=num_attributes,n=3,verbose=verbose)
-    data = handle_nan(dataframe=data,n=3,drop_outliers=False,verbose=verbose,**kwargs)
+    data = handle_nan(dataframe=data,n=3,drop_outliers=False,verbose=verbose,thresh_x=1,thresh_y=99,**kwargs)
 
     for column in data.columns:
         if 'age' in column.lower():
@@ -698,7 +701,7 @@ def preprocess_non_target_col(data_path=None,dataframe=None,PROCESSED_DATA_PATH=
     
 
 
-def preprocess(dataframe=None,target_column=None,train=True,select_columns=None,data_path=None,\
+def preprocess(data=None,target_column=None,train=False,select_columns=None,\
                verbose=True,processed_data_path=None,task='classification',**kwargs):
     # 1 - infer datetime
     #2 - pass select columns
@@ -719,14 +722,14 @@ def preprocess(dataframe=None,target_column=None,train=True,select_columns=None,
             A new dataframe without the dropped features
     '''
     
-    if dataframe is None and data_path is None:
-        raise ValueError("dataframe: Expecting a DataFrame or Series or a data path, got None")
+    if data is None:
+        raise ValueError("data: Expecting a DataFrame or Series or a data path, got None")
     
 #     if train == False and attribute_path == None:
 #         raise ValueError("dataframe: Expecting attribue path, got None")
         
     if processed_data_path is None:
-        raise ValueError("dataframe: Expecting a DataFrame or Series or a data path and got None")
+        raise ValueError("processed_data_path: Expecting a path to store the preprocessed data")
         
     if os.path.exists(processed_data_path):
         pass
@@ -742,13 +745,15 @@ def preprocess(dataframe=None,target_column=None,train=True,select_columns=None,
                 raise TypeError(errstr) 
 
             PROCESSED_TRAIN_PATH = os.path.join(processed_data_path, 'train_data.pkl')
-
-            if data_path:
-                train_df = read_file(data_path, input_col= select_columns,**kwargs)
-            else:
-                train_df = dataframe
-                if select_columns:
-                    train_df = manage_columns(train_df,columns=select_columns,select_columns=True)
+            
+            if data is not None:
+                if isinstance(data, pd.DataFrame):
+                    train_df = data
+                    if select_columns:
+                        train_df = manage_columns(train_df,columns=select_columns,select_columns=True)
+                else:
+                    train_df = read_file(data, input_col= select_columns,**kwargs)
+                    
             data = handle_nan(dataframe=train_df,target_name=target_column,verbose=verbose,n=3)# change handlena to fillna #default threshold judgement
             data = map_target(data,target_column=target_column,drop=True)
             prefix_name = f'transformed_{target_column}'
@@ -798,14 +803,12 @@ def preprocess(dataframe=None,target_column=None,train=True,select_columns=None,
         
         else:
             PROCESSED_TEST_PATH = os.path.join(processed_data_path, 'validation_data.pkl')
-            preprocess_non_target_col(data_path=data_path, dataframe=dataframe,\
-                                      PROCESSED_DATA_PATH = PROCESSED_TEST_PATH,verbose=verbose,\
+            preprocess_non_target_col(data=data,PROCESSED_DATA_PATH = PROCESSED_TEST_PATH,verbose=verbose,\
                                      select_columns=select_columns,**kwargs)
     
     elif task == 'clustering':
         PROCESSED_CLUSTER_PATH = os.path.join(processed_data_path, 'preprocessed_cluster_data.pkl')
-        preprocess_non_target_col(data_path=data_path, dataframe=dataframe,\
-                                  PROCESSED_DATA_PATH = PROCESSED_CLUSTER_PATH,verbose=verbose,\
+        preprocess_non_target_col(data =data, PROCESSED_DATA_PATH = PROCESSED_CLUSTER_PATH,verbose=verbose,\
                                  select_columns=select_columns,**kwargs)
         
     else:
