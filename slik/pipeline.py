@@ -175,22 +175,36 @@ def build_model(dataframe=None,target_column=None,numerical_transformer=None,cat
             f.write(estimator_html_repr(grid_search.best_estimator_))
             
     else:
-        if len(fit_params)>0:
+        if params:
             kwargsList = inspect.getfullargspec(algorithm.fit)[0]
-#             X_val = data_transformer.transform(X_test) 
-#             if 'eval_set' in kwargsList:
-#                 fit_params['model__eval_set'] =  (X_test, y_test)
-            try:
-                classifier.fit(X_train, y_train,**fit_params)
-            except:
-                if 'cat_features' in kwargsList:
-                    cate_features_index = [X_train.columns.get_loc(col) for col in X_train.columns][len(numerical_attribute):]
-                fit_params['model__cat_features'] = cate_features_index
-                classifier.fit(X_train, y_train,**fit_params)
-            
+            if len(fit_params)>0:
+                
+    #             X_val = data_transformer.transform(X_test) 
+    #             if 'eval_set' in kwargsList:
+    #                 fit_params['model__eval_set'] =  (X_test, y_test)
+                try:
+                    classifier.set_params(**model_params)
+                    classifier.fit(X_train, y_train,**fit_params)
+                except:
+                    if 'cat_features' in kwargsList:
+                        cate_features_index = [X_train.columns.get_loc(col) for col in X_train.columns][len(numerical_attribute):]
+                    fit_params['model__cat_features'] = cate_features_index
+                    classifier.set_params(**model_params)
+                    classifier.fit(X_train, y_train,**fit_params)
+            else:
+                try:
+                    classifier.set_params(**model_params)
+                    classifier.fit(X_train, y_train) 
+                except:
+                    if 'cat_features' in kwargsList:
+                        cate_features_index = [X_train.columns.get_loc(col) for col in X_train.columns][len(numerical_attribute):]
+                    fit_params['model__cat_features'] = cate_features_index
+                    classifier.set_params(**model_params)
+                    classifier.fit(X_train, y_train,**fit_params) 
         else:
+            classifier.set_params(**model_params)
             classifier.fit(X_train, y_train)
-        
+
         if model_preprocessor_pipeline:
             try:
                 os.mkdir(model_preprocessor_pipeline)
@@ -235,9 +249,9 @@ def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=T
     PROCESSED_TRAIN_PATH = os.path.join(processed_data_path, 'train_data.pkl')
     
     if os.path.exists(PROCESSED_TRAIN_PATH):
+        print_devider(f'Loading clean data')
+        print(f'\nClean data exists in {PROCESSED_TRAIN_PATH}\n')
         train_df = load_pickle(PROCESSED_TRAIN_PATH)
-        print(f'Loading a clean data from {PROCESSED_TRAIN_PATH}')
-        clean_data = False
         
     else:
         if data is None:
@@ -271,26 +285,31 @@ def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=T
         errstr = f'The given type for id_column is {type(id_column).__name__}. Expected type is str'
         raise TypeError(errstr)
           
-    
-    if data is not None:
-        if isinstance(data, pd.DataFrame):
-            train_df = data
-            print(f'\nTarget column is {target_column}. Attribute in target column incldes:\n{list(train_df[target_column].unique())}')
-            if select_columns:
-                train_df = manage_columns(train_df,columns=select_columns,select_columns=True)
-        else:
-            train_df = read_file(data, input_col= select_columns, **kwargs)
-            print(f'\nTarget column is {target_column}. Attribute in target column incldes:\n{list(train_df[target_column].unique())}')
+
+    if os.path.exists(PROCESSED_TRAIN_PATH):
+        Question = input("Use clean data:(y/n) \n")
+        if Question == ("y"):
+            clean_data = False
+            target_column = f'transformed_{target_column}'
+        elif Question == ("n"):
+            if data is not None:
+                if isinstance(data, pd.DataFrame):
+                    train_df = data
+                    print(f'\nTarget column is {target_column}. Attribute in target column incldes:\n{list(train_df[target_column].unique())}')
+                    if select_columns:
+                        train_df = manage_columns(train_df,columns=select_columns,select_columns=True)
+                else:
+                    train_df = read_file(data, input_col= select_columns, **kwargs)
+                    print(f'\nTarget column is {target_column}. Attribute in target column incldes:\n{list(train_df[target_column].unique())}')
         
         
     if clean_data:    
         preprocess(data=train_df,target_column=target_column,train=True,verbose=verbose,
                            processed_data_path=processed_data_path,select_columns=select_columns,**kwargs)
         train_df = load_pickle(PROCESSED_TRAIN_PATH)
-        
-    prefix_name = f'transformed_{target_column}'
+        target_column = f'transformed_{target_column}'
     
-    output = build_model(dataframe = train_df,target_column=prefix_name,numerical_transformer=numerical_transformer,\
+    output = build_model(dataframe = train_df,target_column=target_column,numerical_transformer=numerical_transformer,\
                         categorical_transformer=categorical_transformer,pca=pca,algorithm=algorithm,
                         grid_search=grid_search,params=params,id_column=id_column,verbose=verbose,hashing=hashing,
                         model_preprocessor_pipeline=model_preprocessor_pipeline,hash_size=hash_size)
