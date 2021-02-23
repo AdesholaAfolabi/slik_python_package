@@ -712,9 +712,7 @@ def preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,verbose=True,
 
 def preprocess(data=None,target_column=None,train=False,select_columns=None,\
                verbose=True,processed_data_path=None,task='classification',**kwargs):
-    # 1 - infer datetime
-    #2 - pass select columns
-    #3 check passed column is in dataframe column (throw error) 
+   
     '''
     Map target column in  a pandas dataframe column with a dict.
     Parameters
