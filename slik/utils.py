@@ -7,6 +7,7 @@ def load_pickle(fp):
     with open(fp, 'rb') as f:
         return pickle.load(f)
 
+
 def store_attribute(dict_file,output_path):    
     with open(f'{output_path}/store_file.yaml', 'w') as file:
         documents = yaml.dump(dict_file, file)

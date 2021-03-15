@@ -1,6 +1,9 @@
 import pandas as pd
 # pd.options.mode.chained_assignment = None
+
 import re,os
+import pathlib
+
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from collections import Counter
@@ -36,7 +39,7 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
         raise ValueError("dataframe: Expecting a DataFrame or Series, got 'None'")
     
     if not isinstance(age_col,str):
-        errstr = f'The given type for age_col is {type(age_col).__name__}. Expected type is string'
+        errstr = f'The given type for age_col is {type(age_col).__name__}. Expected type is a string'
         raise TypeError(errstr)
         
     data = dataframe.copy()
@@ -50,7 +53,6 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
     data[prefix_name] = pd.cut(data[age_col], bins = [0,2,17,30,45,99], labels = bin_labels)
     data[prefix_name] = data[prefix_name].astype(str)
     return data
-
     
 def check_nan(dataframe=None, plot=False, verbose=True):
     
@@ -91,18 +93,19 @@ def check_nan(dataframe=None, plot=False, verbose=True):
     check_nan.df = df
 
 
+
 def create_schema_file(dataframe,target_column,id_column,file_name,save=True, verbose=True):
     """
     
     Writes a map from column name to column datatype to a YAML file for a
     given dataframe.
-    
+
     Parameters:
     ------------------------
     dataframe: DataFrame or name Series.
         Data set to perform operation on.
-        
-    target_column: the name of the age column in the dataset. A string is expected
+
+    target_column: the name of the target column in the dataset. A string is expected
         The column to perform the operation on.
         
     id_column: str
@@ -116,7 +119,10 @@ def create_schema_file(dataframe,target_column,id_column,file_name,save=True, ve
         
     verbose: Bool. Default is set to True
         display dataframe print statements.
-    
+
+    Output
+    -------
+        A schema file is created in the data directory
     """
     
     df = dataframe.copy()
@@ -194,6 +200,13 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
         The target attribute name. Not required for fixing, so it needs to be excluded.
         
     fix_method: Method of fixing outliers present in the data. mean or log_transformation. Default is 'mean'
+
+    n: integar
+        A value to determine whether there are multiple outliers in a record, which is highly dependent on the
+        number of features that are being checked. 
+    
+    fix_method: mean or log_transformation.
+
         One of the two methods that you deem fit to fix the outlier values present in the dataset.
 
     Returns:
@@ -261,6 +274,7 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
 
 
 def drop_uninformative_fields(dataframe):
+
     """
     Dropping fields that have only a single unique value or are all NaN, meaning
     that they are entirely uninformative.
