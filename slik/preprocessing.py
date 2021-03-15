@@ -1,8 +1,10 @@
 import pandas as pd
 # pd.options.mode.chained_assignment = None
 
+
 import re,os
 import pathlib
+
 
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -91,6 +93,7 @@ def check_nan(dataframe=None, plot=False, verbose=True):
     if verbose:
         display(df)
     check_nan.df = df
+
 
 
 
@@ -204,7 +207,7 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
     n: integar
         A value to determine whether there are multiple outliers in a record, which is highly dependent on the
         number of features that are being checked. 
-    
+
     fix_method: mean or log_transformation.
 
         One of the two methods that you deem fit to fix the outlier values present in the dataset.
@@ -276,9 +279,10 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
 def drop_uninformative_fields(dataframe):
 
     """
+
     Dropping fields that have only a single unique value or are all NaN, meaning
     that they are entirely uninformative.
-    
+
     """
     data = dataframe.copy()
     is_single = data.apply(lambda s: s.nunique()).le(1)
