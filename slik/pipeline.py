@@ -9,6 +9,8 @@ from sklearn.feature_extraction import FeatureHasher
 from sklearn.base import TransformerMixin
 from sklearn.model_selection import train_test_split
 import os,scipy,inspect
+import sklearn,warnings
+import re
 
 # To display multiple output from a single cell.
 # from IPython.core.interactiveshell import InteractiveShell
@@ -16,11 +18,14 @@ import os,scipy,inspect
 
 import pandas as pd
 from .loadfile import read_file
-from .preprocessing import identify_columns,preprocess
-from .utils import load_pickle,print_devider,store_pipeline
+from .preprocessing import identify_columns,preprocess,map_target
+from .utils import load_pickle,print_devider,store_pipeline, HiddenPrints
+from slik import plot_funcs as pf
 
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler, OneHotEncoder
+
 from sklearn.decomposition import PCA
+from imblearn.over_sampling import SMOTE
 from sklearn.compose import ColumnTransformer                   # to transform column of different types
 from sklearn.model_selection import train_test_split            
 from sklearn.linear_model import LogisticRegression
@@ -59,20 +64,34 @@ class DenseTransformer(TransformerMixin):
     
 
 def build_model(dataframe=None,target_column=None,numerical_transformer=None,categorical_transformer=None
-                ,pca=True,algorithm=None,grid_search=False,params=None,hashing=False,hash_size=500,
-                model_preprocessor_pipeline=None,**kwargs):
+                ,pca=False,algorithm=None,balance_data=False,
+                grid_search=False,params=None,hashing=False,hash_size=500,project_path=None,
+                **kwargs):
     
-    identify_columns(dataframe,target_column,**kwargs)
-   
-    if os.path.exists("./data/store_file.yaml"):
-        config = yaml.safe_load(open("./data/store_file.yaml"))
+#     algorithm = algorithm.copy()
+    data_path = os.path.join(project_path, 'data/')
+    try:
+        os.mkdir(data_path)
+    except:
+        pass
+    
+    identify_columns(dataframe,target_column,output_path=data_path,**kwargs)
+    
+    model_preprocessor_pipeline = os.path.join(project_path, 'model/')
+    try:
+        os.mkdir(model_preprocessor_pipeline)
+    except:
+        pass
+
+    if os.path.exists(f"{project_path}/data/metadata/store_file.yaml"):
+        config = yaml.safe_load(open(f"{project_path}/data/metadata/store_file.yaml"))
         numerical_attribute = config['num_feat']
         categorical_attribute = config['cat_feat']
         lower_categorical_attribute = config['lower_cat']
         hash_features = config['hash_feat']
         input_columns = config['input_columns']
     else:
-        raise ValueError("path: No file path /data/store_file.yaml found")
+        raise ValueError('path: No file found in f"{project_path}/data/metadata/"')
     
     if hashing:
         hash_transformer = Pipeline([('imputer', SimpleImputer(strategy='constant', fill_value='Missing')),
@@ -94,13 +113,26 @@ def build_model(dataframe=None,target_column=None,numerical_transformer=None,cat
     train_df = manage_columns(dataframe,columns=input_columns,select_columns=True)
     y = dataframe[target_column]
     
-    X_train, X_test, y_train, y_test = train_test_split(train_df, y,\
-                                                        stratify=y, test_size=0.25, random_state=0)
+    if balance_data:
+        oversample = SMOTE()
+        data_transformer.fit(train_df)
+        encoder = data_transformer.transform(train_df)
+        X, y = oversample.fit_resample(encoder,y)
+        train_df = X
+        X_train_copy = encoder
+        X_train, X_test, y_train, y_test = train_test_split(train_df, y,\
+                                                            stratify=y, test_size=0.20, random_state=0)
+        
+    else:
     
-    X_train_copy = X_train.copy()
-    data_transformer.fit(X_train_copy)
-    X_train_copy = data_transformer.transform(X_train_copy)
+        X_train, X_test, y_train, y_test = train_test_split(train_df, y,\
+                                                            stratify=y, test_size=0.20, random_state=0)
+
+        X_train_copy = X_train.copy()
+        data_transformer.fit(X_train_copy)
+        X_train_copy = data_transformer.transform(X_train_copy)
     
+         
     if pca:
         print_devider('Applying PCA to the data')
         if scipy.sparse.issparse(X_train_copy):
@@ -134,6 +166,8 @@ def build_model(dataframe=None,target_column=None,numerical_transformer=None,cat
     classifier = Pipeline(steps=[('preprocessor', preprocessor),
                       ('model', algorithm)])
     
+    exclusive_keyword = ['model','fit','hyperparameters']
+    
     if params:
         model_params = {}
         fit_params = {}
@@ -163,15 +197,15 @@ def build_model(dataframe=None,target_column=None,numerical_transformer=None,cat
         grid_search.fit(X_train, y_train)  # Semicolon to not print estimator in notebook
         # set config to diagram for visualizing the pipelines/composite estimator
             
-        if model_preprocessor_pipeline:
-            model_path = os.path.join(model_preprocessor_pipeline,f'{algorithm.__class__.__name__}.pkl')
-            store_pipeline(grid_search.best_estimator_,model_path)
+        
+        model_path = os.path.join(model_preprocessor_pipeline,f'{algorithm.__class__.__name__}.pkl')
+        store_pipeline(grid_search.best_estimator_,model_path)
             
         set_config(display='diagram')
         # Lets visualize the best estimator from grid search.
         output = grid_search.best_estimator_
         # saving pipeline as html format
-        with open('titanic_data_pipeline_estimator.html', 'w') as f:  
+        with open(f'{model_preprocessor_pipeline}/titanic_data_pipeline_estimator.html', 'w') as f:  
             f.write(estimator_html_repr(grid_search.best_estimator_))
             
     else:
@@ -204,20 +238,17 @@ def build_model(dataframe=None,target_column=None,numerical_transformer=None,cat
         else:
             classifier.set_params(**model_params)
             classifier.fit(X_train, y_train)
-
-        if model_preprocessor_pipeline:
-            try:
-                os.mkdir(model_preprocessor_pipeline)
-            except:
-                pass
-            model_path = os.path.join(model_preprocessor_pipeline,f'{algorithm.__class__.__name__}.pkl')
-            store_pipeline(classifier,model_path)
+            
+        model_path = os.path.join(model_preprocessor_pipeline,f'{algorithm.__class__.__name__}.pkl')
+        store_pipeline(classifier,model_path)
         
 #         set config to diagram for visualizing the pipelines/composite estimators
         set_config(display='diagram')
         output = classifier
-        with open('titanic_data_pipeline_estimator.html', 'w') as f:  
+        
+        with open(f'{model_preprocessor_pipeline}/titanic_data_pipeline_estimator.html', 'w') as f:  
             f.write(estimator_html_repr(classifier))
+        
             
 #     X_test = data_transformer.transform(X_test)        
     y_pred = output.predict(X_test)
@@ -225,28 +256,92 @@ def build_model(dataframe=None,target_column=None,numerical_transformer=None,cat
     print_devider('Metric Performance')
             
     met_perf = get_scores(y_test,y_pred)
+    
     print(f'\nMetric performance on test data\n{met_perf}\n\n')
-
+    print('\nconfusion matrix')
+    
+    print(confusion_matrix(y_test, y_pred))
+    
     return output
 
 
     
 def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=True,
-                        verbose=True,processed_data_path=None,
-                        numerical_transformer=None,categorical_transformer=None,
-                       select_columns=None,pca=True,algorithm=None,grid_search=False,
-                        hashing=False,params=None,hash_size=500,model_preprocessor_pipeline=None,
+                        project_path=None,numerical_transformer=None,categorical_transformer=None,
+                        select_columns=None,pca=True,algorithm=None,grid_search=False,verbose=True,
+                        hashing=False,params=None,hash_size=500,
                         **kwargs):
     """
-
-     Function contains the pipeline methods to be used.
+    
+     Build production ready pipelines efficiently. Specify numerical and categorical transformer.
+     Function also helps to clean your data, reduce dimensionality and handle sparse categorical 
+     features. 
+     
+     Parameters:
+    ------------------------
+     data: str/ pandas dataframe
+         Data path or Pandas dataframe.
+         
+     target_column: str
+         target column name
+         
+     id_column: str
+         id column name
+         
+     clean_data: Bool, default is True
+         handle missing value, outlier treatment, feature engineering
+         
+     project_path: str/file path
+         file path to processed data
+         
+     numerical_transformer: sklearn pipeline
+         numerical transformer to transform numerical attributes
+         
+     categorical_transformer: sklearn pipeline
+         categorical transformer to transform numerical attributes
+         
+     select_columns: list
+         columns to be passed/loaded as a dataframe 
+         
+     pca: Bool, default is True
+         reduce feature dimensionality
+         
+     algorithm: Default is None
+         sklearn estimator
+         
+     grid_search: Bool. default is False
+         select best parameter after hyperparameter tuning
+         
+     hashing: Bool. default is False
+         handle sparse categorical features
+         
+     params: dict.
+         dictionary of keyword arguments.  
+         
+     verbose: Bool, default is True
+         display dataframe print statement
+         
+     hash_size: int, default is 500
+         size for hashing 
+         
+    Returns:
+    ------------------------  
+    Output:
+        sklearn pipeline estimator
 
     """
     
-    if processed_data_path is None:
-        raise ValueError("processed_data_path: Expecting a file path and got None")
+    if project_path is None:
+        raise ValueError("project_path: Expecting a file path and got None")
         
-    PROCESSED_TRAIN_PATH = os.path.join(processed_data_path, 'train_data.pkl')
+    data_path = os.path.join(project_path, 'data')
+    
+    try:
+        os.mkdir(data_path)
+    except:
+        pass
+    
+    PROCESSED_TRAIN_PATH = os.path.join(data_path, 'train_data.pkl')
     
     if os.path.exists(PROCESSED_TRAIN_PATH):
         print_devider(f'Loading clean data')
@@ -272,10 +367,10 @@ def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=T
     if algorithm is None:
         raise ValueError("algorithm: Expecting a sklearn algorithm , got None")
         
-    if os.path.exists(processed_data_path):
+    if os.path.exists(project_path):
         pass
     else:
-        os.mkdir(processed_data_path)
+        os.mkdir(project_path)
         
     if not isinstance(target_column,str):
         errstr = f'The given type for target_column is {type(target_column).__name__}. Expected type is str'
@@ -301,43 +396,250 @@ def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=T
                 else:
                     train_df = read_file(data, input_col= select_columns, **kwargs)
                     print(f'\nTarget column is {target_column}. Attribute in target column incldes:\n{list(train_df[target_column].unique())}')
+
         
-        
-    if clean_data:    
+    if clean_data:
+        if os.path.exists(PROCESSED_TRAIN_PATH):
+            pass
+        else:
+            if isinstance(data, pd.DataFrame):
+                train_df = data
+                print(f'\nTarget column is {target_column}. Attribute in target column incldes:\n{list(train_df[target_column].unique())}')
+                if select_columns:
+                    train_df = manage_columns(train_df,columns=select_columns,select_columns=True)
+            else:
+                train_df = read_file(data, input_col= select_columns, **kwargs)
+                print(f'\nTarget column is {target_column}. Attribute in target column incldes:\n{list(train_df[target_column].unique())}')
+                    
         preprocess(data=train_df,target_column=target_column,train=True,verbose=verbose,
-                           processed_data_path=processed_data_path,select_columns=select_columns,**kwargs)
+                           project_path=project_path,select_columns=select_columns,**kwargs)
         train_df = load_pickle(PROCESSED_TRAIN_PATH)
         target_column = f'transformed_{target_column}'
     
     output = build_model(dataframe = train_df,target_column=target_column,numerical_transformer=numerical_transformer,\
                         categorical_transformer=categorical_transformer,pca=pca,algorithm=algorithm,
                         grid_search=grid_search,params=params,id_column=id_column,verbose=verbose,hashing=hashing,
-                        model_preprocessor_pipeline=model_preprocessor_pipeline,hash_size=hash_size)
+                        hash_size=hash_size,project_path=project_path)
     
     return output
     
 
-def pipeline_transform(data=None,select_columns=None,processed_data_path=None):
-    preprocess(data=data,train=False,verbose=False,processed_data_path=processed_data_path,\
-                  task='classification',select_columns=select_columns)
+def pipeline_transform_predict(data=None,select_columns=None,project_path=None,model_path=None):
+    """
+     Transform dataframe based on slik build data pipeline function. Invoke model on 
+     transformed data and return predictions
+     
+     Parameters:
+    ------------------------
+     data: str/ pandas dataframe
+         Data path or Pandas dataframe.
+         
+     select_columns: list
+         columns to be passed/loaded as a dataframe
+     
+     project_path: str/file path
+         path to project
+         
+     model_path: str/file path
+         file path to model object
+         
+    Returns:
+    ------------------------  
+    results: numpy array
+        list of numpy array predictions
+
+    """
+    preprocess(data=data,train=False,verbose=False,project_path=project_path,select_columns=select_columns)
     
-    if os.path.exists("./data/store_file.yaml"):
-        config = yaml.safe_load(open("./data/store_file.yaml"))
+    if os.path.exists(f"{project_path}/data/metadata/store_file.yaml"):
+        config = yaml.safe_load(open(f"{project_path}/data/metadata/store_file.yaml"))
         input_columns = config['input_columns']
     
     else:
-        raise ValueError("path: No file path /data/store_file.yaml found")
+        raise ValueError('path: No file found in f"{project_path}/data/metadata/"')
         
     if select_columns: 
         for columns in select_columns:
             if columns in input_columns:
                 pass
             else:
-                raise ValueError(f"{column} is not present in the trained model.")
+                raise ValueError(f"{column} is not present in the training data.")
                 
-    data = load_pickle('./data/validation_data.pkl')
+    data = load_pickle(f'{project_path}/data/validation_data.pkl')
     data = data.reindex(columns = input_columns)
-    return data
+    MODEL = load_pickle(model_path)
+    results = MODEL.predict(data)
+    
+    return results
+
+
+def get_feature_names(column_transformer):
+    """
+    Get feature names from all transformers.
+    
+    Returns
+    -------
+    feature_names : list of strings
+        Names of the features produced by transform.
+    """
+    
+    # Turn loopkup into function for better handling with pipeline later
+    def get_names(trans):
+        # >> Original get_feature_names() method
+        if trans == 'drop' or (
+                hasattr(column, '__len__') and not len(column)):
+            return []
+        if trans == 'passthrough':
+            if hasattr(column_transformer, '_df_columns'):
+                if ((not isinstance(column, slice))
+                        and all(isinstance(col, str) for col in column)):
+                    return column
+                else:
+                    return column_transformer._df_columns[column]
+            else:
+                indices = np.arange(column_transformer._n_features)
+                return ['x%d' % i for i in indices[column]]
+        if not hasattr(trans, 'get_feature_names'):
+        # >>> Change: Return input column names if no method avaiable
+            # Turn error into a warning
+            warnings.warn("Transformer %s (type %s) does not "
+                                 "provide get_feature_names. "
+                                 "Will return input column names if available"
+                                 % (str(name), type(trans).__name__))
+            # For transformers without a get_features_names method, use the input
+            # names to the column transformer
+            if column is None:
+                return []
+            else:
+                return [name + "__" + f for f in column]
+
+        return [name + "__" + f for f in trans.get_feature_names()]
+    
+    ### Start of processing
+    feature_names = []
+    
+    # Allow transformers to be pipelines. Pipeline steps are named differently, so preprocessing is needed
+    if type(column_transformer) == sklearn.pipeline.Pipeline:
+        l_transformers = [(name, trans, None, None) for step, name, trans in column_transformer._iter()]
+    else:
+        # For column transformers, follow the original method
+        l_transformers = list(column_transformer._iter(fitted=True))
+    
+    
+    for name, trans, column, _ in l_transformers: 
+        if type(trans) == sklearn.pipeline.Pipeline:
+            # Recursive call on pipeline
+            _names = get_feature_names(trans)
+            # if pipeline has no transformer that returns names
+            if len(_names)==0:
+                _names = [name + "__" + f for f in column]
+            feature_names.extend(_names)
+        else:
+            feature_names.extend(get_names(trans))
+    
+    return feature_names
+
+
+def log_plot(args, plot_func, fp):
+    if not isinstance(args, (tuple)):
+        args = (args,)
+
+    plot_func(*args, fp)
+    print(f'Logged {fp}')
+    
+    
+def evaluate_model(model_path=None,eval_data=None,select_columns=None,project_path=None):
+    """
+     Evaluate model based on slik build data pipeline function. Invoke model on 
+     transformed data and return evaluation plots in a file path.
+     
+     Parameters:
+    ------------------------
+     model_path: str/file path
+         file path to model object
+         
+     eval_data: str/ pandas dataframe
+         Data path or Pandas dataframe.
+         
+     select_columns: list
+         columns to be passed/loaded as a dataframe
+     
+     project_path: str/file path
+         path to project        
+
+    """
+    
+    if os.path.exists(f"{project_path}/data/metadata/store_file.yaml"):
+        config = yaml.safe_load(open(f"{project_path}/data/metadata/store_file.yaml"))
+        target_column = config['target_column']
+        input_columns = config['input_columns']
+        
+    else:
+        raise ValueError(f"{project_path}/data/metadata/store_file.yaml not found")
+        
+    target_column = target_column.replace('transformed_','')
+    
+    if eval_data is not None:
+        if isinstance(eval_data, pd.DataFrame):
+            eval_data = eval_data
+            if select_columns:
+                eval_data = manage_columns(eval_data,columns=select_columns,select_columns=True)
+        else:
+            eval_data = read_file(eval_data, input_col= select_columns,**kwargs)
+        
+    with HiddenPrints():    
+        preprocess(data=eval_data,train=False,verbose=False,project_path=project_path,select_columns=select_columns)
+        eval_data = map_target(eval_data,target_column)
+        y_test = eval_data['transformed_'+target_column]
+        data = load_pickle(f'{project_path}/data/validation_data.pkl')
+        data = data.reindex(columns = input_columns)
+        estimator = load_pickle(model_path)
+        
+    y_pred = estimator.predict(data)
+    y_proba = estimator.predict_proba(data)[:, 1]
+    scores_valid = get_scores(y_test,y_pred)
+    print_devider('Metric Performance')
+    print(scores_valid)
+    
+    plot_path = os.path.join(project_path, 'plots/')
+    try:
+        os.mkdir(plot_path)
+    except:
+        pass
+    
+    from collections import defaultdict
+    scores = defaultdict(int)
+    print_devider('Saving Plots')
+    # record scores
+    for k, v in scores_valid.items():
+        scores[k] += v 
+    log_plot(scores, pf.scores, f'{plot_path}scores.png')
+
+    # feature importance
+    features = get_feature_names(estimator[0][0])
+    feature_list = []
+    for feat in features:
+        prefix = re.search(r'(.*?)__', feat.lower()).group(0)
+        attr = feat.replace(prefix,'')
+        feature_list.append(attr)
+#     features = eval_data.columns
+    feature_importances_gain = estimator[1].get_feature_importance()
+    log_plot((pd.Index(feature_list), feature_importances_gain, 'Feature Importance'),
+             pf.feature_importance, f'{plot_path}feature_importance.png')
+
+    # confusion matrix
+    cm = confusion_matrix(y_test, y_pred)
+    log_plot(cm, pf.confusion_matrix, f'{plot_path}confusion_matrix.png')
+
+    # roc curve
+    fpr, tpr, _ = roc_curve(y_test, y_proba)
+    roc_auc = roc_auc_score(y_test, y_pred)
+    log_plot((fpr, tpr, roc_auc), pf.roc_curve, f'{plot_path}roc_curve.png')
+
+    # precision-recall curve
+    pre, rec, _ = precision_recall_curve(y_test, y_proba)
+    pr_auc = average_precision_score(y_test, y_pred)
+    log_plot((pre, rec, pr_auc), pf.pr_curve, f'{plot_path}pr_curve.png')
     
 
 def train_test(dataframe,target_column,test_size,**kwargs):
