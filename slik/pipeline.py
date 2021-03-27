@@ -463,7 +463,7 @@ def pipeline_transform_predict(data=None,select_columns=None,project_path=None,m
             if columns in input_columns:
                 pass
             else:
-                raise ValueError(f"{column} is not present in the training data.")
+                raise ValueError(f"{columns} is not present in the training data.")
                 
     data = load_pickle(f'{project_path}/data/validation_data.pkl')
     data = data.reindex(columns = input_columns)
