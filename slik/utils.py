@@ -12,6 +12,7 @@ def store_attribute(dict_file,output_path):
     with open(f'{output_path}/store_file.yaml', 'w') as file:
         documents = yaml.dump(dict_file, file)
 
+
 def store_pipeline(pipeline_object, pipeline_path):
     # save the model to disk
     pickle.dump(pipeline_object, open(pipeline_path, 'wb'))
