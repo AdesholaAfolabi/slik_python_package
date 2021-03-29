@@ -33,11 +33,11 @@ beginners, and reduce boiler plate for common tasks.
 
 This library is in very active development, so it's not recommended for production use.
 
-Development at `github.com/dabl/dabl <https://github.com/dabl/dabl>`_.
+Development at `github.com/Sensei-akin/slik_python_package/staging/ <https://github.com/Sensei-akin/slik_python_package/tree/staging/>`_.
 
 Examples
 --------
-A minimum example of using dabl for classification is:
+A minimum example of using slik for classification is:
 
     >>> import slik
     >>> from sklearn.model_selection import train_test_split
