@@ -431,17 +431,17 @@ def pipeline_transform_predict(data=None,select_columns=None,project_path=None,m
      
      Parameters:
     ------------------------
-     data: str/ pandas dataframe
-         Data path or Pandas dataframe.
+    data: str/ pandas dataframe
+        Data path or Pandas dataframe.
          
-     select_columns: list
-         columns to be passed/loaded as a dataframe
+    select_columns: list
+        columns to be passed/loaded as a dataframe
      
-     project_path: str/file path
-         path to project
-         
-     model_path: str/file path
-         file path to model object
+    project_path: str/file path
+        path to project
+        
+    model_path: str/file path
+        file path to model object
          
     Returns:
     ------------------------  
