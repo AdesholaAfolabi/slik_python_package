@@ -16,7 +16,7 @@ Welcome to Slik's documentation!
 Data scientists struggle to prepare their data for building machine learning models and all machine learning
 projects require data wrangling, data preprocessing, feature engineering which takes about 80% of the model building process.
 
-Slik is a data to pre-modeling tool that helps data scientists navigate the issues of basic data wrangling
+Slik is a data to modeling tool that helps data scientists navigate the issues of basic data wrangling
 and preprocessing steps.  The idea behind Slik is to jump-start supervised learning projects.
 
 Slik has several tools that makes it easy to load data of any format, clean and inspect your data.
@@ -57,9 +57,9 @@ within several seconds with an accuracy of 0.98.
 
 .. toctree::
    :maxdepth: 3
-   :caption: Contents:
+   :caption: Contents
 
-   Installing Slik <README.md>
+   installs
 
 .. toctree::
    :maxdepth: 2

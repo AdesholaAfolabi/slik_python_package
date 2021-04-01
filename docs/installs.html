@@ -84,12 +84,13 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Contents</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installing Slik</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#install-in-existing-environment"><strong>Install in existing environment</strong></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#install-in-a-new-virtual-environment"><strong>Install in a new virtual environment</strong></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#what-is-this-repository-for">What is this repository for?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-in-existing-environment">Install in existing environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-in-a-new-virtual-environment">Install in a new virtual environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#test-your-installation">Test your installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-is-this-repository-for">What is this repository for</a></li>
 </ul>
 </li>
 </ul>
@@ -154,7 +155,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/README.md.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/installs.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -169,53 +170,53 @@
             
   <div class="section" id="installing-slik">
 <h1>Installing Slik<a class="headerlink" href="#installing-slik" title="Permalink to this headline">¶</a></h1>
-<p>Slik is available as a Python package for Linux, MacOS and Windows, and can be installed like any other Python package. You can visit our <a class="reference external" href="https://github.com/risenW/datasist">GitHub repository </a>or get the latest version from <a class="reference external" href="https://pypi.org/project/slik/">PyPI</a></p>
+<p>Slik is available as a Python package for Linux, MacOS and Windows, and can be installed like any other Python package. You can visit our
+<a class="reference external" href="https://github.com/Sensei-akin/slik_python_package/tree/staging/">GitHub repository</a> or get the latest version from
+<a class="reference external" href="https://pypi.org/project/slik/">PyPI</a></p>
 <div class="section" id="install-in-existing-environment">
-<h2><strong>Install in existing environment</strong><a class="headerlink" href="#install-in-existing-environment" title="Permalink to this headline">¶</a></h2>
+<h2>Install in existing environment<a class="headerlink" href="#install-in-existing-environment" title="Permalink to this headline">¶</a></h2>
 <p>If you have an existing Python environment activated, you can install slik with the command:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>$ pip install slik
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; $ pip install slik
 </pre></div>
 </div>
 </div>
 <div class="section" id="install-in-a-new-virtual-environment">
-<h2><strong>Install in a new virtual environment</strong><a class="headerlink" href="#install-in-a-new-virtual-environment" title="Permalink to this headline">¶</a></h2>
-<p>To install slik ****in a virtual environment, you can use the Anaconda package.</p>
+<h2>Install in a new virtual environment<a class="headerlink" href="#install-in-a-new-virtual-environment" title="Permalink to this headline">¶</a></h2>
+<p>To install slik in a virtual environment, you can use the Anaconda package.</p>
 <p>You must have  <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">Miniconda</a> or <a class="reference external" href="https://docs.anaconda.com/anaconda/">Anaconda Distribution</a> installed.</p>
 <p>Confirm you have Anaconda installed:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>$ conda --version
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; $ conda --version
 </pre></div>
 </div>
 <p>Create new virtual environment and install Python 3.5 and above:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n yourenvname python=3.7 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; $ conda create -n yourenvname python=3.7
 </pre></div>
 </div>
 <p>Activate your environment:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>$ source activate yourenvname
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; $ source activate yourenvname
 </pre></div>
 </div>
-<p>Install dslik and other packages you need for your project</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>$ pip install slik
+<p>Install slik and other packages you need for your project</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; $ pip install slik
 </pre></div>
 </div>
-<p>Test your installation:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>$ python
-Python 3.7.5 (default, Oct 25 2019, 15:51:11) 
-[GCC 7.3.0] :: Anaconda, Inc. on linux
+</div>
+<div class="section" id="test-your-installation">
+<h2>Test your installation<a class="headerlink" href="#test-your-installation" title="Permalink to this headline">¶</a></h2>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; $ python
+    Python 3.7.5 (default, Oct 25 2019, 15:51:11)
+    [GCC 7.3.0] :: Anaconda, Inc. on linux
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
-&gt;&gt;&gt; import slik
-&gt;&gt;&gt; 
+import slik
 </pre></div>
 </div>
 </div>
 <div class="section" id="what-is-this-repository-for">
-<h2>What is this repository for?<a class="headerlink" href="#what-is-this-repository-for" title="Permalink to this headline">¶</a></h2>
+<h2>What is this repository for<a class="headerlink" href="#what-is-this-repository-for" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Quick summary: The application employs the modular style of putting the applications together.</p></li>
 <li><p>Version: 1.0</p></li>
-<li><p><a class="reference external" href="https://bitbucket.org/tutorials/markdowndemo">Learn Markdown</a></p></li>
-</ul>
-<p>“README.md” 27L, 1205C</p>
-<ul class="simple">
+<li><p>Learn Markdown (<a class="reference external" href="https://bitbucket.org/tutorials/markdowndemo">https://bitbucket.org/tutorials/markdowndemo</a>)</p></li>
 <li><p>Repo owner: Adeshola Afolabi, Komolafe Akinwande</p></li>
 </ul>
 </div>
