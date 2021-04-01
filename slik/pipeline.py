@@ -34,6 +34,15 @@ from sklearn import set_config                      # to change the display
 from sklearn.utils import estimator_html_repr       # to save the diagram into HTML format
 import yaml
 import numpy as np
+from sklearn.metrics import (accuracy_score,
+                             precision_score,
+                             recall_score,
+                             f1_score,
+                             confusion_matrix,
+                             roc_curve,
+                             roc_auc_score,
+                             precision_recall_curve,
+                             average_precision_score)
 
 class DenseTransformer(TransformerMixin):
     """
