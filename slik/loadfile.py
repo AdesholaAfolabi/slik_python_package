@@ -2,7 +2,6 @@ import pandas as pd
 
 def read_file(file_path,input_col=None,**kwargs):
     """
-        
     This funtion takes in a file path - CSV, excel or parquet and reads the data
     based on the input columns specified. Can only load file at a time. 
     
@@ -15,9 +14,9 @@ def read_file(file_path,input_col=None,**kwargs):
     **kwargs:
         use keyword arguements from pandas read file method
         
-    Returns:
+    Returns
     -----------
-        pandas Dataframe
+    pandas Dataframe
         
     """
         

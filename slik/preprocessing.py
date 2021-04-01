@@ -22,8 +22,9 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
 
     '''
     The age attribute is binned into 5 categories (baby/toddler, child, young adult, mid age and elderly).
-    Parameters:
-    ------------------------
+
+    Parameters
+    -----------
     dataframe: DataFrame or name Series.
         Data set to perform operation on.
         
@@ -32,9 +33,10 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
         
     add_prefix: Bool. Default is set to True
         add prefix to the column name. 
+
     Returns
     -------
-        Dataframe with binned age attribute
+    Dataframe with binned age attribute
     '''
     
     if dataframe is None:
@@ -60,19 +62,20 @@ def check_nan(dataframe=None, plot=False, verbose=True):
     
     '''
     Display missing values as a pandas dataframe.
+
     Parameters
     ----------
-        data: DataFrame or named Series
+    data: DataFrame or named Series
+    
+    plot: bool, Default False
+        Plots missing values in dataset as a heatmap
         
-        plot: bool, Default False
-            Plots missing values in dataset as a heatmap
-            
-        verbose: bool, Default False
+    verbose: bool, Default False
             
     Returns
     -------
-        Matplotlib Figure:
-            Heatmap plot of missing values
+    Matplotlib Figure:
+        Heatmap plot of missing values
     '''
     
     if dataframe is None:
@@ -103,8 +106,8 @@ def create_schema_file(dataframe,target_column,id_column,file_name,save=True, ve
     Writes a map from column name to column datatype to a YAML file for a
     given dataframe.
 
-    Parameters:
-    ------------------------
+    Parameters
+    ------------
     dataframe: DataFrame or name Series.
         Data set to perform operation on.
 
@@ -125,7 +128,7 @@ def create_schema_file(dataframe,target_column,id_column,file_name,save=True, ve
 
     Output
     -------
-        A schema file is created in the data directory
+    A schema file is created in the data directory
     """
     
     df = dataframe.copy()
@@ -167,8 +170,8 @@ def check_datefield(dataframe=None, column=None):
     '''
     Check if a column is a datefield and Returns a Bool.
     
-    Parameters:
-    ------------------------
+    Parameters
+    -----------
     dataframe: DataFrame or name Series.
         Data set to perform operation on.
         
@@ -191,8 +194,9 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
         
     '''
     Detect outliers present in the numerical features and fix the outliers present.
-    Parameters:
-    ------------------------
+
+    Parameters
+    -----------
     dataframe: DataFrame or name Series.
         Data set to perform operation on.
         
@@ -212,7 +216,7 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
 
         One of the two methods that you deem fit to fix the outlier values present in the dataset.
 
-    Returns:
+    Returns
     -------
     Dataframe:
         dataframe after removing outliers.
@@ -296,19 +300,18 @@ def drop_uninformative_fields(dataframe):
 def drop_duplicate(dataframe=None,columns=None,method=None):
     '''
     Drop duplicate values across rows, columns in the dataframe.
-    Parameters:
-    ------------------------
-    
-    
+
+    Parameters
+    -----------
     dataframe: DataFrame or name Series.
         Data set to perform operation on.
-        
     columns: List/String.
         list of column names 
     drop_duplicates: 'rows' or 'columns', default is None
-    
-        Drop duplicate values across rows, columns. If columns, a list is required to be passed into the columns param
-    Returns:
+        Drop duplicate values across rows, columns. If columns, a list is required to be 
+        passed into the columns param
+
+    Returns
     -------
     Dataframe:
         dataframe after dropping duplicates.
@@ -338,24 +341,24 @@ def manage_columns(dataframe=None,columns=None, select_columns=False, drop_colum
     
     Parameters
     ----------
-        data: DataFrame or named Series
+    data: DataFrame or named Series
+    
+    columns: list of features you want to drop
+    
+    select_columns: Boolean True or False, default is False
+        The columns you want to select from your dataframe. Requires a list to be passed into the columns param
         
-        columns: list of features you want to drop
+    drop_columns: Boolean True or False, default is False
+        The columns you want to drop from your dataset. Requires a list to be passed into the columns param
         
-        select_columns: Boolean True or False, default is False
-            The columns you want to select from your dataframe. Requires a list to be passed into the columns param
-            
-        drop_columns: Boolean True or False, default is False
-            The columns you want to drop from your dataset. Requires a list to be passed into the columns param
-            
-        drop_duplicates: 'rows' or 'columns', default is None
-            Drop duplicate values across rows, columns. If columns, a list is required to be passed into the columns param
+    drop_duplicates: 'rows' or 'columns', default is None
+        Drop duplicate values across rows, columns. If columns, a list is required to be passed into the columns param
     
     Returns
     -------
-        Pandas Dataframe:
-            A new dataframe after dropping/selecting/removing duplicate columns or the original 
-            dataframe if params are left as default
+    Pandas Dataframe:
+        A new dataframe after dropping/selecting/removing duplicate columns or the original 
+        dataframe if params are left as default
     '''
     
     if dataframe is None:
@@ -391,7 +394,8 @@ def manage_columns(dataframe=None,columns=None, select_columns=False, drop_colum
 def featurize_datetime(dataframe=None, column_name=None, drop=True):
     '''
     Featurize datetime in the dataset to create new fields 
-    Parameters:
+
+    Parameters
     ------------------------
     dataframe: DataFrame or name Series.
         Data set to perform operation on.
@@ -401,6 +405,7 @@ def featurize_datetime(dataframe=None, column_name=None, drop=True):
         
     drop: Bool. Default is set to True
         drop original datetime column. 
+
     Returns
     -------
         Dataframe with new datetime fields
@@ -431,14 +436,16 @@ def get_attributes(data=None,target_column=None):
     
     '''
     Returns the categorical features and Numerical features in a pandas dataframe
-    Parameters:
+
+    Parameters
     -----------
-        data: DataFrame or named Series
-            Data set to perform operation on.
-            
-        target_column: str
-            Label or Target column
-    Returns:
+    data: DataFrame or named Series
+        Data set to perform operation on.
+        
+    target_column: str
+        Label or Target column
+
+    Returns
     -------
         List
             A list of all the categorical features and numerical features in a dataset.
@@ -466,27 +473,27 @@ def get_attributes(data=None,target_column=None):
 def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=100, verbose=True, output_path=None):
     
     """
-        Identifies numerical attributes ,categorical attributes with sparse features 
-        and categorical attributes with lower features present in the data and saves in a yaml file.
+    Identifies numerical attributes ,categorical attributes with sparse features 
+    and categorical attributes with lower features present in the data and saves in a yaml file.
         
-     Parameters:
+    Parameters
     -----------
-        dataframe: DataFrame or named Series 
+    dataframe: DataFrame or named Series 
+    
+    target_column: str
+        Label or Target column.
         
-        target_column: str
-            Label or Target column.
-            
-        id_column: str
-            unique identifier column.
-            
-        high_dim: int, default 100
-            Integer to identify categorical attributes greater than 100 features
-            
-        verbose: Bool, default=True
-            display print statement
-            
-        output_path: str
-            path to where the yaml file is saved.   
+    id_column: str
+        unique identifier column.
+        
+    high_dim: int, default 100
+        Integer to identify categorical attributes greater than 100 features
+        
+    verbose: Bool, default=True
+        display print statement
+        
+    output_path: str
+        path to where the yaml file is saved.   
     """
     if dataframe is None:
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
@@ -563,8 +570,9 @@ def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
     """
     Handle missing values present in pandas dataframe. Outliers are treated before handling \
     missing values.
-    Args:
-    ------------------------
+
+    Parameters
+    -----------
     data: DataFrame or name Series.
         Data set to perform operation on.
         
@@ -650,6 +658,7 @@ def map_column(dataframe=None,column_name=None,items=None,add_prefix=True):
     
     '''
     Map values in  a pandas dataframe column with a dict.
+
     Parameters
     ----------
         data: DataFrame or named Series
@@ -699,23 +708,24 @@ def map_target(dataframe=None,target_column=None,add_prefix=True,drop=False):
     
     '''
     Map target column in  a pandas dataframe column with a dict.
+
     Parameters
     ----------
-        data: DataFrame or named Series
+    data: DataFrame or named Series
+    
+    column_name: str
+        Name of pandas dataframe column to be mapped
         
-        column_name: str
-            Name of pandas dataframe column to be mapped
-            
-        add_prefix: Bool. Default is True
-            Include a prefix of the target column in the dataset
-            
-        drop: Bool. Default is True
-            drop original target column name
+    add_prefix: Bool. Default is True
+        Include a prefix of the target column in the dataset
+        
+    drop: Bool. Default is True
+        drop original target column name
     
     Returns
     -------
-        Pandas Dataframe:
-            A new dataframe with mapped target column
+    Pandas Dataframe:
+        A new dataframe with mapped target column
     '''
     
     if dataframe is None:
@@ -832,26 +842,26 @@ def preprocess(data=None,target_column=None,train=False,select_columns=None,\
     
     Parameters
     ----------
-        data: DataFrame or named Series
-            Dataframe or dath path to the data
-            
-        target_column: String
-            Name of pandas dataframe target column
-            
-        train: Bool, default is True
-            
-        select_columns: List
-            List of columns to be used
-            
-        project_path: Str
-            Path to where the preprocessed data will be stored
-            
-        verbose:Bool. Default is  True
+    data: DataFrame or named Series
+        Dataframe or dath path to the data
+        
+    target_column: String
+        Name of pandas dataframe target column
+        
+    train: Bool, default is True
+        
+    select_columns: List
+        List of columns to be used
+        
+    project_path: Str
+        Path to where the preprocessed data will be stored
+        
+    verbose:Bool. Default is  True
     
     Returns
     -------
-        Pandas Dataframe:
-            Returns a clean dataframe in the filepath
+    Pandas Dataframe:
+        Returns a clean dataframe in the filepath
     '''
     
     if data is None:

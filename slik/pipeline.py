@@ -19,7 +19,7 @@ import re
 import pandas as pd
 from .loadfile import read_file
 from .preprocessing import identify_columns,preprocess,map_target
-from .utils import load_pickle,print_devider,store_pipeline, HiddenPrints
+from .utils import load_pickle,print_devider,store_pipeline, HiddenPrints, get_scores
 from slik import plot_funcs as pf
 
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler, OneHotEncoder
@@ -34,28 +34,15 @@ from sklearn import set_config                      # to change the display
 from sklearn.utils import estimator_html_repr       # to save the diagram into HTML format
 import yaml
 import numpy as np
-from sklearn.metrics import (accuracy_score,
-                             precision_score,
-                             recall_score,
-                             f1_score,
-                             confusion_matrix,
-                             roc_curve,
-                             roc_auc_score,
-                             precision_recall_curve,
-                             average_precision_score)
-
-
-def get_scores(y_true, y_pred):
-    
-    return {
-      'accuracy': accuracy_score(y_true, y_pred),
-      'precision': precision_score(y_true, y_pred),
-      'recall': recall_score(y_true, y_pred),
-      'f1': f1_score(y_true, y_pred),
-    }
-
 
 class DenseTransformer(TransformerMixin):
+    """
+    Transform sparse matrix to a dense matrix. 
+
+    Returns
+    ----------
+    A transformer class
+    """
 
     def fit(self, X, y=None, **fit_params):
         return self
@@ -273,60 +260,59 @@ def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=T
                         hashing=False,params=None,hash_size=500,
                         **kwargs):
     """
+    Build production ready pipelines efficiently. Specify numerical and categorical transformer.
+    Function also helps to clean your data, reduce dimensionality and handle sparse categorical 
+    features. 
     
-     Build production ready pipelines efficiently. Specify numerical and categorical transformer.
-     Function also helps to clean your data, reduce dimensionality and handle sparse categorical 
-     features. 
-     
-     Parameters:
-    ------------------------
-     data: str/ pandas dataframe
-         Data path or Pandas dataframe.
+    Parameters
+    ------------
+    data: str/ pandas dataframe
+        Data path or Pandas dataframe.
+        
+    target_column: str
+        target column name
+        
+    id_column: str
+        id column name
+        
+    clean_data: Bool, default is True
+        handle missing value, outlier treatment, feature engineering
+        
+    project_path: str/file path
+        file path to processed data
+        
+    numerical_transformer: sklearn pipeline
+        numerical transformer to transform numerical attributes
+        
+    categorical_transformer: sklearn pipeline
+        categorical transformer to transform numerical attributes
+        
+    select_columns: list
+        columns to be passed/loaded as a dataframe 
+        
+    pca: Bool, default is True
+        reduce feature dimensionality
+        
+    algorithm: Default is None
+        sklearn estimator
+        
+    grid_search: Bool. default is False
+        select best parameter after hyperparameter tuning
+        
+    hashing: Bool. default is False
+        handle sparse categorical features
+        
+    params: dict.
+        dictionary of keyword arguments.  
+        
+    verbose: Bool, default is True
+        display dataframe print statement
+        
+    hash_size: int, default is 500
+        size for hashing 
          
-     target_column: str
-         target column name
-         
-     id_column: str
-         id column name
-         
-     clean_data: Bool, default is True
-         handle missing value, outlier treatment, feature engineering
-         
-     project_path: str/file path
-         file path to processed data
-         
-     numerical_transformer: sklearn pipeline
-         numerical transformer to transform numerical attributes
-         
-     categorical_transformer: sklearn pipeline
-         categorical transformer to transform numerical attributes
-         
-     select_columns: list
-         columns to be passed/loaded as a dataframe 
-         
-     pca: Bool, default is True
-         reduce feature dimensionality
-         
-     algorithm: Default is None
-         sklearn estimator
-         
-     grid_search: Bool. default is False
-         select best parameter after hyperparameter tuning
-         
-     hashing: Bool. default is False
-         handle sparse categorical features
-         
-     params: dict.
-         dictionary of keyword arguments.  
-         
-     verbose: Bool, default is True
-         display dataframe print statement
-         
-     hash_size: int, default is 500
-         size for hashing 
-         
-    Returns:
-    ------------------------  
+    Returns
+    ---------
     Output:
         sklearn pipeline estimator
 
@@ -427,25 +413,25 @@ def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=T
 
 def pipeline_transform_predict(data=None,select_columns=None,project_path=None,model_path=None):
     """
-     Transform dataframe based on slik build data pipeline function. Invoke model on 
-     transformed data and return predictions
-     
-     Parameters:
-    ------------------------
+    Transform dataframe based on slik build data pipeline function. Invoke model on 
+    transformed data and return predictions
+        
+    Parameters
+    -----------
     data: str/ pandas dataframe
         Data path or Pandas dataframe.
-         
+            
     select_columns: list
         columns to be passed/loaded as a dataframe
-     
+        
     project_path: str/file path
         path to project
         
     model_path: str/file path
         file path to model object
          
-    Returns:
-    ------------------------  
+    Returns
+    --------- 
     results: numpy array
         list of numpy array predictions
 
@@ -551,22 +537,22 @@ def log_plot(args, plot_func, fp):
     
 def evaluate_model(model_path=None,eval_data=None,select_columns=None,project_path=None):
     """
-     Evaluate model based on slik build data pipeline function. Invoke model on 
-     transformed data and return evaluation plots in a file path.
-     
-     Parameters:
-    ------------------------
-     model_path: str/file path
-         file path to model object
-         
-     eval_data: str/ pandas dataframe
-         Data path or Pandas dataframe.
-         
-     select_columns: list
-         columns to be passed/loaded as a dataframe
-     
-     project_path: str/file path
-         path to project        
+    Evaluate model based on slik build data pipeline function. Invoke model on 
+    transformed data and return evaluation plots in a file path.
+    
+    Parameters
+    ------------
+    model_path: str/file path
+        file path to model object
+        
+    eval_data: str/ pandas dataframe
+        Data path or Pandas dataframe.
+        
+    select_columns: list
+        columns to be passed/loaded as a dataframe
+    
+    project_path: str/file path
+        path to project        
 
     """
     
