@@ -72,7 +72,7 @@ def build_model(dataframe=None,target_column=None,numerical_transformer=None,cat
     except:
         pass
     
-    identify_columns(dataframe,target_column,output_path=data_path,**kwargs)
+    identify_columns(dataframe,target_column,project_path=data_path,**kwargs)
     
     model_preprocessor_pipeline = os.path.join(project_path, 'model/')
     try:

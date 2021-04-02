@@ -470,7 +470,7 @@ def get_attributes(data=None,target_column=None):
     return num_attributes, cat_attributes
 
 
-def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=100, verbose=True, output_path=None):
+def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=100, verbose=True, project_path=None):
     
     """
     Identifies numerical attributes ,categorical attributes with sparse features 
@@ -506,7 +506,12 @@ def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=
         errstr = f'The given type for id_column is {type(id_column).__name__}. Expected type is str'
         raise TypeError(errstr)
         
-    output_path = f'{output_path}metadata'
+    try:
+        os.mkdir(project_path)
+    except:
+        pass
+
+    output_path =  os.path.join(project_path,'metadata')
     output_path = pathlib.Path(output_path)
     if os.path.exists(output_path):
         pass

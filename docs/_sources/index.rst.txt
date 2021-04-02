@@ -37,7 +37,7 @@ Development at `github.com/Sensei-akin/slik_python_package/staging/ <https://git
 
 Examples
 --------
-A minimum example of using slik for classification is:
+A minimum example of using slik for preprocessing is:
 
     >>> import slik
     >>> from sklearn.model_selection import train_test_split
