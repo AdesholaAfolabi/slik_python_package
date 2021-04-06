@@ -1,0 +1,3645 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>SLIK Preprocessing API &mdash; Slik 1. documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="slik" href="modules.html" />
+    <link rel="prev" title="Quickstart to ML with Slik" href="quick_start.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Slik
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installs.html">Installing Slik</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quickstart to ML with Slik</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">SLIK Preprocessing API</a></li>
+</ul>
+<p class="caption"><span class="caption-text">slik API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">slik</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Slik</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>SLIK Preprocessing API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/titanic.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="SLIK-Preprocessing-API">
+<h1>SLIK Preprocessing API<a class="headerlink" href="#SLIK-Preprocessing-API" title="Permalink to this headline">¶</a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;/Users/terra-016/Downloads/mlflow-titanic/slik_python_package/&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">slik</span> <span class="kn">import</span> <span class="n">loadfile</span> <span class="k">as</span> <span class="n">lf</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">train</span> <span class="o">=</span> <span class="n">lf</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s1">&#39;/Users/terra-016/Downloads/mlflow-titanic/slik_python_package/examples/titanic.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+CSV file read sucessfully
+
+Data has 891 rows and 12 columns
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">slik</span> <span class="kn">import</span> <span class="n">preprocessing</span> <span class="k">as</span> <span class="n">pp</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">slik</span> <span class="kn">import</span> <span class="n">pipeline</span> <span class="k">as</span> <span class="n">ppl</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pp</span><span class="o">.</span><span class="n">check_nan</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+------------------------- Count and Percentage of missing value -------------------------
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/titanic_6_1.png" src="_images/titanic_6_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pp</span><span class="o">.</span><span class="n">featurize_datetime</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="s1">&#39;timestamp&#39;</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>msisdn</th>
+      <th>timeline</th>
+      <th>timestamp</th>
+      <th>event_type</th>
+      <th>ad_text</th>
+      <th>spend_total</th>
+      <th>spend_vas</th>
+      <th>sms_cost</th>
+      <th>spend_voice</th>
+      <th>spend_data</th>
+      <th>...</th>
+      <th>timestampDayofweek</th>
+      <th>timestampDayofyear</th>
+      <th>timestampWeek</th>
+      <th>timestampIs_month_end</th>
+      <th>timestampIs_month_start</th>
+      <th>timestampIs_quarter_end</th>
+      <th>timestampIs_quarter_start</th>
+      <th>timestampIs_year_end</th>
+      <th>timestampIs_year_start</th>
+      <th>timestampElapsed</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>b0c89e6222030d07623bbdfcd802068a</td>
+      <td>1.560529e+12</td>
+      <td>2019-07-01 20:01:54</td>
+      <td>install</td>
+      <td>All your favorite songs in just one place! Dow...</td>
+      <td>2098.4000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>182</td>
+      <td>27</td>
+      <td>False</td>
+      <td>True</td>
+      <td>False</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1562011314</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>8dbe350a0864243bcbcab192c11afb1c</td>
+      <td>1.561370e+12</td>
+      <td>2019-07-27 12:45:55</td>
+      <td>install</td>
+      <td>All your favourite songs in just one place! Do...</td>
+      <td>5361.8000</td>
+      <td>510.0</td>
+      <td>156.0</td>
+      <td>2933.86</td>
+      <td>2000.0</td>
+      <td>...</td>
+      <td>5</td>
+      <td>208</td>
+      <td>30</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1564231555</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>e9494ef7df151115dd00cb9e0cd75b28</td>
+      <td>1.559919e+12</td>
+      <td>2019-06-09 09:13:49</td>
+      <td>install</td>
+      <td>Did you know you can listen to Kwam1 straight ...</td>
+      <td>6000.2600</td>
+      <td>240.0</td>
+      <td>24.0</td>
+      <td>2545.11</td>
+      <td>1000.0</td>
+      <td>...</td>
+      <td>6</td>
+      <td>160</td>
+      <td>23</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1560071629</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3b17282522ff95f763243d9a87f25e01</td>
+      <td>1.562241e+12</td>
+      <td>2019-07-08 17:55:46</td>
+      <td>install</td>
+      <td>Listen to the latest hit songs from favourite ...</td>
+      <td>4202.0000</td>
+      <td>0.0</td>
+      <td>24.0</td>
+      <td>1098.80</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>189</td>
+      <td>28</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1562608546</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>e14725c65cb0a904d83fa6d5990244d6</td>
+      <td>1.561736e+12</td>
+      <td>2019-07-03 17:56:12</td>
+      <td>install</td>
+      <td>All your favorite songs in just one place! Dow...</td>
+      <td>434.4400</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>2</td>
+      <td>184</td>
+      <td>27</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1562176572</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>995</th>
+      <td>6b422bb5f9ffbd1d867dd1b9273ff7c2</td>
+      <td>1.561990e+12</td>
+      <td>2019-07-05 10:25:34</td>
+      <td>install</td>
+      <td>All your favorite songs in just one place! Dow...</td>
+      <td>1746.6100</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>4</td>
+      <td>186</td>
+      <td>27</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1562322334</td>
+    </tr>
+    <tr>
+      <th>996</th>
+      <td>edfb18f56fcf68853399be5cbb0070e9</td>
+      <td>1.562597e+12</td>
+      <td>2019-07-14 19:27:37</td>
+      <td>install</td>
+      <td>Listen to the latest hit songs from favourite ...</td>
+      <td>1032.0400</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>6</td>
+      <td>195</td>
+      <td>28</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1563132457</td>
+    </tr>
+    <tr>
+      <th>997</th>
+      <td>de2914241d79c01a5610307aeb8f9f8d</td>
+      <td>1.558118e+12</td>
+      <td>2019-05-19 09:00:19</td>
+      <td>install</td>
+      <td>Listen to the latest hit songs from Nonso Amad...</td>
+      <td>11406.2825</td>
+      <td>3640.0</td>
+      <td>50.0</td>
+      <td>8831.95</td>
+      <td>4000.0</td>
+      <td>...</td>
+      <td>6</td>
+      <td>139</td>
+      <td>20</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1558256419</td>
+    </tr>
+    <tr>
+      <th>998</th>
+      <td>05512b6c458fa854421c0996ce49af32</td>
+      <td>1.559829e+12</td>
+      <td>2019-06-08 23:02:33</td>
+      <td>install</td>
+      <td>All your favorite songs in just one place! Dow...</td>
+      <td>977.5000</td>
+      <td>0.0</td>
+      <td>87.0</td>
+      <td>2243.08</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>5</td>
+      <td>159</td>
+      <td>23</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1560034953</td>
+    </tr>
+    <tr>
+      <th>999</th>
+      <td>4cc575a0085fc9ad23e9afe1a371c50c</td>
+      <td>1.561736e+12</td>
+      <td>2019-07-05 19:01:22</td>
+      <td>install</td>
+      <td>All your favorite songs in just one place! Dow...</td>
+      <td>0.0000</td>
+      <td>0.0</td>
+      <td>4.0</td>
+      <td>453.60</td>
+      <td>380.0</td>
+      <td>...</td>
+      <td>4</td>
+      <td>186</td>
+      <td>27</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1562353282</td>
+    </tr>
+  </tbody>
+</table>
+<p>1000 rows × 36 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pp</span><span class="o">.</span><span class="n">map_column</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="n">column_name</span><span class="o">=</span><span class="s1">&#39;event_type&#39;</span><span class="p">,</span><span class="n">items</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;click&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;install&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+------------------------- Mapping passed column -------------------------
+
+click was mapped to 0
+
+install was mapped to 1
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>msisdn</th>
+      <th>timeline</th>
+      <th>timestamp</th>
+      <th>event_type</th>
+      <th>ad_text</th>
+      <th>spend_total</th>
+      <th>spend_vas</th>
+      <th>sms_cost</th>
+      <th>spend_voice</th>
+      <th>spend_data</th>
+      <th>...</th>
+      <th>has_bank</th>
+      <th>location_region</th>
+      <th>location_state</th>
+      <th>location_lga</th>
+      <th>device_manufacturer</th>
+      <th>device_model</th>
+      <th>device_type</th>
+      <th>os_vendor</th>
+      <th>os_name</th>
+      <th>transformed_event_type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>b0c89e6222030d07623bbdfcd802068a</td>
+      <td>1.560529e+12</td>
+      <td>2019-07-01T20:01:54.000Z</td>
+      <td>install</td>
+      <td>All your favorite songs in just one place! Dow...</td>
+      <td>2098.400000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south south</td>
+      <td>akwa ibom</td>
+      <td>oron</td>
+      <td>tecno</td>
+      <td>f1</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>8dbe350a0864243bcbcab192c11afb1c</td>
+      <td>1.561370e+12</td>
+      <td>2019-07-27T12:45:55.000Z</td>
+      <td>install</td>
+      <td>All your favourite songs in just one place! Do...</td>
+      <td>5361.800000</td>
+      <td>510.0</td>
+      <td>156.0</td>
+      <td>2933.86</td>
+      <td>2000.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>ikeja</td>
+      <td>nokia</td>
+      <td>105 ds (ta1034)</td>
+      <td>Feature Phone</td>
+      <td>symbian</td>
+      <td>symbian os</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>e9494ef7df151115dd00cb9e0cd75b28</td>
+      <td>1.559919e+12</td>
+      <td>2019-06-09T09:13:49</td>
+      <td>install</td>
+      <td>Did you know you can listen to Kwam1 straight ...</td>
+      <td>6000.260000</td>
+      <td>240.0</td>
+      <td>24.0</td>
+      <td>2545.11</td>
+      <td>1000.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>kosofe</td>
+      <td>nokia</td>
+      <td>3.1 ss (ta1057)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3b17282522ff95f763243d9a87f25e01</td>
+      <td>1.562241e+12</td>
+      <td>2019-07-08T17:55:46.000Z</td>
+      <td>install</td>
+      <td>Listen to the latest hit songs from favourite ...</td>
+      <td>4202.000000</td>
+      <td>0.0</td>
+      <td>24.0</td>
+      <td>1098.80</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south east</td>
+      <td>abia</td>
+      <td>aba south</td>
+      <td>tecno</td>
+      <td>la7</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>e14725c65cb0a904d83fa6d5990244d6</td>
+      <td>1.561736e+12</td>
+      <td>2019-07-03T17:56:12.000Z</td>
+      <td>install</td>
+      <td>All your favorite songs in just one place! Dow...</td>
+      <td>434.440000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south east</td>
+      <td>imo</td>
+      <td>owerri municipal</td>
+      <td>tecno</td>
+      <td>f2</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>9995</th>
+      <td>8269c8c5e06bf218b6f9bc9eab1b8454</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T18:08:13.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>199.760000</td>
+      <td>305.0</td>
+      <td>0.0</td>
+      <td>94.40</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>ikorodu</td>
+      <td>darago</td>
+      <td>darago 208</td>
+      <td>Smartphone</td>
+      <td>g3</td>
+      <td>proprietary os</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>9996</th>
+      <td>79c9648bbd8450959cce45d534113e21</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T11:53:01.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>261.412240</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south south</td>
+      <td>rivers</td>
+      <td>port harcourt</td>
+      <td>itel</td>
+      <td>a33 (w5001p)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>9997</th>
+      <td>ba2b27594cd0a69e0440b9b15e493f63</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T19:08:15.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>8983.460000</td>
+      <td>0.0</td>
+      <td>4.0</td>
+      <td>2515.20</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>oshodi-isolo</td>
+      <td>infinix</td>
+      <td>note 5 (x604)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>9998</th>
+      <td>8852495478b7f626416cee502c6c0130</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T13:35:58.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>1230.640000</td>
+      <td>0.0</td>
+      <td>32.0</td>
+      <td>1737.58</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>alimosho</td>
+      <td>tecno</td>
+      <td>t484</td>
+      <td>Feature Phone</td>
+      <td>proprietary os</td>
+      <td>proprietary os</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>9999</th>
+      <td>55afe7886c47a250cac6947147901ea5</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T15:39:05.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>7297.529117</td>
+      <td>680.0</td>
+      <td>184.0</td>
+      <td>11012.75</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>eti osa</td>
+      <td>samsung</td>
+      <td>galaxy s7 edge (smg935s)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>10000 rows × 24 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pp</span><span class="o">.</span><span class="n">detect_fix_outliers</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="n">target_column</span><span class="o">=</span><span class="s1">&#39;event_type&#39;</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="c1">#how to indicate columns with outliers</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+------------------------- Table idenifying more than 1 Outliers present in each record -------------------------
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>msisdn</th>
+      <th>timeline</th>
+      <th>timestamp</th>
+      <th>event_type</th>
+      <th>ad_text</th>
+      <th>spend_total</th>
+      <th>spend_vas</th>
+      <th>sms_cost</th>
+      <th>spend_voice</th>
+      <th>spend_data</th>
+      <th>...</th>
+      <th>gender</th>
+      <th>has_bank</th>
+      <th>location_region</th>
+      <th>location_state</th>
+      <th>location_lga</th>
+      <th>device_manufacturer</th>
+      <th>device_model</th>
+      <th>device_type</th>
+      <th>os_vendor</th>
+      <th>os_name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>b0c89e6222030d07623bbdfcd802068a</td>
+      <td>1.560529e+12</td>
+      <td>2019-07-01T20:01:54.000Z</td>
+      <td>install</td>
+      <td>All your favorite songs in just one place! Dow...</td>
+      <td>2098.400</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south south</td>
+      <td>akwa ibom</td>
+      <td>oron</td>
+      <td>tecno</td>
+      <td>f1</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>b0afeb52e166d7d6314ba57a166e682a</td>
+      <td>1.558969e+12</td>
+      <td>2019-05-31T07:26:28.000000</td>
+      <td>install</td>
+      <td>Did you know you can listen to Kwam1 straight ...</td>
+      <td>8155.409</td>
+      <td>260.0</td>
+      <td>0.0</td>
+      <td>225.90</td>
+      <td>2000.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>surulere</td>
+      <td>itel</td>
+      <td>a33 (w5001p)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>60e32a938dff361487f53a32e7a183c4</td>
+      <td>1.560264e+12</td>
+      <td>2019-06-12T07:41:23</td>
+      <td>install</td>
+      <td>Did you know you can listen to Kwam1 straight ...</td>
+      <td>4441.000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>239.99</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>osun</td>
+      <td>ifelodun</td>
+      <td>infinix</td>
+      <td>hot 5 (x559c)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>b59a739ec8dd8d98e304c6cce8c96d2f</td>
+      <td>1.558113e+12</td>
+      <td>2019-05-18T07:18:11.000000</td>
+      <td>install</td>
+      <td>Listen to the latest hit songs from Kizz Danie...</td>
+      <td>2340.940</td>
+      <td>100.0</td>
+      <td>4.0</td>
+      <td>121.20</td>
+      <td>1300.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>lagos mainland</td>
+      <td>leagoo</td>
+      <td>kiicaa power</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>6e0a913db13da0c593954bed8008c79d</td>
+      <td>1.558113e+12</td>
+      <td>2019-05-18T11:39:03.000000</td>
+      <td>install</td>
+      <td>Listen to the latest hit songs from Kizz Danie...</td>
+      <td>13185.510</td>
+      <td>50.0</td>
+      <td>284.0</td>
+      <td>1968.78</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>Yes</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>lagos mainland</td>
+      <td>infinix</td>
+      <td>note 5 stylus (x605)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>8463</th>
+      <td>cbde232a7308b98e8623137f8db88606</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-02T16:06:24.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>7051.750</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>kosofe</td>
+      <td>samsung</td>
+      <td>galaxy j7 duo (smj720f</td>
+      <td>Smartphone</td>
+      <td>ds)</td>
+      <td>google</td>
+    </tr>
+    <tr>
+      <th>8560</th>
+      <td>f6a261853737c76ea94d42fc29e43118</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T15:18:22.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>0.000</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>eti osa</td>
+      <td>samsung</td>
+      <td>galaxy j7 prime (smg610f ds)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>9062</th>
+      <td>2f31c477bb9660ae2575dced8e31ecc9</td>
+      <td>1.562597e+12</td>
+      <td>2019-08-04T16:45:29.000Z</td>
+      <td>click</td>
+      <td>Live your dreams, enjoy great music, watch vid...</td>
+      <td>0.000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>oshodi-isolo</td>
+      <td>samsung</td>
+      <td>galaxy tab a 10.1 (smt585)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>9311</th>
+      <td>462d5d62bbd8fd35f377fb5108b80717</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-02T18:27:28.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>1428.650</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>F</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>ikeja</td>
+      <td>samsung</td>
+      <td>galaxy a5 (sma520f ds)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>9354</th>
+      <td>56609d41d4e8ac6b38641e8f52827b4e</td>
+      <td>1.562234e+12</td>
+      <td>2019-07-10T16:07:01.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>11358.820</td>
+      <td>0.0</td>
+      <td>12.0</td>
+      <td>1352.76</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south south</td>
+      <td>edo</td>
+      <td>oredo</td>
+      <td>tecno</td>
+      <td>wx3</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+  </tbody>
+</table>
+<p>1671 rows × 23 columns</p>
+</div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>msisdn</th>
+      <th>timeline</th>
+      <th>timestamp</th>
+      <th>event_type</th>
+      <th>ad_text</th>
+      <th>spend_total</th>
+      <th>spend_vas</th>
+      <th>sms_cost</th>
+      <th>spend_voice</th>
+      <th>spend_data</th>
+      <th>...</th>
+      <th>gender</th>
+      <th>has_bank</th>
+      <th>location_region</th>
+      <th>location_state</th>
+      <th>location_lga</th>
+      <th>device_manufacturer</th>
+      <th>device_model</th>
+      <th>device_type</th>
+      <th>os_vendor</th>
+      <th>os_name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>b0c89e6222030d07623bbdfcd802068a</td>
+      <td>1.561856e+12</td>
+      <td>2019-07-01T20:01:54.000Z</td>
+      <td>install</td>
+      <td>All your favorite songs in just one place! Dow...</td>
+      <td>2098.400000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south south</td>
+      <td>akwa ibom</td>
+      <td>oron</td>
+      <td>tecno</td>
+      <td>f1</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>8dbe350a0864243bcbcab192c11afb1c</td>
+      <td>1.561370e+12</td>
+      <td>2019-07-27T12:45:55.000Z</td>
+      <td>install</td>
+      <td>All your favourite songs in just one place! Do...</td>
+      <td>5361.800000</td>
+      <td>510.000000</td>
+      <td>65.430689</td>
+      <td>2933.860000</td>
+      <td>477.744743</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>ikeja</td>
+      <td>nokia</td>
+      <td>105 ds (ta1034)</td>
+      <td>Feature Phone</td>
+      <td>symbian</td>
+      <td>symbian os</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>e9494ef7df151115dd00cb9e0cd75b28</td>
+      <td>1.561856e+12</td>
+      <td>2019-06-09T09:13:49</td>
+      <td>install</td>
+      <td>Did you know you can listen to Kwam1 straight ...</td>
+      <td>6000.260000</td>
+      <td>240.000000</td>
+      <td>24.000000</td>
+      <td>2545.110000</td>
+      <td>1000.000000</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>kosofe</td>
+      <td>nokia</td>
+      <td>3.1 ss (ta1057)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3b17282522ff95f763243d9a87f25e01</td>
+      <td>1.562241e+12</td>
+      <td>2019-07-08T17:55:46.000Z</td>
+      <td>install</td>
+      <td>Listen to the latest hit songs from favourite ...</td>
+      <td>4202.000000</td>
+      <td>0.000000</td>
+      <td>24.000000</td>
+      <td>1098.800000</td>
+      <td>0.000000</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south east</td>
+      <td>abia</td>
+      <td>aba south</td>
+      <td>tecno</td>
+      <td>la7</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>e14725c65cb0a904d83fa6d5990244d6</td>
+      <td>1.561736e+12</td>
+      <td>2019-07-03T17:56:12.000Z</td>
+      <td>install</td>
+      <td>All your favorite songs in just one place! Dow...</td>
+      <td>434.440000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south east</td>
+      <td>imo</td>
+      <td>owerri municipal</td>
+      <td>tecno</td>
+      <td>f2</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>9995</th>
+      <td>8269c8c5e06bf218b6f9bc9eab1b8454</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T18:08:13.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>199.760000</td>
+      <td>305.000000</td>
+      <td>0.000000</td>
+      <td>94.400000</td>
+      <td>0.000000</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>ikorodu</td>
+      <td>darago</td>
+      <td>darago 208</td>
+      <td>Smartphone</td>
+      <td>g3</td>
+      <td>proprietary os</td>
+    </tr>
+    <tr>
+      <th>9996</th>
+      <td>79c9648bbd8450959cce45d534113e21</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T11:53:01.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>261.412240</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south south</td>
+      <td>rivers</td>
+      <td>port harcourt</td>
+      <td>itel</td>
+      <td>a33 (w5001p)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>9997</th>
+      <td>ba2b27594cd0a69e0440b9b15e493f63</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T19:08:15.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>8983.460000</td>
+      <td>0.000000</td>
+      <td>4.000000</td>
+      <td>2515.200000</td>
+      <td>0.000000</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>oshodi-isolo</td>
+      <td>infinix</td>
+      <td>note 5 (x604)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>9998</th>
+      <td>8852495478b7f626416cee502c6c0130</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T13:35:58.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>1230.640000</td>
+      <td>0.000000</td>
+      <td>32.000000</td>
+      <td>1737.580000</td>
+      <td>0.000000</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>alimosho</td>
+      <td>tecno</td>
+      <td>t484</td>
+      <td>Feature Phone</td>
+      <td>proprietary os</td>
+      <td>proprietary os</td>
+    </tr>
+    <tr>
+      <th>9999</th>
+      <td>55afe7886c47a250cac6947147901ea5</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T15:39:05.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>7297.529117</td>
+      <td>296.924863</td>
+      <td>65.430689</td>
+      <td>1681.886538</td>
+      <td>0.000000</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>eti osa</td>
+      <td>samsung</td>
+      <td>galaxy s7 edge (smg935s)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+  </tbody>
+</table>
+<p>10000 rows × 23 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pp</span><span class="o">.</span><span class="n">check_nan</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+------------------------- Count and Percentage of missing value -------------------------
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/titanic_10_1.png" src="_images/titanic_10_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pp</span><span class="o">.</span><span class="n">handle_nan</span><span class="p">(</span><span class="n">dataframe</span><span class="o">=</span><span class="n">train</span><span class="p">,</span><span class="n">target_name</span><span class="o">=</span><span class="s1">&#39;Survived&#39;</span><span class="p">,</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span><span class="n">fillna</span><span class="o">=</span><span class="s1">&#39;mode&#39;</span><span class="p">,</span>
+                     <span class="n">drop_outliers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">thresh_x</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">thresh_y</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="c1"># change handlena to fillna #default threshold judgement</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+------------------------- Count and Percentage of missing value -------------------------
+
+
+Dropping rows with 50% missing value
+
+       Number of records dropped from 891 to 891
+
+Dropping Columns with 50% missing value: [&#39;Cabin&#39;]
+
+New data shape is (891, 11)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PassengerId</th>
+      <th>Survived</th>
+      <th>Pclass</th>
+      <th>Name</th>
+      <th>Sex</th>
+      <th>Age</th>
+      <th>SibSp</th>
+      <th>Parch</th>
+      <th>Ticket</th>
+      <th>Fare</th>
+      <th>Embarked</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Braund, Mr. Owen Harris</td>
+      <td>male</td>
+      <td>22.000000</td>
+      <td>1.0</td>
+      <td>0.000000</td>
+      <td>A/5 21171</td>
+      <td>7.250000</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Cumings, Mrs. John Bradley (Florence Briggs Th...</td>
+      <td>female</td>
+      <td>38.000000</td>
+      <td>1.0</td>
+      <td>0.000000</td>
+      <td>PC 17599</td>
+      <td>32.204208</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>1</td>
+      <td>3</td>
+      <td>Heikkinen, Miss. Laina</td>
+      <td>female</td>
+      <td>26.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>STON/O2. 3101282</td>
+      <td>7.925000</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Futrelle, Mrs. Jacques Heath (Lily May Peel)</td>
+      <td>female</td>
+      <td>35.000000</td>
+      <td>1.0</td>
+      <td>0.000000</td>
+      <td>113803</td>
+      <td>53.100000</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Allen, Mr. William Henry</td>
+      <td>male</td>
+      <td>35.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>373450</td>
+      <td>8.050000</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>886</th>
+      <td>887</td>
+      <td>0</td>
+      <td>2</td>
+      <td>Montvila, Rev. Juozas</td>
+      <td>male</td>
+      <td>27.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>211536</td>
+      <td>13.000000</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>887</th>
+      <td>888</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Graham, Miss. Margaret Edith</td>
+      <td>female</td>
+      <td>19.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>112053</td>
+      <td>30.000000</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>888</th>
+      <td>889</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Johnston, Miss. Catherine Helen "Carrie"</td>
+      <td>female</td>
+      <td>29.081737</td>
+      <td>1.0</td>
+      <td>0.381594</td>
+      <td>W./C. 6607</td>
+      <td>23.450000</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>889</th>
+      <td>890</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Behr, Mr. Karl Howell</td>
+      <td>male</td>
+      <td>26.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>111369</td>
+      <td>30.000000</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <th>890</th>
+      <td>891</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Dooley, Mr. Patrick</td>
+      <td>male</td>
+      <td>32.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>370376</td>
+      <td>7.750000</td>
+      <td>Q</td>
+    </tr>
+  </tbody>
+</table>
+<p>891 rows × 11 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pp</span><span class="o">.</span><span class="n">manage_columns</span><span class="p">(</span><span class="n">train</span><span class="p">,[</span><span class="s1">&#39;event_type&#39;</span><span class="p">,</span><span class="s1">&#39;os_name&#39;</span><span class="p">,</span><span class="s1">&#39;msisdn&#39;</span><span class="p">],</span><span class="n">drop_duplicates</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>msisdn</th>
+      <th>timeline</th>
+      <th>timestamp</th>
+      <th>event_type</th>
+      <th>ad_text</th>
+      <th>spend_total</th>
+      <th>spend_vas</th>
+      <th>sms_cost</th>
+      <th>spend_voice</th>
+      <th>spend_data</th>
+      <th>...</th>
+      <th>gender</th>
+      <th>has_bank</th>
+      <th>location_region</th>
+      <th>location_state</th>
+      <th>location_lga</th>
+      <th>device_manufacturer</th>
+      <th>device_model</th>
+      <th>device_type</th>
+      <th>os_vendor</th>
+      <th>os_name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>b0c89e6222030d07623bbdfcd802068a</td>
+      <td>1.560529e+12</td>
+      <td>2019-07-01T20:01:54.000Z</td>
+      <td>install</td>
+      <td>All your favorite songs in just one place! Dow...</td>
+      <td>2098.400000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south south</td>
+      <td>akwa ibom</td>
+      <td>oron</td>
+      <td>tecno</td>
+      <td>f1</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>8dbe350a0864243bcbcab192c11afb1c</td>
+      <td>1.561370e+12</td>
+      <td>2019-07-27T12:45:55.000Z</td>
+      <td>install</td>
+      <td>All your favourite songs in just one place! Do...</td>
+      <td>5361.800000</td>
+      <td>510.0</td>
+      <td>156.0</td>
+      <td>2933.86</td>
+      <td>2000.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>ikeja</td>
+      <td>nokia</td>
+      <td>105 ds (ta1034)</td>
+      <td>Feature Phone</td>
+      <td>symbian</td>
+      <td>symbian os</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>e9494ef7df151115dd00cb9e0cd75b28</td>
+      <td>1.559919e+12</td>
+      <td>2019-06-09T09:13:49</td>
+      <td>install</td>
+      <td>Did you know you can listen to Kwam1 straight ...</td>
+      <td>6000.260000</td>
+      <td>240.0</td>
+      <td>24.0</td>
+      <td>2545.11</td>
+      <td>1000.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>kosofe</td>
+      <td>nokia</td>
+      <td>3.1 ss (ta1057)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3b17282522ff95f763243d9a87f25e01</td>
+      <td>1.562241e+12</td>
+      <td>2019-07-08T17:55:46.000Z</td>
+      <td>install</td>
+      <td>Listen to the latest hit songs from favourite ...</td>
+      <td>4202.000000</td>
+      <td>0.0</td>
+      <td>24.0</td>
+      <td>1098.80</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south east</td>
+      <td>abia</td>
+      <td>aba south</td>
+      <td>tecno</td>
+      <td>la7</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>e14725c65cb0a904d83fa6d5990244d6</td>
+      <td>1.561736e+12</td>
+      <td>2019-07-03T17:56:12.000Z</td>
+      <td>install</td>
+      <td>All your favorite songs in just one place! Dow...</td>
+      <td>434.440000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south east</td>
+      <td>imo</td>
+      <td>owerri municipal</td>
+      <td>tecno</td>
+      <td>f2</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>9995</th>
+      <td>8269c8c5e06bf218b6f9bc9eab1b8454</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T18:08:13.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>199.760000</td>
+      <td>305.0</td>
+      <td>0.0</td>
+      <td>94.40</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>ikorodu</td>
+      <td>darago</td>
+      <td>darago 208</td>
+      <td>Smartphone</td>
+      <td>g3</td>
+      <td>proprietary os</td>
+    </tr>
+    <tr>
+      <th>9996</th>
+      <td>79c9648bbd8450959cce45d534113e21</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T11:53:01.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>261.412240</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south south</td>
+      <td>rivers</td>
+      <td>port harcourt</td>
+      <td>itel</td>
+      <td>a33 (w5001p)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>9997</th>
+      <td>ba2b27594cd0a69e0440b9b15e493f63</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T19:08:15.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>8983.460000</td>
+      <td>0.0</td>
+      <td>4.0</td>
+      <td>2515.20</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>oshodi-isolo</td>
+      <td>infinix</td>
+      <td>note 5 (x604)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>9998</th>
+      <td>8852495478b7f626416cee502c6c0130</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T13:35:58.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>1230.640000</td>
+      <td>0.0</td>
+      <td>32.0</td>
+      <td>1737.58</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>alimosho</td>
+      <td>tecno</td>
+      <td>t484</td>
+      <td>Feature Phone</td>
+      <td>proprietary os</td>
+      <td>proprietary os</td>
+    </tr>
+    <tr>
+      <th>9999</th>
+      <td>55afe7886c47a250cac6947147901ea5</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T15:39:05.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>7297.529117</td>
+      <td>680.0</td>
+      <td>184.0</td>
+      <td>11012.75</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>eti osa</td>
+      <td>samsung</td>
+      <td>galaxy s7 edge (smg935s)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+  </tbody>
+</table>
+<p>10000 rows × 23 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pp</span><span class="o">.</span><span class="n">bin_age</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="s1">&#39;age&#39;</span><span class="p">)</span> <span class="c1">#generic #methods to bin</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>msisdn</th>
+      <th>timeline</th>
+      <th>timestamp</th>
+      <th>event_type</th>
+      <th>ad_text</th>
+      <th>spend_total</th>
+      <th>spend_vas</th>
+      <th>sms_cost</th>
+      <th>spend_voice</th>
+      <th>spend_data</th>
+      <th>...</th>
+      <th>has_bank</th>
+      <th>location_region</th>
+      <th>location_state</th>
+      <th>location_lga</th>
+      <th>device_manufacturer</th>
+      <th>device_model</th>
+      <th>device_type</th>
+      <th>os_vendor</th>
+      <th>os_name</th>
+      <th>transformed_age</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>b0c89e6222030d07623bbdfcd802068a</td>
+      <td>1.560529e+12</td>
+      <td>2019-07-01T20:01:54.000Z</td>
+      <td>install</td>
+      <td>All your favorite songs in just one place! Dow...</td>
+      <td>2098.400000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south south</td>
+      <td>akwa ibom</td>
+      <td>oron</td>
+      <td>tecno</td>
+      <td>f1</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+      <td>Young Adult</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>8dbe350a0864243bcbcab192c11afb1c</td>
+      <td>1.561370e+12</td>
+      <td>2019-07-27T12:45:55.000Z</td>
+      <td>install</td>
+      <td>All your favourite songs in just one place! Do...</td>
+      <td>5361.800000</td>
+      <td>510.0</td>
+      <td>156.0</td>
+      <td>2933.86</td>
+      <td>2000.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>ikeja</td>
+      <td>nokia</td>
+      <td>105 ds (ta1034)</td>
+      <td>Feature Phone</td>
+      <td>symbian</td>
+      <td>symbian os</td>
+      <td>Mid-Age</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>e9494ef7df151115dd00cb9e0cd75b28</td>
+      <td>1.559919e+12</td>
+      <td>2019-06-09T09:13:49</td>
+      <td>install</td>
+      <td>Did you know you can listen to Kwam1 straight ...</td>
+      <td>6000.260000</td>
+      <td>240.0</td>
+      <td>24.0</td>
+      <td>2545.11</td>
+      <td>1000.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>kosofe</td>
+      <td>nokia</td>
+      <td>3.1 ss (ta1057)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+      <td>Mid-Age</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3b17282522ff95f763243d9a87f25e01</td>
+      <td>1.562241e+12</td>
+      <td>2019-07-08T17:55:46.000Z</td>
+      <td>install</td>
+      <td>Listen to the latest hit songs from favourite ...</td>
+      <td>4202.000000</td>
+      <td>0.0</td>
+      <td>24.0</td>
+      <td>1098.80</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south east</td>
+      <td>abia</td>
+      <td>aba south</td>
+      <td>tecno</td>
+      <td>la7</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+      <td>Elderly</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>e14725c65cb0a904d83fa6d5990244d6</td>
+      <td>1.561736e+12</td>
+      <td>2019-07-03T17:56:12.000Z</td>
+      <td>install</td>
+      <td>All your favorite songs in just one place! Dow...</td>
+      <td>434.440000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south east</td>
+      <td>imo</td>
+      <td>owerri municipal</td>
+      <td>tecno</td>
+      <td>f2</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+      <td>Mid-Age</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>9995</th>
+      <td>8269c8c5e06bf218b6f9bc9eab1b8454</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T18:08:13.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>199.760000</td>
+      <td>305.0</td>
+      <td>0.0</td>
+      <td>94.40</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>ikorodu</td>
+      <td>darago</td>
+      <td>darago 208</td>
+      <td>Smartphone</td>
+      <td>g3</td>
+      <td>proprietary os</td>
+      <td>Young Adult</td>
+    </tr>
+    <tr>
+      <th>9996</th>
+      <td>79c9648bbd8450959cce45d534113e21</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T11:53:01.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>261.412240</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south south</td>
+      <td>rivers</td>
+      <td>port harcourt</td>
+      <td>itel</td>
+      <td>a33 (w5001p)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+      <td>Young Adult</td>
+    </tr>
+    <tr>
+      <th>9997</th>
+      <td>ba2b27594cd0a69e0440b9b15e493f63</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T19:08:15.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>8983.460000</td>
+      <td>0.0</td>
+      <td>4.0</td>
+      <td>2515.20</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>oshodi-isolo</td>
+      <td>infinix</td>
+      <td>note 5 (x604)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+      <td>Young Adult</td>
+    </tr>
+    <tr>
+      <th>9998</th>
+      <td>8852495478b7f626416cee502c6c0130</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T13:35:58.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>1230.640000</td>
+      <td>0.0</td>
+      <td>32.0</td>
+      <td>1737.58</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>alimosho</td>
+      <td>tecno</td>
+      <td>t484</td>
+      <td>Feature Phone</td>
+      <td>proprietary os</td>
+      <td>proprietary os</td>
+      <td>Mid-Age</td>
+    </tr>
+    <tr>
+      <th>9999</th>
+      <td>55afe7886c47a250cac6947147901ea5</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T15:39:05.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>7297.529117</td>
+      <td>680.0</td>
+      <td>184.0</td>
+      <td>11012.75</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>eti osa</td>
+      <td>samsung</td>
+      <td>galaxy s7 edge (smg935s)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+      <td>Elderly</td>
+    </tr>
+  </tbody>
+</table>
+<p>10000 rows × 24 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pp</span><span class="o">.</span><span class="n">identify_columns</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="s1">&#39;Survived&#39;</span><span class="p">,</span><span class="n">id_column</span><span class="o">=</span><span class="s1">&#39;PassengerId&#39;</span><span class="p">,</span><span class="n">project_path</span><span class="o">=</span><span class="s1">&#39;Titanic&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+------------------------- Identifying columns present in the data -------------------------
+
+Target column is Survived. Attribute in target column incldes:
+[0, 1]
+
+Features with high cardinality:[&#39;Name&#39;, &#39;Ticket&#39;, &#39;Cabin&#39;]
+
+{&#39;cat_feat&#39;: [&#39;Name&#39;, &#39;Sex&#39;, &#39;Ticket&#39;, &#39;Cabin&#39;, &#39;Embarked&#39;],
+ &#39;hash_feat&#39;: [&#39;Name&#39;, &#39;Ticket&#39;, &#39;Cabin&#39;],
+ &#39;id_column&#39;: &#39;PassengerId&#39;,
+ &#39;input_columns&#39;: [&#39;Pclass&#39;,
+                   &#39;Name&#39;,
+                   &#39;Sex&#39;,
+                   &#39;Age&#39;,
+                   &#39;SibSp&#39;,
+                   &#39;Parch&#39;,
+                   &#39;Ticket&#39;,
+                   &#39;Fare&#39;,
+                   &#39;Cabin&#39;,
+                   &#39;Embarked&#39;],
+ &#39;lower_cat&#39;: [&#39;Sex&#39;, &#39;Embarked&#39;],
+ &#39;num_feat&#39;: [&#39;Pclass&#39;, &#39;Age&#39;, &#39;SibSp&#39;, &#39;Parch&#39;, &#39;Fare&#39;],
+ &#39;target_column&#39;: &#39;Survived&#39;}
+
+------------------------- Saving Attributes in Yaml file -------------------------
+
+
+Data columns successfully identified and attributes are stored in Titanic/metadata
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># import ,yaml</span>
+<span class="n">pp</span><span class="o">.</span><span class="n">create_schema_file</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="n">target_column</span><span class="o">=</span><span class="s1">&#39;event_type&#39;</span><span class="p">,</span><span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;store_files.yaml&#39;</span><span class="p">,</span><span class="n">column_id</span><span class="o">=</span><span class="s1">&#39;msisdn&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+------------------------- Creating Schema file -------------------------
+
+
+Done!. Schema file stored in data/
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;dtype&#39;: {&#39;msisdn&#39;: &#39;object&#39;,
+  &#39;timeline&#39;: &#39;float64&#39;,
+  &#39;timestamp&#39;: &#39;object&#39;,
+  &#39;event_type&#39;: &#39;object&#39;,
+  &#39;ad_text&#39;: &#39;object&#39;,
+  &#39;spend_total&#39;: &#39;float64&#39;,
+  &#39;spend_vas&#39;: &#39;float64&#39;,
+  &#39;sms_cost&#39;: &#39;float64&#39;,
+  &#39;spend_voice&#39;: &#39;float64&#39;,
+  &#39;spend_data&#39;: &#39;float64&#39;,
+  &#39;customer_class&#39;: &#39;float64&#39;,
+  &#39;customer_value&#39;: &#39;object&#39;,
+  &#39;age&#39;: &#39;float64&#39;,
+  &#39;gender&#39;: &#39;object&#39;,
+  &#39;has_bank&#39;: &#39;object&#39;,
+  &#39;location_region&#39;: &#39;object&#39;,
+  &#39;location_state&#39;: &#39;object&#39;,
+  &#39;location_lga&#39;: &#39;object&#39;,
+  &#39;device_manufacturer&#39;: &#39;object&#39;,
+  &#39;device_model&#39;: &#39;object&#39;,
+  &#39;device_type&#39;: &#39;object&#39;,
+  &#39;os_vendor&#39;: &#39;object&#39;,
+  &#39;os_name&#39;: &#39;object&#39;},
+ &#39;parse_dates&#39;: [],
+ &#39;index_col&#39;: &#39;msisdn&#39;,
+ &#39;target_col&#39;: &#39;event_type&#39;}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pp</span><span class="o">.</span><span class="n">drop_uninformative_fields</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+------------------------- Dropping uninformative fields -------------------------
+
+uninformative fields dropped:
+[]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>msisdn</th>
+      <th>timeline</th>
+      <th>timestamp</th>
+      <th>event_type</th>
+      <th>ad_text</th>
+      <th>spend_total</th>
+      <th>spend_vas</th>
+      <th>sms_cost</th>
+      <th>spend_voice</th>
+      <th>spend_data</th>
+      <th>...</th>
+      <th>gender</th>
+      <th>has_bank</th>
+      <th>location_region</th>
+      <th>location_state</th>
+      <th>location_lga</th>
+      <th>device_manufacturer</th>
+      <th>device_model</th>
+      <th>device_type</th>
+      <th>os_vendor</th>
+      <th>os_name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>b0c89e6222030d07623bbdfcd802068a</td>
+      <td>1.560529e+12</td>
+      <td>2019-07-01T20:01:54.000Z</td>
+      <td>install</td>
+      <td>All your favorite songs in just one place! Dow...</td>
+      <td>2098.400000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south south</td>
+      <td>akwa ibom</td>
+      <td>oron</td>
+      <td>tecno</td>
+      <td>f1</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>8dbe350a0864243bcbcab192c11afb1c</td>
+      <td>1.561370e+12</td>
+      <td>2019-07-27T12:45:55.000Z</td>
+      <td>install</td>
+      <td>All your favourite songs in just one place! Do...</td>
+      <td>5361.800000</td>
+      <td>510.0</td>
+      <td>156.0</td>
+      <td>2933.86</td>
+      <td>2000.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>ikeja</td>
+      <td>nokia</td>
+      <td>105 ds (ta1034)</td>
+      <td>Feature Phone</td>
+      <td>symbian</td>
+      <td>symbian os</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>e9494ef7df151115dd00cb9e0cd75b28</td>
+      <td>1.559919e+12</td>
+      <td>2019-06-09T09:13:49</td>
+      <td>install</td>
+      <td>Did you know you can listen to Kwam1 straight ...</td>
+      <td>6000.260000</td>
+      <td>240.0</td>
+      <td>24.0</td>
+      <td>2545.11</td>
+      <td>1000.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>kosofe</td>
+      <td>nokia</td>
+      <td>3.1 ss (ta1057)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3b17282522ff95f763243d9a87f25e01</td>
+      <td>1.562241e+12</td>
+      <td>2019-07-08T17:55:46.000Z</td>
+      <td>install</td>
+      <td>Listen to the latest hit songs from favourite ...</td>
+      <td>4202.000000</td>
+      <td>0.0</td>
+      <td>24.0</td>
+      <td>1098.80</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south east</td>
+      <td>abia</td>
+      <td>aba south</td>
+      <td>tecno</td>
+      <td>la7</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>e14725c65cb0a904d83fa6d5990244d6</td>
+      <td>1.561736e+12</td>
+      <td>2019-07-03T17:56:12.000Z</td>
+      <td>install</td>
+      <td>All your favorite songs in just one place! Dow...</td>
+      <td>434.440000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south east</td>
+      <td>imo</td>
+      <td>owerri municipal</td>
+      <td>tecno</td>
+      <td>f2</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>9995</th>
+      <td>8269c8c5e06bf218b6f9bc9eab1b8454</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T18:08:13.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>199.760000</td>
+      <td>305.0</td>
+      <td>0.0</td>
+      <td>94.40</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>ikorodu</td>
+      <td>darago</td>
+      <td>darago 208</td>
+      <td>Smartphone</td>
+      <td>g3</td>
+      <td>proprietary os</td>
+    </tr>
+    <tr>
+      <th>9996</th>
+      <td>79c9648bbd8450959cce45d534113e21</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T11:53:01.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>261.412240</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south south</td>
+      <td>rivers</td>
+      <td>port harcourt</td>
+      <td>itel</td>
+      <td>a33 (w5001p)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>9997</th>
+      <td>ba2b27594cd0a69e0440b9b15e493f63</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T19:08:15.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>8983.460000</td>
+      <td>0.0</td>
+      <td>4.0</td>
+      <td>2515.20</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>oshodi-isolo</td>
+      <td>infinix</td>
+      <td>note 5 (x604)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+    <tr>
+      <th>9998</th>
+      <td>8852495478b7f626416cee502c6c0130</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T13:35:58.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>1230.640000</td>
+      <td>0.0</td>
+      <td>32.0</td>
+      <td>1737.58</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>alimosho</td>
+      <td>tecno</td>
+      <td>t484</td>
+      <td>Feature Phone</td>
+      <td>proprietary os</td>
+      <td>proprietary os</td>
+    </tr>
+    <tr>
+      <th>9999</th>
+      <td>55afe7886c47a250cac6947147901ea5</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T15:39:05.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>7297.529117</td>
+      <td>680.0</td>
+      <td>184.0</td>
+      <td>11012.75</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>M</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>eti osa</td>
+      <td>samsung</td>
+      <td>galaxy s7 edge (smg935s)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+    </tr>
+  </tbody>
+</table>
+<p>10000 rows × 23 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pp</span><span class="o">.</span><span class="n">map_target</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="n">target_column</span><span class="o">=</span><span class="s1">&#39;event_type&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+------------------------- Mapping target columns -------------------------
+
+click was mapped to 0
+
+install was mapped to 1
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>msisdn</th>
+      <th>timeline</th>
+      <th>timestamp</th>
+      <th>event_type</th>
+      <th>ad_text</th>
+      <th>spend_total</th>
+      <th>spend_vas</th>
+      <th>sms_cost</th>
+      <th>spend_voice</th>
+      <th>spend_data</th>
+      <th>...</th>
+      <th>has_bank</th>
+      <th>location_region</th>
+      <th>location_state</th>
+      <th>location_lga</th>
+      <th>device_manufacturer</th>
+      <th>device_model</th>
+      <th>device_type</th>
+      <th>os_vendor</th>
+      <th>os_name</th>
+      <th>transformed_event_type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>b0c89e6222030d07623bbdfcd802068a</td>
+      <td>1.560529e+12</td>
+      <td>2019-07-01T20:01:54.000Z</td>
+      <td>install</td>
+      <td>All your favorite songs in just one place! Dow...</td>
+      <td>2098.400000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south south</td>
+      <td>akwa ibom</td>
+      <td>oron</td>
+      <td>tecno</td>
+      <td>f1</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>8dbe350a0864243bcbcab192c11afb1c</td>
+      <td>1.561370e+12</td>
+      <td>2019-07-27T12:45:55.000Z</td>
+      <td>install</td>
+      <td>All your favourite songs in just one place! Do...</td>
+      <td>5361.800000</td>
+      <td>510.0</td>
+      <td>156.0</td>
+      <td>2933.86</td>
+      <td>2000.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>ikeja</td>
+      <td>nokia</td>
+      <td>105 ds (ta1034)</td>
+      <td>Feature Phone</td>
+      <td>symbian</td>
+      <td>symbian os</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>e9494ef7df151115dd00cb9e0cd75b28</td>
+      <td>1.559919e+12</td>
+      <td>2019-06-09T09:13:49</td>
+      <td>install</td>
+      <td>Did you know you can listen to Kwam1 straight ...</td>
+      <td>6000.260000</td>
+      <td>240.0</td>
+      <td>24.0</td>
+      <td>2545.11</td>
+      <td>1000.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>kosofe</td>
+      <td>nokia</td>
+      <td>3.1 ss (ta1057)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3b17282522ff95f763243d9a87f25e01</td>
+      <td>1.562241e+12</td>
+      <td>2019-07-08T17:55:46.000Z</td>
+      <td>install</td>
+      <td>Listen to the latest hit songs from favourite ...</td>
+      <td>4202.000000</td>
+      <td>0.0</td>
+      <td>24.0</td>
+      <td>1098.80</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south east</td>
+      <td>abia</td>
+      <td>aba south</td>
+      <td>tecno</td>
+      <td>la7</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>e14725c65cb0a904d83fa6d5990244d6</td>
+      <td>1.561736e+12</td>
+      <td>2019-07-03T17:56:12.000Z</td>
+      <td>install</td>
+      <td>All your favorite songs in just one place! Dow...</td>
+      <td>434.440000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south east</td>
+      <td>imo</td>
+      <td>owerri municipal</td>
+      <td>tecno</td>
+      <td>f2</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>9995</th>
+      <td>8269c8c5e06bf218b6f9bc9eab1b8454</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T18:08:13.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>199.760000</td>
+      <td>305.0</td>
+      <td>0.0</td>
+      <td>94.40</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>ikorodu</td>
+      <td>darago</td>
+      <td>darago 208</td>
+      <td>Smartphone</td>
+      <td>g3</td>
+      <td>proprietary os</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>9996</th>
+      <td>79c9648bbd8450959cce45d534113e21</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T11:53:01.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>261.412240</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south south</td>
+      <td>rivers</td>
+      <td>port harcourt</td>
+      <td>itel</td>
+      <td>a33 (w5001p)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>9997</th>
+      <td>ba2b27594cd0a69e0440b9b15e493f63</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T19:08:15.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>8983.460000</td>
+      <td>0.0</td>
+      <td>4.0</td>
+      <td>2515.20</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>oshodi-isolo</td>
+      <td>infinix</td>
+      <td>note 5 (x604)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>9998</th>
+      <td>8852495478b7f626416cee502c6c0130</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T13:35:58.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>1230.640000</td>
+      <td>0.0</td>
+      <td>32.0</td>
+      <td>1737.58</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>alimosho</td>
+      <td>tecno</td>
+      <td>t484</td>
+      <td>Feature Phone</td>
+      <td>proprietary os</td>
+      <td>proprietary os</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>9999</th>
+      <td>55afe7886c47a250cac6947147901ea5</td>
+      <td>1.561991e+12</td>
+      <td>2019-07-03T15:39:05.000Z</td>
+      <td>click</td>
+      <td>Listen to the latest hit songs from your favor...</td>
+      <td>7297.529117</td>
+      <td>680.0</td>
+      <td>184.0</td>
+      <td>11012.75</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>No</td>
+      <td>south west</td>
+      <td>lagos</td>
+      <td>eti osa</td>
+      <td>samsung</td>
+      <td>galaxy s7 edge (smg935s)</td>
+      <td>Smartphone</td>
+      <td>google</td>
+      <td>android</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>10000 rows × 24 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pp</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s1">&#39;/Users/terra-016/Downloads/mlflow-titanic/slik_python_package/installs_download.csv&#39;</span><span class="p">,</span>\
+              <span class="n">target_column</span><span class="o">=</span><span class="s1">&#39;event_type&#39;</span><span class="p">,</span><span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">project_path</span><span class="o">=</span><span class="s1">&#39;./InstallDownload&#39;</span>\
+              <span class="p">,</span><span class="n">nrows</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+CSV file read sucessfully
+
+Data has 200 rows and 23 columns
+
+------------------------- Dropping uninformative fields -------------------------
+
+uninformative fields dropped:
+[&#39;event_type&#39;]
+
+------------------------- Count and Percentage of missing value -------------------------
+
+
+Dropping rows with 1% missing value
+
+       Number of records dropped from 200 to 200
+
+Dropping Columns with 99% missing value: []
+
+New data shape is (200, 22)
+
+------------------------- Featurize Datetime columns -------------------------
+
+Inferred column with datetime type: [timestamp]
+
+
+------------------------- Mapping passed column -------------------------
+
+M was mapped to 0
+
+F was mapped to 1
+
+
+------------------------- Preprocessed data saved -------------------------
+
+
+Done!. Input data has been preprocessed successfully and stored in ./InstallDownload/data/validation_data.pkl
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pwd</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;/Users/terra-016/Downloads/mlflow-titanic/slik_python_package/examples&#39;
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="modules.html" class="btn btn-neutral float-right" title="slik" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="quick_start.html" class="btn btn-neutral float-left" title="Quickstart to ML with Slik" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Akinwande Komolafe.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

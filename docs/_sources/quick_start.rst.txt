@@ -41,7 +41,7 @@ can see here, Lets ask slik to check if there are missing values present in the 
 
     >>> slik.preprocessing.check_nan(titanic,plot=True,verbose=False)
 
-        .. image:: missing_values.png
+        .. image:: images/missing_values.png
            :align: center
 
 This provides us with lots of information about percentage count of missing values in different columns. 

@@ -6,7 +6,7 @@
 Welcome to Slik's documentation!
 ================================
 
-.. image:: slik.png
+.. image:: images/slik.png
    :width: 800px
    :height: 500px
    :scale: 60 %
@@ -67,6 +67,8 @@ within several seconds with an accuracy of 0.98.
    :caption: Getting Started
 
    quick_start
+   titanic.ipynb
+   
 
 .. toctree::
    :maxdepth: 2
