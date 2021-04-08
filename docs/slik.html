@@ -243,7 +243,7 @@ specified. The files are stored in present working dir by default.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>file_path</strong> (<em>str/file path</em>) – path to where data is stored.</p></li>
-<li><p><strong>delimiter</strong> (<em>str</em>) – separator in each row and column,</p></li>
+<li><p><strong>delimiter</strong> (<em>str. Default is '</em><em>,</em><em>'</em>) – separator in each row and column,</p></li>
 <li><p><strong>row_limit</strong> (<em>int</em>) – split each file by row count</p></li>
 <li><p><strong>output_path</strong> (<em>str</em>) – output path to store splitted files</p></li>
 <li><p><strong>keep_headers</strong> (<em>Bool. Default is True</em>) – make use of headers for all csv files</p></li>
@@ -265,35 +265,57 @@ specified. The files are stored in present working dir by default.</p>
 </div>
 <div class="section" id="module-slik.pipeline">
 <span id="slik-pipeline-module"></span><h2>slik.pipeline module<a class="headerlink" href="#module-slik.pipeline" title="Permalink to this headline">¶</a></h2>
+<p>Build Data and Model pipelines efficiently.</p>
 <dl class="py class">
 <dt id="slik.pipeline.DenseTransformer">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">slik.pipeline.</span></code><code class="sig-name descname"><span class="pre">DenseTransformer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.pipeline.DenseTransformer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.</span></code></p>
 <p>Transform sparse matrix to a dense matrix.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p></p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>A transformer class</p>
-</dd>
-</dl>
 <dl class="py method">
 <dt id="slik.pipeline.DenseTransformer.fit">
 <code class="sig-name descname"><span class="pre">fit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">fit_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.pipeline.DenseTransformer.fit" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Fit a sparse matrix.</p>
+<p>Fit a sparse matrix with the DenseTransformer class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>numpy array</em>) – Sparse matrix to be fitted</p></li>
+<li><p><strong>y</strong> (<em>numpy array</em>) – Target array</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="slik.pipeline.DenseTransformer.transform">
 <code class="sig-name descname"><span class="pre">transform</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">fit_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.pipeline.DenseTransformer.transform" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Transform a fitted sparse matrix to a dense matrix.</p>
+<p>DenseTransformer tranforms a sparse matrix to a dense matrix.
+Some Transformer class do not work with sparse martix, hence
+the transformation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>numpy array</em>) – Sparse matrix to be fitted</p></li>
+<li><p><strong>y</strong> (<em>numpy array</em>) – Target array</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Output</strong> – Dense matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
 <dt id="slik.pipeline.build_data_pipeline">
 <code class="sig-prename descclassname"><span class="pre">slik.pipeline.</span></code><code class="sig-name descname"><span class="pre">build_data_pipeline</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numerical_transformer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">categorical_transformer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pca</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_search</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hashing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hash_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.pipeline.build_data_pipeline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Build production ready pipelines efficiently. Specify numerical and categorical transformer.
+<dd><p>Build data and model pipeline.</p>
+<p>Build production ready pipelines efficiently. Specify numerical and categorical transformer.
 Function also helps to clean your data, reduce dimensionality and handle sparse categorical
 features.</p>
 <dl class="field-list simple">
@@ -326,14 +348,10 @@ features.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="slik.pipeline.build_model">
-<code class="sig-prename descclassname"><span class="pre">slik.pipeline.</span></code><code class="sig-name descname"><span class="pre">build_model</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numerical_transformer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">categorical_transformer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pca</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">balance_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_search</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hashing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hash_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.pipeline.build_model" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
 <dt id="slik.pipeline.evaluate_model">
 <code class="sig-prename descclassname"><span class="pre">slik.pipeline.</span></code><code class="sig-name descname"><span class="pre">evaluate_model</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.pipeline.evaluate_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluate model based on slik build data pipeline function. Invoke model on
+<dd><p>Check model strength by validating model with an evaluation data.</p>
+<p>Evaluate model based on slik build data pipeline function. Invoke model on
 transformed data and return evaluation plots in a file path.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -350,26 +368,27 @@ transformed data and return evaluation plots in a file path.</p>
 <dl class="py function">
 <dt id="slik.pipeline.get_feature_names">
 <code class="sig-prename descclassname"><span class="pre">slik.pipeline.</span></code><code class="sig-name descname"><span class="pre">get_feature_names</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_transformer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.pipeline.get_feature_names" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get feature names from all transformers.</p>
+<dd><p>Get feature names after using column transformer object.</p>
+<p>Get feature names after trabsformations from each transformers
+object in the column transformer class.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>feature_names</strong> – Names of the features produced by transform.</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>column_transformer</strong> (<em>sklearn column transformer</em>) – </p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list of strings</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>feature_names</strong> – Names of the features produced by transform.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of strings</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="slik.pipeline.log_plot">
-<code class="sig-prename descclassname"><span class="pre">slik.pipeline.</span></code><code class="sig-name descname"><span class="pre">log_plot</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.pipeline.log_plot" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
 <dt id="slik.pipeline.pipeline_transform_predict">
 <code class="sig-prename descclassname"><span class="pre">slik.pipeline.</span></code><code class="sig-name descname"><span class="pre">pipeline_transform_predict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.pipeline.pipeline_transform_predict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transform dataframe based on slik build data pipeline function. Invoke model on
+<dd><p>Transform pipeline object and return Predictions.</p>
+<p>Transform dataframe based on slik build data pipeline function. Invoke model on
 transformed data and return predictions</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -388,11 +407,6 @@ transformed data and return predictions</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py function">
-<dt id="slik.pipeline.train_test">
-<code class="sig-prename descclassname"><span class="pre">slik.pipeline.</span></code><code class="sig-name descname"><span class="pre">train_test</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_size</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.pipeline.train_test" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -801,6 +815,11 @@ feature engineering.</p>
 <dl class="py function">
 <dt id="slik.utils.load_pickle">
 <code class="sig-prename descclassname"><span class="pre">slik.utils.</span></code><code class="sig-name descname"><span class="pre">load_pickle</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.utils.load_pickle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="slik.utils.log_plot">
+<code class="sig-prename descclassname"><span class="pre">slik.utils.</span></code><code class="sig-name descname"><span class="pre">log_plot</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.utils.log_plot" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
