@@ -86,11 +86,12 @@
             
               <p class="caption"><span class="caption-text">Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="titanic.html">SLIK PREPROCESSING API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installs.html">Installing Slik</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quickstart to ML with Slik</a></li>
+<li class="toctree-l1"><a class="reference internal" href="titanic.html">SLIK Preprocessing API</a></li>
 </ul>
 <p class="caption"><span class="caption-text">slik API:</span></p>
 <ul class="current">
@@ -207,11 +208,14 @@
 </div>
 <div class="section" id="module-slik.loadfile">
 <span id="slik-loadfile-module"></span><h2>slik.loadfile module<a class="headerlink" href="#module-slik.loadfile" title="Permalink to this headline">¶</a></h2>
+<p>high level support for loading files.</p>
 <dl class="py function">
 <dt id="slik.loadfile.read_file">
 <code class="sig-prename descclassname"><span class="pre">slik.loadfile.</span></code><code class="sig-name descname"><span class="pre">read_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.loadfile.read_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>This funtion takes in a file path - CSV, excel or parquet and reads the data
-based on the input columns specified. Can only load file at a time.</p>
+<dd><p>Load a file path into a dataframe.</p>
+<p>This funtion takes in a file path - CSV, excel or parquet and reads
+the data based on the input columns specified. Can only load  one file at
+a time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -225,6 +229,31 @@ based on the input columns specified. Can only load file at a time.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>pandas Dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="slik.loadfile.split_csv_file">
+<code class="sig-prename descclassname"><span class="pre">slik.loadfile.</span></code><code class="sig-name descname"><span class="pre">split_csv_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_headers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.loadfile.split_csv_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split large csv files to small csv files.</p>
+<p>Function splits large csv files into smaller files based on the row_limit
+specified. The files are stored in present working dir by default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_path</strong> (<em>str/file path</em>) – path to where data is stored.</p></li>
+<li><p><strong>delimiter</strong> (<em>str</em>) – separator in each row and column,</p></li>
+<li><p><strong>row_limit</strong> (<em>int</em>) – split each file by row count</p></li>
+<li><p><strong>output_path</strong> (<em>str</em>) – output path to store splitted files</p></li>
+<li><p><strong>keep_headers</strong> (<em>Bool. Default is True</em>) – make use of headers for all csv files</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Splitted files are stored in output_path</p>
 </dd>
 </dl>
 </dd></dl>
@@ -303,7 +332,7 @@ features.</p>
 
 <dl class="py function">
 <dt id="slik.pipeline.evaluate_model">
-<code class="sig-prename descclassname"><span class="pre">slik.pipeline.</span></code><code class="sig-name descname"><span class="pre">evaluate_model</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.pipeline.evaluate_model" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">slik.pipeline.</span></code><code class="sig-name descname"><span class="pre">evaluate_model</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.pipeline.evaluate_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate model based on slik build data pipeline function. Invoke model on
 transformed data and return evaluation plots in a file path.</p>
 <dl class="field-list simple">
