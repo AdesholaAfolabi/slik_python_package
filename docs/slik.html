@@ -525,8 +525,9 @@ values are detected using separate conditions</p>
 
 <dl class="py function">
 <dt id="slik.preprocessing.create_schema_file">
-<code class="sig-prename descclassname"><span class="pre">slik.preprocessing.</span></code><code class="sig-name descname"><span class="pre">create_schema_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.preprocessing.create_schema_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes a map from column name to column datatype to a YAML file for a
+<code class="sig-prename descclassname"><span class="pre">slik.preprocessing.</span></code><code class="sig-name descname"><span class="pre">create_schema_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.preprocessing.create_schema_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>.</p>
+<p>Writes a map from column name to column datatype to a YAML file for a
 given dataframe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -598,7 +599,7 @@ passed into the columns param</p></li>
 <dl class="py function">
 <dt id="slik.preprocessing.drop_uninformative_fields">
 <code class="sig-prename descclassname"><span class="pre">slik.preprocessing.</span></code><code class="sig-name descname"><span class="pre">drop_uninformative_fields</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.preprocessing.drop_uninformative_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dropping fields that have only a single unique value or are all NaN, meaning
+<dd><p>Drop fields that have only a single unique value or are all NaN, meaning
 that they are entirely uninformative.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -655,14 +656,12 @@ that they are entirely uninformative.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="slik.preprocessing.handle_cat_feat">
-<code class="sig-prename descclassname"><span class="pre">slik.preprocessing.</span></code><code class="sig-name descname"><span class="pre">handle_cat_feat</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillna</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cat_attr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.preprocessing.handle_cat_feat" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
 <dt id="slik.preprocessing.handle_nan">
 <code class="sig-prename descclassname"><span class="pre">slik.preprocessing.</span></code><code class="sig-name descname"><span class="pre">handle_nan</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mode'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_outliers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresh_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresh_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.preprocessing.handle_nan" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle missing values present in pandas dataframe. Outliers are treated before handling     missing values.</p>
+<dd><p>Handle missing values present in pandas dataframe.</p>
+<p>Take care of missing values in the data both cateforical and
+numerical features by dropping or filling missing values.
+Outliers are treated before handling missing values by default.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -758,8 +757,8 @@ dataframe if params are left as default</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>DataFrame</em><em> or </em><em>named Series</em>) – </p></li>
-<li><p><strong>column_name</strong> (<em>str</em>) – Name of pandas dataframe column to be mapped</p></li>
+<li><p><strong>dataframe</strong> (<em>DataFrame</em><em> or </em><em>named Series</em>) – </p></li>
+<li><p><strong>target_column</strong> (<em>str</em>) – Name of the target column</p></li>
 <li><p><strong>add_prefix</strong> (<em>Bool. Default is True</em>) – Include a prefix of the target column in the dataset</p></li>
 <li><p><strong>drop</strong> (<em>Bool. Default is True</em>) – drop original target column name</p></li>
 </ul>
@@ -775,7 +774,7 @@ dataframe if params are left as default</p>
 
 <dl class="py function">
 <dt id="slik.preprocessing.preprocess">
-<code class="sig-prename descclassname"><span class="pre">slik.preprocessing.</span></code><code class="sig-name descname"><span class="pre">preprocess</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.preprocessing.preprocess" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">slik.preprocessing.</span></code><code class="sig-name descname"><span class="pre">preprocess</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logging</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'display'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.preprocessing.preprocess" title="Permalink to this definition">¶</a></dt>
 <dd><p>Automatically preprocess dataframe/file-path. Handles missing value, Outlier treatment,
 feature engineering.</p>
 <dl class="field-list simple">
