@@ -1,3 +1,5 @@
+"""Build Data and Model pipelines efficiently."""
+
 from .preprocessing import preprocess,identify_columns,manage_columns
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
@@ -19,7 +21,7 @@ import re
 import pandas as pd
 from .loadfile import read_file
 from .preprocessing import identify_columns,preprocess,map_target
-from .utils import load_pickle,print_devider,store_pipeline, HiddenPrints
+from .utils import load_pickle,print_devider,store_pipeline, HiddenPrints, get_scores, log_plot
 from slik import plot_funcs as pf
 
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler, OneHotEncoder
@@ -44,27 +46,47 @@ from sklearn.metrics import (accuracy_score,
                              precision_recall_curve,
                              average_precision_score)
 
-
-def get_scores(y_true, y_pred):
-    return {
-      'accuracy': accuracy_score(y_true, y_pred),
-      'precision': precision_score(y_true, y_pred),
-      'recall': recall_score(y_true, y_pred),
-      'f1': f1_score(y_true, y_pred),
-    }
-
-
 class DenseTransformer(TransformerMixin):
+    """Transform sparse matrix to a dense matrix."""
 
     def fit(self, X, y=None, **fit_params):
+        """Fit a sparse matrix.
+
+        Fit a sparse matrix with the DenseTransformer class
+
+        Parameters
+        ----------
+        X: numpy array
+            Sparse matrix to be fitted
+        y: numpy array
+            Target array
+        """
         return self
 
     def transform(self, X, y=None, **fit_params):
+        """Transform a fitted sparse matrix to a dense matrix.
+
+        DenseTransformer tranforms a sparse matrix to a dense matrix.
+        Some Transformer class do not work with sparse martix, hence
+        the transformation.
+
+        Parameters
+        ----------
+        X: numpy array
+            Sparse matrix to be fitted
+        y: numpy array
+            Target array
+        
+        Returns
+        -------
+        Output: numpy array
+            Dense matrix 
+        """
         return X.todense()
     
 
-def build_model(dataframe=None,target_column=None,numerical_transformer=None,categorical_transformer=None
-                ,pca=False,algorithm=None,balance_data=False,
+def _build_model(dataframe=None,target_column=None,numerical_transformer=None,categorical_transformer=None
+                ,pca=False, algorithm=None, balance_data=False,
                 grid_search=False,params=None,hashing=False,hash_size=500,project_path=None,
                 **kwargs):
     
@@ -75,7 +97,7 @@ def build_model(dataframe=None,target_column=None,numerical_transformer=None,cat
     except:
         pass
     
-    identify_columns(dataframe,target_column,output_path=data_path,**kwargs)
+    identify_columns(dataframe,target_column,project_path=data_path,**kwargs)
     
     model_preprocessor_pipeline = os.path.join(project_path, 'model/')
     try:
@@ -183,13 +205,13 @@ def build_model(dataframe=None,target_column=None,numerical_transformer=None,cat
                 elif first_key == 'hyperparameters':
                     hyperparamers_params [key] = value
                 else:
-                    raise ValueError("params:'Only one of parameters {} should be set'.format(exclusive_keyword)")
+                    raise ValueError(f'params:Only one of parameters {exclusive_keyword} should be set')
     
     if grid_search:
         # We can utilize params grid to check for best hyperparameters or transformers
         # The syntax here is pipeline_step_name__parameters and we need to chain if we have nested pipelines 
         parameters_grid = {}
-        for key,value in param_grid.items():
+        for key,value in params.items():
             parameters_grid[f'model__{key}'] = value
                 # Doing a Grid Search
         grid_search = GridSearchCV(classifier, param_grid=parameters_grid)
@@ -271,66 +293,65 @@ def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=T
                         select_columns=None,pca=True,algorithm=None,grid_search=False,verbose=True,
                         hashing=False,params=None,hash_size=500,
                         **kwargs):
-    """
+    """Build data and model pipeline.
     
-     Build production ready pipelines efficiently. Specify numerical and categorical transformer.
-     Function also helps to clean your data, reduce dimensionality and handle sparse categorical 
-     features. 
-     
-     Parameters:
-    ------------------------
-     data: str/ pandas dataframe
-         Data path or Pandas dataframe.
+    Build production ready pipelines efficiently. Specify numerical and categorical transformer.
+    Function also helps to clean your data, reduce dimensionality and handle sparse categorical 
+    features. 
+    
+    Parameters
+    ------------
+    data: str/ pandas dataframe
+        Data path or Pandas dataframe.
+        
+    target_column: str
+        target column name
+        
+    id_column: str
+        id column name
+        
+    clean_data: Bool, default is True
+        handle missing value, outlier treatment, feature engineering
+        
+    project_path: str/file path
+        file path to processed data
+        
+    numerical_transformer: sklearn pipeline
+        numerical transformer to transform numerical attributes
+        
+    categorical_transformer: sklearn pipeline
+        categorical transformer to transform numerical attributes
+        
+    select_columns: list
+        columns to be passed/loaded as a dataframe 
+        
+    pca: Bool, default is True
+        reduce feature dimensionality
+        
+    algorithm: Default is None
+        sklearn estimator
+        
+    grid_search: Bool. default is False
+        select best parameter after hyperparameter tuning
+        
+    hashing: Bool. default is False
+        handle sparse categorical features
+        
+    params: dict.
+        dictionary of keyword arguments.  
+        
+    verbose: Bool, default is True
+        display dataframe print statement
+        
+    hash_size: int, default is 500
+        size for hashing 
          
-     target_column: str
-         target column name
-         
-     id_column: str
-         id column name
-         
-     clean_data: Bool, default is True
-         handle missing value, outlier treatment, feature engineering
-         
-     project_path: str/file path
-         file path to processed data
-         
-     numerical_transformer: sklearn pipeline
-         numerical transformer to transform numerical attributes
-         
-     categorical_transformer: sklearn pipeline
-         categorical transformer to transform numerical attributes
-         
-     select_columns: list
-         columns to be passed/loaded as a dataframe 
-         
-     pca: Bool, default is True
-         reduce feature dimensionality
-         
-     algorithm: Default is None
-         sklearn estimator
-         
-     grid_search: Bool. default is False
-         select best parameter after hyperparameter tuning
-         
-     hashing: Bool. default is False
-         handle sparse categorical features
-         
-     params: dict.
-         dictionary of keyword arguments.  
-         
-     verbose: Bool, default is True
-         display dataframe print statement
-         
-     hash_size: int, default is 500
-         size for hashing 
-         
-    Returns:
-    ------------------------  
+    Returns
+    ---------
     Output:
         sklearn pipeline estimator
 
     """
-    
     if project_path is None:
         raise ValueError("project_path: Expecting a file path and got None")
         
@@ -361,7 +382,7 @@ def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=T
     if categorical_transformer is None:
         raise ValueError("categorical_transformer: Expecting a pipeline object for numerical transformation , got None")
     
-    if grid_search is True and param_grid is None:
+    if grid_search is True and params is None:
         raise ValueError("param grid: Expecting a dictionary of the parameters , got None")
         
     if algorithm is None:
@@ -416,7 +437,7 @@ def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=T
         train_df = load_pickle(PROCESSED_TRAIN_PATH)
         target_column = f'transformed_{target_column}'
     
-    output = build_model(dataframe = train_df,target_column=target_column,numerical_transformer=numerical_transformer,\
+    output = _build_model(dataframe = train_df,target_column=target_column,numerical_transformer=numerical_transformer,\
                         categorical_transformer=categorical_transformer,pca=pca,algorithm=algorithm,
                         grid_search=grid_search,params=params,id_column=id_column,verbose=verbose,hashing=hashing,
                         hash_size=hash_size,project_path=project_path)
@@ -425,31 +446,33 @@ def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=T
     
 
 def pipeline_transform_predict(data=None,select_columns=None,project_path=None,model_path=None):
-    """
-     Transform dataframe based on slik build data pipeline function. Invoke model on 
-     transformed data and return predictions
-     
-     Parameters:
-    ------------------------
-     data: str/ pandas dataframe
-         Data path or Pandas dataframe.
+    """Transform pipeline object and return Predictions.
+
+    Transform dataframe based on slik build data pipeline function. Invoke model on 
+    transformed data and return predictions
+        
+    Parameters
+    -----------
+    data: str/ pandas dataframe
+        Data path or Pandas dataframe.
+            
+    select_columns: list
+        columns to be passed/loaded as a dataframe
+        
+    project_path: str/file path
+        path to project
+        
+    model_path: str/file path
+        file path to model object
          
-     select_columns: list
-         columns to be passed/loaded as a dataframe
-     
-     project_path: str/file path
-         path to project
-         
-     model_path: str/file path
-         file path to model object
-         
-    Returns:
-    ------------------------  
+    Returns
+    --------- 
     results: numpy array
         list of numpy array predictions
 
     """
-    preprocess(data=data,train=False,verbose=False,project_path=project_path,select_columns=select_columns)
+    with HiddenPrints():
+        preprocess(data=data,train=False,verbose=False,project_path=project_path,select_columns=select_columns)
     
     if os.path.exists(f"{project_path}/data/metadata/store_file.yaml"):
         config = yaml.safe_load(open(f"{project_path}/data/metadata/store_file.yaml"))
@@ -463,7 +486,7 @@ def pipeline_transform_predict(data=None,select_columns=None,project_path=None,m
             if columns in input_columns:
                 pass
             else:
-                raise ValueError(f"{column} is not present in the training data.")
+                raise ValueError(f"{columns} is not present in the training data.")
                 
     data = load_pickle(f'{project_path}/data/validation_data.pkl')
     data = data.reindex(columns = input_columns)
@@ -474,15 +497,20 @@ def pipeline_transform_predict(data=None,select_columns=None,project_path=None,m
 
 
 def get_feature_names(column_transformer):
-    """
-    Get feature names from all transformers.
+    """Get feature names after using column transformer object.
+
+    Get feature names after trabsformations from each transformers 
+    object in the column transformer class.
+
+    Parameters
+    ---------
+    column_transformer: sklearn column transformer
     
     Returns
     -------
     feature_names : list of strings
         Names of the features produced by transform.
     """
-    
     # Turn loopkup into function for better handling with pipeline later
     def get_names(trans):
         # >> Original get_feature_names() method
@@ -538,37 +566,29 @@ def get_feature_names(column_transformer):
             feature_names.extend(get_names(trans))
     
     return feature_names
-
-
-def log_plot(args, plot_func, fp):
-    if not isinstance(args, (tuple)):
-        args = (args,)
-
-    plot_func(*args, fp)
-    print(f'Logged {fp}')
     
     
-def evaluate_model(model_path=None,eval_data=None,select_columns=None,project_path=None):
-    """
-     Evaluate model based on slik build data pipeline function. Invoke model on 
-     transformed data and return evaluation plots in a file path.
-     
-     Parameters:
-    ------------------------
-     model_path: str/file path
-         file path to model object
-         
-     eval_data: str/ pandas dataframe
-         Data path or Pandas dataframe.
-         
-     select_columns: list
-         columns to be passed/loaded as a dataframe
-     
-     project_path: str/file path
-         path to project        
+def evaluate_model(model_path=None,eval_data=None,select_columns=None,project_path=None,**kwargs):
+    """Check model strength by validating model with an evaluation data.
+
+    Evaluate model based on slik build data pipeline function. Invoke model on 
+    transformed data and return evaluation plots in a file path.
+    
+    Parameters
+    ------------
+    model_path: str/file path
+        file path to model object
+        
+    eval_data: str/ pandas dataframe
+        Data path or Pandas dataframe.
+        
+    select_columns: list
+        columns to be passed/loaded as a dataframe
+    
+    project_path: str/file path
+        path to project        
 
     """
-    
     if os.path.exists(f"{project_path}/data/metadata/store_file.yaml"):
         config = yaml.safe_load(open(f"{project_path}/data/metadata/store_file.yaml"))
         target_column = config['target_column']
@@ -602,10 +622,8 @@ def evaluate_model(model_path=None,eval_data=None,select_columns=None,project_pa
     print(scores_valid)
     
     plot_path = os.path.join(project_path, 'plots/')
-    try:
-        os.mkdir(plot_path)
-    except:
-        pass
+    if not os.path.exists(plot_path):
+        os.makedirs(plot_path)
     
     from collections import defaultdict
     scores = defaultdict(int)
@@ -622,10 +640,17 @@ def evaluate_model(model_path=None,eval_data=None,select_columns=None,project_pa
         prefix = re.search(r'(.*?)__', feat.lower()).group(0)
         attr = feat.replace(prefix,'')
         feature_list.append(attr)
-#     features = eval_data.columns
-    feature_importances_gain = estimator[1].get_feature_importance()
-    log_plot((pd.Index(feature_list), feature_importances_gain, 'Feature Importance'),
-             pf.feature_importance, f'{plot_path}feature_importance.png')
+
+    if not hasattr(estimator[1], 'get_feature_importance'):
+        warnings.warn("Sklearn estimator (%s) does not "
+                                 "provide get_feature_importance. "
+                                 "Will make use of model coefficient as feature importance"
+                                 %(type(estimator[1]).__name__))
+            
+    else:
+        feature_importances_gain = estimator[1].get_feature_importance()
+        log_plot((pd.Index(feature_list), feature_importances_gain, 'Feature Importance'),
+                pf.feature_importance, f'{plot_path}feature_importance.png')
 
     # confusion matrix
     cm = confusion_matrix(y_test, y_pred)
@@ -641,10 +666,3 @@ def evaluate_model(model_path=None,eval_data=None,select_columns=None,project_pa
     pr_auc = average_precision_score(y_test, y_pred)
     log_plot((pre, rec, pr_auc), pf.pr_curve, f'{plot_path}pr_curve.png')
     
-
-def train_test(dataframe,target_column,test_size,**kwargs):
-    
-    X_train, X_test, y_train, y_test = train_test_split(dataframe, target_column ,stratify = target_column,test_size=test_size,
-                                                       **kwargs)
-    return X_train, X_test, y_train, y_test
-
