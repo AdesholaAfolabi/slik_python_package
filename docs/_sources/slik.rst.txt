@@ -22,7 +22,7 @@ slik.pipeline module
    :undoc-members:
    :show-inheritance:
 
-.. warning:: Transfomers must be passed. Understand how pipeline transformation works before using the build pipeline function.
+.. warning:: Transfomers must be passed. Understand how pipeline transformation works cdbefore using the build pipeline function.
 
 slik.plot\_funcs module
 -----------------------
