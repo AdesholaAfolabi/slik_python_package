@@ -6,6 +6,7 @@ import numpy as np
 from collections import Counter
 from IPython.display import display
 import yaml, pathlib
+from difflib import get_close_matches
 import pprint
 from .loadfile import read_file
 from .utils import store_attribute, print_devider, HiddenPrints
@@ -202,7 +203,7 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
         Numerical features to perform operation on. If not provided, we automatically infer from the dataset.
         
     target_column: string
-        The target attribute name. Not required for fixing, so it needs to be excluded.
+        The target attribute name.
         
     fix_method: mean or log_transformation
         Method of fixing outliers present in the data. mean or log_transformation. Default is 'mean'
@@ -272,7 +273,7 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
     multiple_outliers = list(k for k, v in outlier_indices.items() if v > n)
     
     if verbose:
-        print_devider(f'Table idenifying more than {n} Outliers present in each record')
+        print_devider(f'Table idenifying {n} Outliers')
         display(data.loc[multiple_outliers])
 
     return df
@@ -305,7 +306,6 @@ def drop_uninformative_fields(dataframe):
     
 
 def drop_duplicate(dataframe=None,columns=None,method=None):
-
     """
     Drop duplicate values across rows, columns in the dataframe.
 
@@ -521,7 +521,6 @@ def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=
         os.mkdir(output_path)
     output_path.touch(exist_ok=True)
 
-        
     data = dataframe.copy()
     num_attributes, cat_attributes = get_attributes(data,target_column)
         
@@ -554,7 +553,6 @@ def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=
         pprint.pprint(dict_file)
     
     store_attribute(dict_file,output_path)
-
     print_devider('Saving Attributes in Yaml file')
     print(f'\nData columns successfully identified and attributes are stored in {output_path}\n')
         
@@ -730,7 +728,6 @@ def map_column(dataframe=None,column_name=None,items=None,add_prefix=True):
 
 
 def map_target(dataframe=None,target_column=None,add_prefix=True,drop=False):
-    
     """
     Map target column in  a pandas dataframe column with a dict.
 
@@ -796,6 +793,77 @@ def map_target(dataframe=None,target_column=None,add_prefix=True,drop=False):
         data = manage_columns(data,target_column,drop_columns=True)
     return data
     
+
+def rename_similar_values(dataframe,column_name,cut_off=0.75,n=None):
+    """
+    Use Sequence Matcher to check for best "good enough" matches.
+    
+    Rename values based on similar matches.
+    
+
+    Parameters
+    ----------
+        dataframe: Pandas Series
+        
+        column_name: str. 
+            Name of pandas column to perform operation on
+            
+        cut_off: int
+            Possibilities that don't score at least that similar to word are ignored        
+            
+        n(optional): int. default 2. 
+            The maximum number of close matches to return.  n must be > 0.
+
+    
+    Returns
+    -------
+        Pandas Dataframe.
+        
+    Example
+    -------
+    >>> pd.dataframe(["Lagos", "Lag", "Abuja", "Abuja FCT", 'Ibadan'],column=['column_name'])
+    >>> Applying the function to this pandas series yields 
+    
+    >>> ["Lagos", "Lagos", "Abuja", "Abuja", 'Ibadan']
+    
+    """
+    
+    if dataframe is None:
+        raise ValueError("data: Expecting a pandas Series, got 'None'")
+    
+    if not isinstance(column_name,str):
+        errstr = f'The given type for column_name is {type(column_name).__name__}. Expected type is str'
+        raise TypeError(errstr)
+  
+    if n is not None and n is not isinstance(n,int):
+        errstr = f'The given type for n is {type(n).__name__}. Expected type is int'
+        raise TypeError(errstr)
+     
+    if n is not None and n < 1:
+        raise ValueError("n: n must be greater than ")
+    
+    df = dataframe.copy()
+    l = df[column_name].tolist()
+    map_dict = {}
+    while l:
+        word = l.pop(0)
+        matches = get_close_matches(word, l, cutoff=0.70)
+        if len(matches)==1:
+            match = matches[0]
+            map_dict[match] = word
+            l.remove(match)
+        elif len(matches)>=2:
+            match1 = matches[0]
+            match2 = matches[1]
+            map_dict[match1] = word
+            map_dict[match2] = word
+            l.remove(match1)
+            l.remove(match2)
+        else:
+            map_dict[word] = word
+    rename_similar_values.map_dict = map_dict
+    return df[column_name].replace(map_dict)
+
     
 def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,verbose=True,
                               select_columns=None,**kwargs):
@@ -1031,3 +1099,46 @@ def preprocess(data=None,target_column=None,train=False,select_columns=None,\
                verbose=verbose,project_path=project_path,**kwargs)
     else:
         raise ValueError ("logging: Should be one of display or silent")
+
+
+def trim_all_columns(dataframe):
+    """
+    Trim whitespace from ends of each value across all series in dataframe
+
+    Parameters
+    ----------
+    dataframe: Pandas dataframe
+
+    Returns
+    -------
+    Pandas Dataframe:
+    """
+    trim_strings = lambda x: x.strip() if isinstance(x, str) else x
+    return dataframe.applymap(trim_strings)
+
+
+def change_case(dataframe,column,case='lower'):
+    """
+    change case of a pandas series to either upper or lower
+
+    Parameters
+    ----------
+    dataframe: Pandas dataframe
+
+    Returns
+    -------
+    Pandas Dataframe:
+    """
+        
+    if case != 'lower' or case != 'upper':
+        raise ValueError("case: Should be one of lower or upper")
+
+    df = dataframe.copy()
+    if case == 'lower':
+        df = df[column].apply(lambda x: x.lower())
+        return df
+    elif case == 'upper':
+        df = df[column].apply(lambda x: x.upper())
+        return df
+    else:
+        raise ValueError(f"case: expected one of 'upper' or 'lower' got {case}")

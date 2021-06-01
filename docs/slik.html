@@ -489,6 +489,23 @@ values are detected using separate conditions</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="slik.preprocessing.change_case">
+<code class="sig-prename descclassname"><span class="pre">slik.preprocessing.</span></code><code class="sig-name descname"><span class="pre">change_case</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lower'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.preprocessing.change_case" title="Permalink to this definition">¶</a></dt>
+<dd><p>change case of a pandas series to either upper or lower</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dataframe</strong> (<em>Pandas dataframe</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Pandas Dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="slik.preprocessing.check_datefield">
 <code class="sig-prename descclassname"><span class="pre">slik.preprocessing.</span></code><code class="sig-name descname"><span class="pre">check_datefield</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.preprocessing.check_datefield" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if a column is a datefield and Returns a Bool.</p>
@@ -826,6 +843,23 @@ feature engineering.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="s2">&quot;Lagos&quot;</span><span class="p">,</span> <span class="s2">&quot;Lagos&quot;</span><span class="p">,</span> <span class="s2">&quot;Abuja&quot;</span><span class="p">,</span> <span class="s2">&quot;Abuja&quot;</span><span class="p">,</span> <span class="s1">&#39;Ibadan&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="slik.preprocessing.trim_all_columns">
+<code class="sig-prename descclassname"><span class="pre">slik.preprocessing.</span></code><code class="sig-name descname"><span class="pre">trim_all_columns</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik.preprocessing.trim_all_columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trim whitespace from ends of each value across all series in dataframe</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dataframe</strong> (<em>Pandas dataframe</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Pandas Dataframe</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
