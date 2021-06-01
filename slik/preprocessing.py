@@ -51,6 +51,33 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
     data[prefix_name] = pd.cut(data[age_col], bins = [0,2,17,30,45,99], labels = bin_labels)
     data[prefix_name] = data[prefix_name].astype(str)
     return data
+
+
+def change_case(dataframe,column,case='lower'):
+    """
+    change case of a pandas series to either upper or lower
+
+    Parameters
+    ----------
+    dataframe: Pandas dataframe
+
+    Returns
+    -------
+    Pandas Dataframe:
+    """
+        
+    if case != 'lower' or case != 'upper':
+        raise ValueError("case: Should be one of lower or upper")
+
+    df = dataframe.copy()
+    if case == 'lower':
+        df = df[column].apply(lambda x: x.lower())
+        return df
+    elif case == 'upper':
+        df = df[column].apply(lambda x: x.upper())
+        return df
+    else:
+        raise ValueError(f"case: expected one of 'upper' or 'lower' got {case}")
     
 
 def check_nan(dataframe=None, plot=False, verbose=True):
@@ -1117,28 +1144,3 @@ def trim_all_columns(dataframe):
     return dataframe.applymap(trim_strings)
 
 
-def change_case(dataframe,column,case='lower'):
-    """
-    change case of a pandas series to either upper or lower
-
-    Parameters
-    ----------
-    dataframe: Pandas dataframe
-
-    Returns
-    -------
-    Pandas Dataframe:
-    """
-        
-    if case != 'lower' or case != 'upper':
-        raise ValueError("case: Should be one of lower or upper")
-
-    df = dataframe.copy()
-    if case == 'lower':
-        df = df[column].apply(lambda x: x.lower())
-        return df
-    elif case == 'upper':
-        df = df[column].apply(lambda x: x.upper())
-        return df
-    else:
-        raise ValueError(f"case: expected one of 'upper' or 'lower' got {case}")
