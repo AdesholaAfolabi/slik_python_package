@@ -821,6 +821,88 @@ def map_target(dataframe=None,target_column=None,add_prefix=True,drop=False):
     return data
     
 
+
+def _parse_int(string):
+    ONES = {'zero': 0,
+          'one': 1,
+          'two': 2,
+          'three': 3,
+          'four': 4,
+          'five': 5,
+          'six': 6,
+          'seven': 7,
+          'eight': 8,
+          'nine': 9,
+          'ten': 10,
+          'eleven': 11,
+          'twelve': 12,
+          'thirteen': 13,
+          'fourteen': 14,
+          'fifteen': 15,
+          'sixteen': 16,
+          'seventeen': 17,
+          'eighteen': 18,
+          'nineteen': 19,
+          'twenty': 20,
+          'thirty': 30,
+          'forty': 40,
+          'fifty': 50,
+          'sixty': 60,
+          'seventy': 70,
+          'eighty': 80,
+          'ninety': 90,
+            }
+    numbers = []
+    if type(string) == int:
+        return string
+    else:
+        string = string.lower()
+        for token in string.replace('-', ' ').split(' '):
+            if token in ONES:
+                numbers.append(ONES[token])
+            elif token == 'hundred':
+                numbers[-1] *= 100
+            elif token == 'thousand':
+                numbers = [x * 1000 for x in numbers]
+            elif token == 'million':
+                      numbers = [x * 1000000 for x in numbers]
+        return sum(numbers)
+
+
+def parse_string_to_int(dataframe,column,add_prefix=True):
+    """
+    The function converts numbers in strings to int
+
+    Parameters
+    -----------
+    dataframe: DataFrame or name Series.
+        Data set to perform operation on.
+        
+    column: the name of the column to be passed. A string is expected
+        The column to perform the operation on.
+        
+    add_prefix: Bool. Default is set to True
+        add prefix to the column name. 
+
+    Returns
+    -------
+    Dataframe 
+    """
+    if dataframe is None:
+        raise ValueError("dataframe: Expecting a DataFrame or Series, got 'None'")
+    
+    if not isinstance(column, str):
+        errstr = f'The given type for age_col is {type(column).__name__}. Expected type is a string'
+        raise TypeError(errstr)
+        
+    if add_prefix:
+        prefix_name = f'transformed_{column}'
+    else:
+        prefix_name = column
+    dataframe[prefix_name] = dataframe[column].apply(lambda x: _parse_int(x))
+    return dataframe
+
+    
 def rename_similar_values(dataframe,column_name,cut_off=0.75,n=None):
     """
     Use Sequence Matcher to check for best "good enough" matches.
@@ -870,7 +952,7 @@ def rename_similar_values(dataframe,column_name,cut_off=0.75,n=None):
         raise ValueError("n: n must be greater than ")
     
     df = dataframe.copy()
-    l = df[column_name].tolist()
+    l = df[column_name].unique().tolist()
     map_dict = {}
     while l:
         word = l.pop(0)
