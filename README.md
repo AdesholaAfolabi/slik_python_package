@@ -8,7 +8,7 @@ Slik has several tools that makes it easy to load data of any format, clean and 
 This library is in very active development, so it’s not recommended for production use.
 
 - 📖 [Documentation](https://sensei-akin.github.io/slik_python_package/index.html)
-- 🐞 [Issue Tracker](https://github.com/arduosoft/RawCMS/issues) - Report bugs or suggest new features
+- 🐞 [Issue Tracker](https://github.com/AdesholaAfolabi/slik_python_package/issues) - Report bugs or suggest new features
 - 👪 [Community Chat](https://gitter.im/arduosoft/RawCMS-Headless-CMS-Aspnet) - Gitter
 
 ## Contribution
