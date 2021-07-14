@@ -1,0 +1,67 @@
+
+###############################################
+Installing Slik
+###############################################
+
+Slik is available as a Python package for Linux, MacOS and Windows, and can be installed like any other Python package. You can visit our 
+`GitHub repository <https://github.com/Sensei-akin/slik_python_package/tree/staging/>`_ or get the latest version from 
+`PyPI <https://pypi.org/project/slik/>`_
+
+Install in existing environment
+-------------------------------
+
+If you have an existing Python environment activated, you can install slik with the command:
+
+
+>>> $ pip install slik
+
+
+Install in a new virtual environment
+------------------------------------
+
+To install slik in a virtual environment, you can use the Anaconda package.
+
+You must have  `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`_ or `Anaconda Distribution <https://docs.anaconda.com/anaconda/>`_ installed.
+
+Confirm you have Anaconda installed:
+
+
+>>> $ conda --version
+
+
+Create new virtual environment and install Python 3.5 and above:
+
+>>> $ conda create -n yourenvname python=3.7 
+
+
+Activate your environment:
+
+
+>>> $ source activate yourenvname
+
+
+Install slik and other packages you need for your project
+
+
+>>> $ pip install slik
+
+
+Test your installation
+----------------------
+
+
+>>> $ python
+    Python 3.7.5 (default, Oct 25 2019, 15:51:11) 
+    [GCC 7.3.0] :: Anaconda, Inc. on linux
+Type "help", "copyright", "credits" or "license" for more information.
+import slik
+
+
+
+What is this repository for
+---------------------------
+
+* Quick summary: The application employs the modular style of putting the applications together.
+* Version: 1.0
+* Learn Markdown (https://bitbucket.org/tutorials/markdowndemo)
+* Repo owner: Adeshola Afolabi, Komolafe Akinwande

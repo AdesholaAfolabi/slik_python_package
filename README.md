@@ -1,22 +1,15 @@
-# slik_python_package
-This README documents the steps that are necessary to get the slik package up and running. The slik package is a data to pre-modeling package; what this means is that every step of the way before Data Modeling is handled in this package. Steps like NaN handling, outlier detection and removal, scaling, normaization, etc. This package was built with the aim of helping Data Scientists navigate the difficulties of data pre-processing. slik is available on PyPi and can be pip installed from the terminal. See how to pip install below:
+Data scientists struggle to prepare their data for building machine learning models and all machine learning projects require data wrangling, data preprocessing, feature engineering which takes about 80% of the model building process.
 
-! pip install slik-preprocessing
+Slik is a data to modeling tool that helps data scientists navigate the issues of basic data wrangling and preprocessing steps. The idea behind Slik is to jump-start supervised learning projects.
 
-### What is this repository for? ###
+Slik has several tools that makes it easy to load data of any format, clean and inspect your data. It offers a quick way to pre-process data and perform feature engineering. Building machine learning models is an inherently iterative task and data scientists face challenges of reproducing the models and productionalizing model pipelines.
 
-* Quick summary: The application employs the modular style of putting the applications together. In total, there are four modules which takes care of reading any type of file, data preprocessing (Nan, outliers, etc), and other preprocessing steps such as One Hot Encoding, Scaling, Normalization, PCA, etc. There is a general module (which is the general_utils module) that contains a list of global attributes and data used throughout the project. 
-* Version: 1.0
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+With Slik, Data scientists can build model pipelines. Slik provides explainability in the pipeline process in the form of DAG showing each step in the build process. With every build process/experiment, Slik logs the metadata for each run.
 
-### How do I get set up? ###
+Slik provides an easy-to-use solutions for supervised machine learning. Here is a link to the staging repository.
 
-* Summary of set up: ensure you have python 3 up and running
-* Configuration: ensure all modules are imported properly. They all depend on each other
-* Dependencies: python 3, pandas, scikit-learn, sklearn pre-processing
-* Database configuration: no required configuration
-* How to run tests: no tests files used yet. Version 2 will come with test cases
-* Deployment instructions: To use this package, use the Savepipeline method (which requires a file path and input columns as input parameters) in save_object module and call the compile_functions. The final output is a csv file and a pickle pipeline object.
+This project tries to help make supervised machine learning more accessible for beginners, and reduce boiler plate for common tasks.
 
-"README.md" 27L, 1205C
-* Repo owner: akinwandekomolafe@gmail.com
+This library is in very active development, so it’s not recommended for production use.
+
+link to documentation https://sensei-akin.github.io/slik_python_package/index.html
