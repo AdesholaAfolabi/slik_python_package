@@ -487,8 +487,8 @@ def get_attributes(data=None,target_column=None):
     if data is None:
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
         
-    num_attributes = data.select_dtypes(exclude=['object', 'datetime64']).columns.tolist()
-    cat_attributes = data.select_dtypes(include=['object']).columns.tolist()
+    num_attributes = data.select_dtypes(include=np.number).columns.tolist()
+    cat_attributes = [x for x in data.columns if x not in num_attributes]
     
     if target_column in num_attributes:
         num_attributes.remove(target_column)
