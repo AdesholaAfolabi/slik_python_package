@@ -47,7 +47,12 @@ from sklearn.metrics import (accuracy_score,
                              average_precision_score)
 
 class DenseTransformer(TransformerMixin):
-    """Transform sparse matrix to a dense matrix."""
+
+    """
+
+    Transform sparse matrix to a dense matrix.
+
+    """
 
     def fit(self, X, y=None, **fit_params):
         """Fit a sparse matrix.
@@ -293,7 +298,8 @@ def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=T
                         select_columns=None,pca=True,algorithm=None,grid_search=False,verbose=True,
                         hashing=False,params=None,hash_size=500,
                         **kwargs):
-    """Build data and model pipeline.
+    """
+    Build data and model pipeline.
     
     Build production ready pipelines efficiently. Specify numerical and categorical transformer.
     Function also helps to clean your data, reduce dimensionality and handle sparse categorical 
@@ -446,7 +452,9 @@ def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=T
     
 
 def pipeline_transform_predict(data=None,select_columns=None,project_path=None,model_path=None):
-    """Transform pipeline object and return Predictions.
+
+    """
+    Transform pipeline object and return Predictions.
 
     Transform dataframe based on slik build data pipeline function. Invoke model on 
     transformed data and return predictions
@@ -497,7 +505,9 @@ def pipeline_transform_predict(data=None,select_columns=None,project_path=None,m
 
 
 def get_feature_names(column_transformer):
-    """Get feature names after using column transformer object.
+
+    """
+    Get feature names after using column transformer object.
 
     Get feature names after trabsformations from each transformers 
     object in the column transformer class.
@@ -569,7 +579,9 @@ def get_feature_names(column_transformer):
     
     
 def evaluate_model(model_path=None,eval_data=None,select_columns=None,project_path=None,**kwargs):
-    """Check model strength by validating model with an evaluation data.
+
+    """
+    Check model strength by validating model with an evaluation data.
 
     Evaluate model based on slik build data pipeline function. Invoke model on 
     transformed data and return evaluation plots in a file path.

@@ -5,15 +5,22 @@ import matplotlib
 import seaborn as sns
 
 
-def plot_nan(nan_values):
+def plot_nan(data):
         
         """
         
-        Here is where top 30 missing values are plotted before and after NaN
-        values are detected using separate conditions
+        Plot the top values from a value count in a dataframe.
+    
+        Parameters
+        -----------
+        data: DataFrame or name Series.
+            Data set to perform plot operation on.
+            
+        Returns: A bar plot
+            The bar plot of top n values.
         
         """
-        plot = nan_values.sort_values(ascending=False)[:30]
+        plot = data.sort_values(ascending=False)[:30]
         
         # Figure Size 
         fig, ax = plt.subplots(figsize =(16, 9)) 
@@ -47,7 +54,7 @@ def plot_nan(nan_values):
                      fontsize = 10, fontweight ='bold', 
                      color ='grey') 
         # Add Plot Title 
-        ax.set_title('   Chart showing the top 30 missing values in the dataset', 
+        ax.set_title('Chart showing the top 30 missing values in the dataset', 
                      loc ='left', ) 
 
         # Add Text watermark 
@@ -64,6 +71,22 @@ DPI = 150
 
 
 def label_share(share, fp):
+
+    '''
+    
+    The distribution of label in a data set.
+
+    Parameters
+    -----------
+    share: label distribution
+        
+    fp: the file path to save the figure.
+
+    Returns
+    -------
+    A bar plot of the label distribution
+
+    '''
     share_norm = share / share.sum()
     fig, ax = plt.subplots()
     bar = sns.barplot(share_norm.index, share_norm.values)
@@ -97,6 +120,19 @@ def confusion_matrix(cm, fp, norm_axis=1):
     """
     [TN, FP]
     [FN, TP]
+
+    The confusion matrix after validating the model on a test set.
+
+    Parameters
+    -----------
+    cm: confusion matrix
+        
+    fp: the file path to save the figure.
+
+    Returns
+    -------
+    A bar plot of the confusion matrix
+
     """
 
     cm_norm = cm / cm.sum(axis=norm_axis, keepdims=True)
@@ -136,6 +172,26 @@ def metric(metrics, fp):
 
 
 def feature_importance(features, feature_importances, title, fp):
+
+    '''
+    The feature importance indicating features that contribute the
+    most to the predictive power of the model.
+
+    Parameters
+    -----------
+    features: features of the data set
+
+    feature_importances: the importances of the features that contributes
+                         the most to the predictive power of the model
+
+    title: title of the feature importance chart
+        
+    fp: the file path to save the figure.
+
+    Returns
+    -------
+    A bar plot of the feature importances
+    '''
     fig, ax = plt.subplots()
     idxes = np.argsort(feature_importances)[::-1][:25]
     y = np.arange(len(idxes))
@@ -152,6 +208,20 @@ def feature_importance(features, feature_importances, title, fp):
 
 
 def scores(scores, fp):
+
+    '''
+    The average classification score for model validation.
+
+    Parameters
+    -----------
+    scores: test data scores
+        
+    fp: the file path to save the figure.
+
+    Returns
+    -------
+    A bar plot of the average classification scores
+    '''
     array = np.array([v for v in scores.values()]).reshape((2, 2))
     annot = np.array(['{}: {:.3f}'.format(k, v) for k, v in scores.items()]).reshape((2, 2))
     fig, ax = plt.subplots()
@@ -168,6 +238,25 @@ def scores(scores, fp):
 
 
 def roc_curve(fpr, tpr, auc, fp):
+
+    '''
+    The roc_curve for model validation.
+
+    Parameters
+    -----------
+    fpr: false positive rate
+
+    tpr: true positive rate
+
+    auc: area under the curve
+        
+    fp: the file path to save the figure.
+
+    Returns
+    -------
+    The ROC AUC curve
+    
+    '''
     fig, ax = plt.subplots()
     ax.plot(fpr, tpr)
     ax.plot([0, 1], [0, 1], 'k:')
@@ -180,6 +269,24 @@ def roc_curve(fpr, tpr, auc, fp):
 
 
 def pr_curve(pre, rec, auc, fp):
+
+    '''
+    The precision-recall curve for model validation.
+
+    Parameters
+    -----------
+    pre: precision
+
+    rec: recall
+
+    auc: area under the curve
+        
+    fp: the file path to save the figure.
+
+    Returns
+    -------
+    The precision-recall curve
+    '''
     fig, ax = plt.subplots()
     ax.plot(pre, rec)
     ax.set_xlabel('Recall')

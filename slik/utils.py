@@ -11,13 +11,28 @@ from sklearn.metrics import (accuracy_score,
 
 
 def print_devider(title):
-    """
 
+    """
+    Expand print function with a clear differentiator using -.
+
+    Parameters:
+        Title: the title of the print statement
+        
+    Returns:
+        None
     """
     print('\n{} {} {}\n'.format('-' * 15, title, '-' * 15))
 
 def load_pickle(fp):
+
     """
+    Load pickle file(data, model or pipeline object).
+
+    Parameters:
+        fp: the file path of the pickle files.
+        
+    Returns:
+        Loaded pickle file
 
     """
     with open(fp, 'rb') as f:
@@ -26,7 +41,14 @@ def load_pickle(fp):
 
 def store_attribute(dict_file,output_path):  
     """
+    Store attributes of a dataframe as a dict.
 
+    Parameters:
+        dict_file: the dictionary.
+        output_path: the path where the file is saved
+        
+    Returns:
+        None
     """  
     with open(f'{output_path}/store_file.yaml', 'w') as file:
         yaml.dump(dict_file, file)
@@ -34,13 +56,30 @@ def store_attribute(dict_file,output_path):
 
 def store_pipeline(pipeline_object, pipeline_path):
     """
+    Store the column transformer pipeline object.
 
+    Parameters:
+        pipeline_object: the pipeline object.
+        pipeline_path: the path where the pipeline is saved
+        
+    Returns:
+        None
     """
     # save the model to disk
     pickle.dump(pipeline_object, open(pipeline_path, 'wb'))
 
 def get_scores(y_true, y_pred):
+
     """
+    Get metrics of model performance such as accuracy, precision, recall and f1.
+
+    Parameters:
+        y_true: the target value of test/validation data.
+        y_pred: the predicted value
+        
+    Returns:
+        Accuracy, precision, recall and f1
+
     """
     
     return {
@@ -52,6 +91,13 @@ def get_scores(y_true, y_pred):
     
 class HiddenPrints:
     """
+    Hide prints of a function
+
+    Parameters:
+        None
+        
+    Returns:
+        None
     """
     def __enter__(self):
         self._original_stdout = sys.stdout
@@ -62,6 +108,23 @@ class HiddenPrints:
         sys.stdout = self._original_stdout
         
 def log_plot(args, plot_func, fp):
+
+    '''
+    Log the plots of your metrics and save output in a specified file path.
+
+    Parameters:
+        args: A tuple.
+            Arguments required to plot the required metrics
+        plot_func: A function
+                Contains different method for plotting metrics such as
+                ROC-AUC, PR-Curve
+        fp: File Path
+            The path to write the output logs of the plot
+        
+    Returns:
+        None
+    
+    '''
     if not isinstance(args, (tuple)):
         args = (args,)
 
