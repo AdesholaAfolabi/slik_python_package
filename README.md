@@ -23,10 +23,7 @@ We are actively seeking contribution to continue improving our open source proje
 
 ## Key Benefits and Advantages
 ### ⚒ Data Modelling without coding
-Whether you're dealing with web apps, mobile apps or client application, just forget about all data management effort. All you will need with RawCMS is to define your data structure and relationships, using a simple and intuitive UI. Simply say stop to the boring repetitive code!
-
-### 🎛 Agnostic and Universal Framework for your Data
-Due to the API approach, RawCMS is very flexible and adapts perfectly to all use cases. Using GraphQL or REST standard RawCMS can be used by everybody without any headhaches. This gives you a solid and modern foundation for your project. 
+Whether you're dealing with dataframe, you can easily clean your data with one line of code =. Simply say stop to the boring repetitive code!
 
 ### 🚀 Ready to use
 Slik provides an easy-to-use solutions for supervised machine learning. This project tries to help make supervised machine learning more accessible for beginners, and reduce boiler plate for common tasks.
