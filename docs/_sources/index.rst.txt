@@ -7,17 +7,16 @@ Welcome to Slik's documentation!
 ================================
 
 .. image:: images/slik.png
-   :width: 800px
-   :height: 500px
-   :scale: 60 %
+   :width: 300px
+   :height: 200px
+   :scale: 100 %
    :alt: alternate text
    :align: center
 
-Data scientists struggle to prepare their data for building machine learning models and all machine learning
-projects require data wrangling, data preprocessing, feature engineering which takes about 80% of the model building process.
-
 Slik is a data to modeling tool that helps data scientists navigate the issues of basic data wrangling
-and preprocessing steps.  The idea behind Slik is to jump-start supervised learning projects.
+and preprocessing steps.  The idea behind Slik is to jump-start supervised learning projects. Data scientists struggle to 
+prepare their data for building machine learning models and all machine learning projects require data wrangling, 
+data preprocessing, feature engineering which takes about 80% of the model building process.
 
 Slik has several tools that makes it easy to load data of any format, clean and inspect your data.
 It offers a quick  way to pre-process data and perform feature engineering. Building machine learning models is an 
@@ -39,14 +38,16 @@ Examples
 --------
 A minimum example of using slik for preprocessing is:
 
-    >>> import slik
+    >>> from slik import preprocessing as pp
     >>> from sklearn.model_selection import train_test_split
-    >>> from sklearn.datasets import load_digits
-    >>> X, y = load_digits(return_X_y=True)
+    >>> from sklearn.datasets import titanic
+    >>> X, y = titanic(return_X_y=True)
+    >>> pp.preprocess(data=X,target_column='Survived',train=True,verbose=False,project_path='./Titanic'\
+              ,logging='display')
     >>> X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1)
-    >>> sc = dabl.SimpleClassifier().fit(X_train, y_train)
+    >>> lr = LogisticRegression.fit(X_train, y_train)
     Running ...
-    >>> print("Accuracy score", sc.score(X_test, y_test))
+    >>> print("Accuracy score", lr.score(X_test, y_test))
     Accuracy score 0.9...
 
 

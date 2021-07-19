@@ -1,6 +1,8 @@
-Data scientists struggle to prepare their data for building machine learning models and all machine learning projects require data wrangling, data preprocessing, feature engineering which takes about 80% of the model building process.
+<p align="center">
+  <img  src="https://github.com/Sensei-akin/slik_python_package/blob/master/docs/_images/slik.png" width=300 height=200>
+</p>
 
-Slik is a data to modeling tool that helps data scientists navigate the issues of basic data wrangling and preprocessing steps. The idea behind Slik is to jump-start supervised learning projects.
+Slik is a data to modeling tool that helps data scientists navigate the issues of basic data wrangling and preprocessing steps. The idea behind Slik is to jump-start supervised learning projects. Data scientists struggle to prepare their data for building machine learning models and all machine learning projects require data wrangling, data preprocessing, feature engineering which takes about 80% of the model building process.
 
 Slik has several tools that makes it easy to load data of any format, clean and inspect your data. It offers a quick way to pre-process data and perform feature engineering. Building machine learning models is an inherently iterative task and data scientists face challenges of reproducing the models and productionalizing model pipelines.
 
@@ -21,10 +23,7 @@ We are actively seeking contribution to continue improving our open source proje
 
 ## Key Benefits and Advantages
 ### ⚒ Data Modelling without coding
-Whether you're dealing with web apps, mobile apps or client application, just forget about all data management effort. All you will need with RawCMS is to define your data structure and relationships, using a simple and intuitive UI. Simply say stop to the boring repetitive code!
-
-### 🎛 Agnostic and Universal Framework for your Data
-Due to the API approach, RawCMS is very flexible and adapts perfectly to all use cases. Using GraphQL or REST standard RawCMS can be used by everybody without any headhaches. This gives you a solid and modern foundation for your project. 
+Whether you're dealing with dataframe, you can easily clean your data with one line of code =. Simply say stop to the boring repetitive code!
 
 ### 🚀 Ready to use
 Slik provides an easy-to-use solutions for supervised machine learning. This project tries to help make supervised machine learning more accessible for beginners, and reduce boiler plate for common tasks.

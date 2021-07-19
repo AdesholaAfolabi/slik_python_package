@@ -189,11 +189,11 @@
 </style>
 <div class="section" id="welcome-to-slik-s-documentation">
 <h1>Welcome to Slik’s documentation!<a class="headerlink" href="#welcome-to-slik-s-documentation" title="Permalink to this headline">¶</a></h1>
-<a class="reference internal image-reference" href="_images/slik.png"><img alt="alternate text" class="align-center" src="_images/slik.png" style="width: 480.0px; height: 300.0px;" /></a>
-<p>Data scientists struggle to prepare their data for building machine learning models and all machine learning
-projects require data wrangling, data preprocessing, feature engineering which takes about 80% of the model building process.</p>
+<a class="reference internal image-reference" href="_images/slik.png"><img alt="alternate text" class="align-center" src="_images/slik.png" style="width: 300.0px; height: 200.0px;" /></a>
 <p>Slik is a data to modeling tool that helps data scientists navigate the issues of basic data wrangling
-and preprocessing steps.  The idea behind Slik is to jump-start supervised learning projects.</p>
+and preprocessing steps.  The idea behind Slik is to jump-start supervised learning projects. Data scientists struggle to
+prepare their data for building machine learning models and all machine learning projects require data wrangling,
+data preprocessing, feature engineering which takes about 80% of the model building process.</p>
 <p>Slik has several tools that makes it easy to load data of any format, clean and inspect your data.
 It offers a quick  way to pre-process data and perform feature engineering. Building machine learning models is an
 inherently iterative task and data scientists face challenges of reproducing the models and productionalizing model pipelines.</p>
@@ -207,14 +207,16 @@ beginners, and reduce boiler plate for common tasks.</p>
 <div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p>A minimum example of using slik for preprocessing is:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">slik</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">slik</span> <span class="kn">import</span> <span class="n">preprocessing</span> <span class="k">as</span> <span class="n">pp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">load_digits</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">load_digits</span><span class="p">(</span><span class="n">return_X_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">titanic</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">titanic</span><span class="p">(</span><span class="n">return_X_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pp</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">X</span><span class="p">,</span><span class="n">target_column</span><span class="o">=</span><span class="s1">&#39;Survived&#39;</span><span class="p">,</span><span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">project_path</span><span class="o">=</span><span class="s1">&#39;./Titanic&#39;</span>\
+<span class="go">          ,logging=&#39;display&#39;)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sc</span> <span class="o">=</span> <span class="n">dabl</span><span class="o">.</span><span class="n">SimpleClassifier</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lr</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 <span class="go">Running ...</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Accuracy score&quot;</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Accuracy score&quot;</span><span class="p">,</span> <span class="n">lr</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">))</span>
 <span class="go">Accuracy score 0.9...</span>
 </pre></div>
 </div>
