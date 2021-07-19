@@ -1,4 +1,4 @@
-from pipeline import Build
+from .pipeline import Build
 import pickle
 import pandas as pd
 
@@ -41,9 +41,9 @@ class Save_pipeline():
         
         """
         
-        Function saves the KMeans and Pipeline objects
+        Function saves the model and Pipeline objects
                 
-        Args:
+        Parameters:
             model_name to be used to save the pickle file
             pipeline name to be used to save the pickle file
         
@@ -68,6 +68,12 @@ class Save_pipeline():
         
         """
         This funtion compiles all the other funtions created above.
+
+        Parameters:
+            None
+        
+        Returns:
+            None
         """
         
         self.get_data_and_pipeline()

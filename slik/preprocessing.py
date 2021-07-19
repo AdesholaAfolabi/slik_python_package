@@ -16,7 +16,8 @@ from .plot_funcs import plot_nan
 def bin_age(dataframe=None, age_col=None, add_prefix=True):
 
     """
-    The age attribute is binned into 5 categories (baby/toddler, child, young adult, mid age and elderly).
+    The age attribute in a DataFrame is binned into 5 categories:
+    (baby/toddler, child, young adult, mid age and elderly).
 
     Parameters
     -----------
@@ -55,7 +56,7 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
 
 def change_case(dataframe,column,case='lower'):
     """
-    change case of a pandas series to either upper or lower
+    Change the case of a pandas series to either upper or lower case
 
     Parameters
     ----------
@@ -83,7 +84,8 @@ def change_case(dataframe,column,case='lower'):
 def check_nan(dataframe=None, plot=False, verbose=True):
     
     """
-    Display missing values as a pandas dataframe.
+    Display missing values as a pandas dataframe and give a proportion
+    in terms of percentages.
 
     Parameters
     ----------
@@ -121,10 +123,10 @@ def check_nan(dataframe=None, plot=False, verbose=True):
 
 def create_schema_file(dataframe, target_column, id_column, project_path, save=True, verbose=True):
 
-    """.
-
-    Writes a map from column name to column datatype to a YAML file for a
-    given dataframe.
+    """
+    
+    A data schema of column names and types are automatically inferred and
+    saved in a YAML file
 
     Parameters
     ------------
@@ -137,8 +139,8 @@ def create_schema_file(dataframe, target_column, id_column, project_path, save=T
     id_column: str
         Unique Identifier column.
         
-    file_name:  str.
-        name of the schema file you want to create.
+    project_path:  str.
+        The path of the schema file you want to create.
         
     save: Bool. Default is set to True
         save schema file to file path.
@@ -193,6 +195,7 @@ def create_schema_file(dataframe, target_column, id_column, project_path, save=T
 
         
 def check_datefield(dataframe=None, column=None):
+
     """
     Check if a column is a datefield and Returns a Bool.
     
@@ -219,7 +222,8 @@ def check_datefield(dataframe=None, column=None):
 def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,fix_method='mean',verbose=True):
         
     """
-    Detect outliers present in the numerical features and fix the outliers present.
+    Detect outliers present in the numerical features and fix the outliers 
+    present.
 
     Parameters
     -----------
@@ -227,21 +231,24 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
         Data set to perform operation on.
         
     num_features: List, Series, Array.
-        Numerical features to perform operation on. If not provided, we automatically infer from the dataset.
+        Numerical features to perform operation on. If not provided, 
+        we automatically infer from the dataset.
         
     target_column: string
         The target attribute name.
         
     fix_method: mean or log_transformation
-        Method of fixing outliers present in the data. mean or log_transformation. Default is 'mean'
+        Method of fixing outliers present in the data. mean or 
+        log_transformation. Default is 'mean'
 
-    n: integar
-        A value to determine whether there are multiple outliers in a record, which is highly dependent on the
-        number of features that are being checked. 
+    n: integer
+        A value to determine whether there are multiple outliers in a record,
+        which is highly dependent on the number of features that are being checked. 
 
     fix_method: mean or log_transformation.
 
-        One of the two methods that you deem fit to fix the outlier values present in the dataset.
+        One of the two methods that you deem fit to fix the outlier values 
+        present in the dataset.
 
     Returns
     -------
@@ -333,6 +340,7 @@ def drop_uninformative_fields(dataframe):
     
 
 def drop_duplicate(dataframe=None,columns=None,method=None):
+
     """
     Drop duplicate values across rows, columns in the dataframe.
 
@@ -342,9 +350,8 @@ def drop_duplicate(dataframe=None,columns=None,method=None):
         Data set to perform operation on.
     columns: List/String.
         list of column names 
-    drop_duplicates: 'rows' or 'columns', default is None
-        Drop duplicate values across rows, columns. If columns, a list is required to be 
-        passed into the columns param
+    method: 'rows' or 'columns', default is None
+        Drop duplicate values across rows, columns. 
 
     Returns
     -------
@@ -370,12 +377,12 @@ def drop_duplicate(dataframe=None,columns=None,method=None):
 def manage_columns(dataframe=None,columns=None, select_columns=False, drop_columns=False, drop_duplicates=None):
     
     """
-    Manage operations on pandas dataframe based on columns. Operations include selecting 
-    columns, dropping column and dropping duplicates.
+    Manage operations on pandas dataframe based on columns. Operations include 
+    selecting of columns, dropping column and dropping duplicates.
     
     Parameters
     ----------
-    data: DataFrame or named Series
+    dataframe: DataFrame or named Series
     
     columns: list of features you want to drop
     
@@ -426,7 +433,10 @@ def manage_columns(dataframe=None,columns=None, select_columns=False, drop_colum
 
 def featurize_datetime(dataframe=None, column_name=None, drop=True):
     """
-    Featurize datetime in the dataset to create new fields 
+    Featurize datetime in the dataset to create new fields such as 
+    the Year, Month, Day, Day of the week, Day of the year, Week,
+    end of the month, start of the month, end of the quarter, 
+    start of a quarter, end of the year, start of the year
 
     Parameters
     ------------------------
@@ -469,7 +479,7 @@ def featurize_datetime(dataframe=None, column_name=None, drop=True):
 def get_attributes(data=None,target_column=None):
     
     """
-    Returns the categorical features and Numerical features in a pandas dataframe
+    Returns the categorical features and Numerical features(in a pandas dataframe) as a list 
 
     Parameters
     -----------
@@ -503,7 +513,8 @@ def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=
     
     """
     Identifies numerical attributes ,categorical attributes with sparse features 
-    and categorical attributes with lower features present in the data and saves in a yaml file.
+    and categorical attributes with lower features present in the data and saves
+    the output in a yaml file.
         
     Parameters
     -----------
@@ -585,7 +596,9 @@ def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=
         
     
 def _handle_cat_feat(data,fillna,cat_attr):
-    """Handle missing values present in pandas dataframe. 
+
+    """
+    Handle missing values present in a categorical pandas dataframe. 
 
     Parameters
     -----------
@@ -617,7 +630,9 @@ def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
                drop_outliers=True,thresh_y=75,thresh_x=75, verbose = True,
                **kwargs):
     
-    """Handle missing values present in pandas dataframe. 
+    """
+    
+    Handle missing values present in a pandas dataframe. 
     
     Take care of missing values in the data both cateforical and 
     numerical features by dropping or filling missing values.
@@ -755,8 +770,10 @@ def map_column(dataframe=None,column_name=None,items=None,add_prefix=True):
 
 
 def map_target(dataframe=None,target_column=None,add_prefix=True,drop=False):
+
     """
     Map target column in  a pandas dataframe column with a dict.
+    This can be applied to both binary and multi-class target
 
     Parameters
     ----------
@@ -785,7 +802,7 @@ def map_target(dataframe=None,target_column=None,add_prefix=True,drop=False):
         
     data = dataframe.copy()
     num_unique = data[target_column].unique()
-    elem = data[target_column].value_counts()#.index.tolist()
+    elem = data[target_column].value_counts()
     idx = elem.index.tolist()
     if len(num_unique) == 2:
         a = data[target_column].value_counts()[0]
@@ -821,89 +838,8 @@ def map_target(dataframe=None,target_column=None,add_prefix=True,drop=False):
     return data
     
 
-
-def _parse_int(string):
-    ONES = {'zero': 0,
-          'one': 1,
-          'two': 2,
-          'three': 3,
-          'four': 4,
-          'five': 5,
-          'six': 6,
-          'seven': 7,
-          'eight': 8,
-          'nine': 9,
-          'ten': 10,
-          'eleven': 11,
-          'twelve': 12,
-          'thirteen': 13,
-          'fourteen': 14,
-          'fifteen': 15,
-          'sixteen': 16,
-          'seventeen': 17,
-          'eighteen': 18,
-          'nineteen': 19,
-          'twenty': 20,
-          'thirty': 30,
-          'forty': 40,
-          'fifty': 50,
-          'sixty': 60,
-          'seventy': 70,
-          'eighty': 80,
-          'ninety': 90,
-            }
-    numbers = []
-    if type(string) == int:
-        return string
-    else:
-        string = string.lower()
-        for token in string.replace('-', ' ').split(' '):
-            if token in ONES:
-                numbers.append(ONES[token])
-            elif token == 'hundred':
-                numbers[-1] *= 100
-            elif token == 'thousand':
-                numbers = [x * 1000 for x in numbers]
-            elif token == 'million':
-                      numbers = [x * 1000000 for x in numbers]
-        return sum(numbers)
-
-
-def parse_string_to_int(dataframe,column,add_prefix=True):
-    """
-    The function converts numbers in strings to int
-
-    Parameters
-    -----------
-    dataframe: DataFrame or name Series.
-        Data set to perform operation on.
-        
-    column: the name of the column to be passed. A string is expected
-        The column to perform the operation on.
-        
-    add_prefix: Bool. Default is set to True
-        add prefix to the column name. 
-
-    Returns
-    -------
-    Dataframe 
-    """
-    if dataframe is None:
-        raise ValueError("dataframe: Expecting a DataFrame or Series, got 'None'")
-    
-    if not isinstance(column, str):
-        errstr = f'The given type for age_col is {type(column).__name__}. Expected type is a string'
-        raise TypeError(errstr)
-        
-    if add_prefix:
-        prefix_name = f'transformed_{column}'
-    else:
-        prefix_name = column
-    dataframe[prefix_name] = dataframe[column].apply(lambda x: _parse_int(x))
-    return dataframe
-
-    
 def rename_similar_values(dataframe,column_name,cut_off=0.75,n=None):
+
     """
     Use Sequence Matcher to check for best "good enough" matches.
     
@@ -952,7 +888,7 @@ def rename_similar_values(dataframe,column_name,cut_off=0.75,n=None):
         raise ValueError("n: n must be greater than ")
     
     df = dataframe.copy()
-    l = df[column_name].unique().tolist()
+    l = df[column_name].tolist()
     map_dict = {}
     while l:
         word = l.pop(0)
@@ -976,6 +912,30 @@ def rename_similar_values(dataframe,column_name,cut_off=0.75,n=None):
     
 def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,verbose=True,
                               select_columns=None,**kwargs):
+
+    '''
+    Automatically preprocess dataframe/file-path for a non_supervised use-case. 
+    Handles missing value, Outlier treatment, and feature engineering. 
+    
+    Parameters
+    ----------
+    data: DataFrame or named Series
+        Dataframe or dath path to the data
+        
+    PROCESSED_DATA_PATH: String
+        Path to where the preprocessed data will be stored
+
+    verbose:Bool. Default is  True
+            
+    select_columns: List
+        List of columns to be used
+    
+    Returns
+    -------
+    Pandas Dataframe:
+        Returns a clean dataframe in the filepath
+
+    '''                          
     
     if data is not None:
         if isinstance(data, pd.DataFrame):
@@ -1035,33 +995,7 @@ def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,verbose=True,
 def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
                verbose=True,project_path=None,**kwargs): 
     
-    """
-    Automatically preprocess dataframe/file-path. Handles missing value, Outlier treatment,
-    feature engineering. 
     
-    Parameters
-    ----------
-    data: DataFrame or named Series
-        Dataframe or dath path to the data
-        
-    target_column: String
-        Name of pandas dataframe target column
-        
-    train: Bool, default is True
-        
-    select_columns: List
-        List of columns to be used
-        
-    project_path: Str
-        Path to where the preprocessed data will be stored
-        
-    verbose:Bool. Default is  True
-    
-    Returns
-    -------
-    Pandas Dataframe:
-        Returns a clean dataframe in the filepath
-    """
     if data is None:
         raise ValueError("data: Expecting a DataFrame or Series or a data path, got None")
         
@@ -1211,6 +1145,7 @@ def preprocess(data=None,target_column=None,train=False,select_columns=None,\
 
 
 def trim_all_columns(dataframe):
+
     """
     Trim whitespace from ends of each value across all series in dataframe
 
