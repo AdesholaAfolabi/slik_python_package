@@ -4,7 +4,9 @@ import csv
 import os
 
 def read_file(file_path, input_col=None, **kwargs):
-    """Load a file path into a dataframe.
+
+    """
+    Load a file path into a dataframe.
     
     This funtion takes in a file path - CSV, excel or parquet and reads 
     the data based on the input columns specified. Can only load  one file at 
@@ -51,7 +53,9 @@ def read_file(file_path, input_col=None, **kwargs):
 
 
 def split_csv_file(file_path=None, delimiter= ',' , row_limit=1000000, output_path='.', keep_headers=True):
-    """Split large csv files to small csv files.
+
+    """
+    Split large csv files to small csv files.
 
     Function splits large csv files into smaller files based on the row_limit
     specified. The files are stored in present working dir by default.
