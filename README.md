@@ -15,7 +15,7 @@ This library is in very active development, so it’s not recommended for produc
 
 ## Contribution
 
-We are actively seeking contribution to continue improving our open source project. Any kind of help is welcome. *Just a star on the project is a lot.* If you would like to contribute as a developer, you can join the project by [filling out this form](https://forms.gle/dddbHWzcxypN9rpx9) or by opening an issue. Any other kind of contribution, from docs to tests, is also welcome.
+We are actively seeking contribution to continue improving our open source project. Any kind of help is welcome. *Just a star on the project is a lot.* If you would like to contribute as a developer, you can join the project by [filling out this form](https://forms.gle/s88QBMXEzfaRB66s6) or by opening an issue. Any other kind of contribution, from docs to tests, is also welcome.
 
 
 📣 Please fill out our [fast 5-question survey](https://forms.gle/wvu1HF9P52ZdXujv6) so that we can learn what do you think about Slik, how you are using it, and what improvements we should make. Thank you! 👯
