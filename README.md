@@ -1,5 +1,5 @@
 <p align="center">
-  <img  src="https://github.com/Sensei-akin/slik_python_package/blob/master/docs/_images/SLIK-LOGO-BLACK-2.png" width=300 height=200>
+  <img  src="https://github.com/Sensei-akin/slik_python_package/blob/master/docs/_images/slik.png" width=300 height=200>
 </p>
 
 Slik is a data to modeling tool that helps data scientists navigate the issues of basic data wrangling and preprocessing steps. The idea behind Slik is to jump-start supervised learning projects. Data scientists struggle to prepare their data for building machine learning models and all machine learning projects require data wrangling, data preprocessing, feature engineering which takes about 80% of the model building process.
