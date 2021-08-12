@@ -1,6 +1,6 @@
 # slik_python_package
 This README documents the steps that are necessary to get the slik package up and running.
-<img  src="https://github.com/Sensei-akin/slik_python_package/blob/master/docs/_images/slik.png" >
+<img  src="https://github.com/Sensei-akin/slik_python_package/blob/master/docs/_images/SLIK-LOGO-BLACK-2.png" >
 ### What is this repository for? ###
 
 * Quick summary: The application employs the modular style of putting the applications together. In total, there are four modules which takes care of reading any type of file, data preprocessing (Nan, outliers, etc), and other preprocessing steps such as One Hot Encoding, Scaling, Normalization, PCA, etc. There is a general module (which is the general_utils module) that contains a list of global attributes and data used throughout the project. 
