@@ -16,7 +16,7 @@ def read_file(file_path, input_col=None, **kwargs):
     ----------
     file_path: str/file path
         path to where data is stored.
-    input_col: str
+    input_col: list
         select columns to be loaded as a pandas dataframe
     **kwargs:
         use keyword arguements from pandas read file method
@@ -102,3 +102,5 @@ def split_csv_file(file_path=None, delimiter= ',' , row_limit=1000000, output_pa
             if keep_headers:
                 current_out_writer.writerow(headers)
         current_out_writer.writerow(row)
+        
+        
