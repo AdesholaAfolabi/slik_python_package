@@ -49,7 +49,7 @@ def read_file(file_path, input_col=None, **kwargs):
         return data
     
     else:
-        raise ValueError("file_path: Only supports one of ['csv','xls','parquet'] format")
+        raise ValueError("file_path: Only supports one of ['csv','xls','xlsx','parquet'] format")
 
 
 def split_csv_file(file_path=None, delimiter= ',' , row_limit=1000000, output_path='.', keep_headers=True):
