@@ -16,7 +16,7 @@ def read_file(file_path, input_col=None, **kwargs):
     ----------
     file_path: str/file path
         path to where data is stored.
-    input_col: str
+    input_col: list
         select columns to be loaded as a pandas dataframe
     **kwargs:
         use keyword arguements from pandas read file method
@@ -41,7 +41,7 @@ def read_file(file_path, input_col=None, **kwargs):
         print ('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]))
         return data
         
-    elif file_path.endswith('.xls'):
+    elif file_path.endswith('.xls') or file_path.endswith('.xlsx'):
         data = pd.read_excel(file_path, usecols = input_col,**kwargs)
         print('Excel file read success')
         data = data.reindex(columns = input_col)
@@ -49,7 +49,7 @@ def read_file(file_path, input_col=None, **kwargs):
         return data
     
     else:
-        raise ValueError("file_path: Only supports one of ['csv','xls','parquet'] format")
+        raise ValueError("file_path: Only supports one of ['csv','xls','xlsx','parquet'] format")
 
 
 def split_csv_file(file_path=None, delimiter= ',' , row_limit=1000000, output_path='.', keep_headers=True):
@@ -102,3 +102,4 @@ def split_csv_file(file_path=None, delimiter= ',' , row_limit=1000000, output_pa
             if keep_headers:
                 current_out_writer.writerow(headers)
         current_out_writer.writerow(row)
+        
