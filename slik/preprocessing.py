@@ -54,7 +54,7 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
     return data
 
 
-def change_case(dataframe,column,case='lower'):
+def change_case(dataframe=None ,column=None,case='lower'):
     """
     Change the case of a pandas series to either upper or lower case
 
@@ -67,8 +67,12 @@ def change_case(dataframe,column,case='lower'):
     Pandas Dataframe:
     """
         
-    if case != 'lower' or case != 'upper':
-        raise ValueError("case: Should be one of lower or upper")
+    if dataframe is None:
+        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
+        
+    if not isinstance(column, str):
+        errstr = f'The given type for column is {type(column).__name__}. Expected type is a string'
+        raise TypeError(errstr)
 
     df = dataframe.copy()
     if case == 'lower':
