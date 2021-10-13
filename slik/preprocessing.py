@@ -220,6 +220,10 @@ def check_datefield(dataframe=None, column=None):
     if dataframe is None:
         raise ValueError("data: Expecting a DataFrame or Series") 
         
+    if not isinstance(column, str):
+      errstr = f'The given type for column is {type(column).__name__}. Expected type is a string'
+      raise TypeError(errstr)
+        
     try:
         pd.to_datetime(dataframe[column], infer_datetime_format=True)
         return True
