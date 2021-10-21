@@ -54,21 +54,30 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
     return data
 
 
-def change_case(dataframe,column,case='lower'):
+def change_case(dataframe=None ,column=None,case='lower'):
     """
     Change the case of a pandas series to either upper or lower case
 
     Parameters
     ----------
     dataframe: Pandas dataframe
+    
+    column: the name of the column to be changed. A string is expected. 
+    
+    case: Indicates whether it is a lower case or upper case. 
+            Default is set to lower. 
 
     Returns
     -------
     Pandas Dataframe:
     """
         
-    if case != 'lower' or case != 'upper':
-        raise ValueError("case: Should be one of lower or upper")
+    if dataframe is None:
+        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
+        
+    if not isinstance(column, str):
+        errstr = f'The given type for column is {type(column).__name__}. Expected type is a string'
+        raise TypeError(errstr)
 
     df = dataframe.copy()
     if case == 'lower':
@@ -210,6 +219,10 @@ def check_datefield(dataframe=None, column=None):
     """
     if dataframe is None:
         raise ValueError("data: Expecting a DataFrame or Series") 
+        
+    if not isinstance(column, str):
+      errstr = f'The given type for column is {type(column).__name__}. Expected type is a string'
+      raise TypeError(errstr)
         
     try:
         pd.to_datetime(dataframe[column], infer_datetime_format=True)
