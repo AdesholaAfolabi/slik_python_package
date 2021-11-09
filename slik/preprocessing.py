@@ -60,12 +60,13 @@ def change_case(dataframe=None ,column=None,case='lower'):
 
     Parameters
     ----------
-    dataframe: Pandas dataframe
+    dataframe: Dataframe or named Series
     
-    column: the name of the column to be changed. A string is expected. 
+    column: str.
+        The column to perform the operation on
     
-    case: Indicates whether it is a lower case or upper case. 
-            Default is set to lower. 
+    case: str. Default is set to lower 
+        Indicates the type of operation to perform
 
     Returns
     -------
