@@ -105,11 +105,11 @@ def check_nan(dataframe=None, plot=False, verbose=True):
         Plots missing values in dataset as a heatmap
         
     verbose: bool, Default False
-            
+        shows missing values in the dataset as a dataframe
     Returns
     -------
     Matplotlib Figure:
-        Heatmap plot of missing values
+        Bar plot of missing values
     """
     if dataframe is None:
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
