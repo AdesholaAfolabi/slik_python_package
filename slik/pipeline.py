@@ -21,7 +21,7 @@ import re
 import pandas as pd
 from .loadfile import read_file
 from .preprocessing import identify_columns,preprocess,map_target
-from .utils import load_pickle,print_devider,store_pipeline, HiddenPrints, get_scores, log_plot
+from .utils import load_pickle,print_divider,store_pipeline, HiddenPrints, get_scores, log_plot
 from slik import plot_funcs as pf
 
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler, OneHotEncoder
@@ -161,7 +161,7 @@ def _build_model(dataframe=None,target_column=None,numerical_transformer=None,ca
     
          
     if pca:
-        print_devider('Applying PCA to the data')
+        print_divider('Applying PCA to the data')
         if scipy.sparse.issparse(X_train_copy):
             X_train_array = X_train_copy.toarray()
 #         elif isinstance(X_train_copy, np.ndarray):
@@ -280,7 +280,7 @@ def _build_model(dataframe=None,target_column=None,numerical_transformer=None,ca
 #     X_test = data_transformer.transform(X_test)        
     y_pred = output.predict(X_test)
     
-    print_devider('Metric Performance')
+    print_divider('Metric Performance')
             
     met_perf = get_scores(y_test,y_pred)
     
@@ -371,7 +371,7 @@ def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=T
     PROCESSED_TRAIN_PATH = os.path.join(data_path, 'train_data.pkl')
     
     if os.path.exists(PROCESSED_TRAIN_PATH):
-        print_devider(f'Loading clean data')
+        print_divider(f'Loading clean data')
         print(f'\nClean data exists in {PROCESSED_TRAIN_PATH}\n')
         train_df = load_pickle(PROCESSED_TRAIN_PATH)
         
@@ -630,7 +630,7 @@ def evaluate_model(model_path=None,eval_data=None,select_columns=None,project_pa
     y_pred = estimator.predict(data)
     y_proba = estimator.predict_proba(data)[:, 1]
     scores_valid = get_scores(y_test,y_pred)
-    print_devider('Metric Performance')
+    print_divider('Metric Performance')
     print(scores_valid)
     
     plot_path = os.path.join(project_path, 'plots/')
@@ -639,7 +639,7 @@ def evaluate_model(model_path=None,eval_data=None,select_columns=None,project_pa
     
     from collections import defaultdict
     scores = defaultdict(int)
-    print_devider('Saving Plots')
+    print_divider('Saving Plots')
     # record scores
     for k, v in scores_valid.items():
         scores[k] += v 
