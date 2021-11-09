@@ -24,7 +24,7 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
     dataframe: DataFrame or name Series.
         Data set to perform operation on.
         
-    age_col: the name of the age column in the dataset. A string is expected
+    age_col: str.
         The column to perform the operation on.
         
     add_prefix: Bool. Default is set to True
