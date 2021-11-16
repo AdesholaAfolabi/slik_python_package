@@ -24,7 +24,7 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
     dataframe: DataFrame or name Series.
         Data set to perform operation on.
         
-    age_col: the name of the age column in the dataset. A string is expected
+    age_col: str.
         The column to perform the operation on.
         
     add_prefix: Bool. Default is set to True
@@ -61,12 +61,13 @@ def change_case(dataframe=None ,column=None,case='lower'):
 
     Parameters
     ----------
-    dataframe: Pandas dataframe
+    dataframe: Dataframe or named Series
     
-    column: the name of the column to be changed. A string is expected. 
+    column: str.
+        The column to perform the operation on
     
-    case: Indicates whether it is a lower case or upper case. 
-            Default is set to lower. 
+    case: str. Default is set to lower 
+        Indicates the type of operation to perform
 
     Returns
     -------
@@ -105,11 +106,11 @@ def check_nan(dataframe=None, plot=False, verbose=True):
         Plots missing values in dataset as a heatmap
         
     verbose: bool, Default False
-            
+        shows missing values in the dataset as a dataframe
     Returns
     -------
     Matplotlib Figure:
-        Heatmap plot of missing values
+        Bar plot of missing values
     """
     if dataframe is None:
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
