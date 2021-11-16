@@ -1,6 +1,9 @@
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
-data/
+.csv
 __pycache__
 slik/__pycache__
 .DS_Store
+.vscode/settings.json
+examples/
+tests/
