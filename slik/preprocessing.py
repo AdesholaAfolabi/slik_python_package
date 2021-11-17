@@ -9,7 +9,7 @@ import yaml, pathlib
 from difflib import get_close_matches
 import pprint
 from .loadfile import read_file
-from .utils import store_attribute, print_devider, HiddenPrints
+from .utils import store_attribute, print_divider, HiddenPrints
 from .plot_funcs import plot_nan
 
 
@@ -24,7 +24,7 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
     dataframe: DataFrame or name Series.
         Data set to perform operation on.
         
-    age_col: the name of the age column in the dataset. A string is expected
+    age_col: str.
         The column to perform the operation on.
         
     add_prefix: Bool. Default is set to True
@@ -44,7 +44,7 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
     data = dataframe.copy()
     
     if add_prefix:
-        prefix_name = f'transformed_{age_col}'
+        prefix_name = f'binned_{age_col}'
     else:
         prefix_name = age_col
     
@@ -54,21 +54,32 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
     return data
 
 
-def change_case(dataframe,column,case='lower'):
+def change_case(dataframe=None ,column=None,case='lower'):
+
     """
     Change the case of a pandas series to either upper or lower case
 
     Parameters
     ----------
-    dataframe: Pandas dataframe
+    dataframe: Dataframe or named Series
+    
+    column: str.
+        The column to perform the operation on
+    
+    case: str. Default is set to lower 
+        Indicates the type of operation to perform
 
     Returns
     -------
     Pandas Dataframe:
     """
         
-    if case != 'lower' or case != 'upper':
-        raise ValueError("case: Should be one of lower or upper")
+    if dataframe is None:
+        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
+        
+    if not isinstance(column, str):
+        errstr = f'The given type for column is {type(column).__name__}. Expected type is a string'
+        raise TypeError(errstr)
 
     df = dataframe.copy()
     if case == 'lower':
@@ -95,11 +106,11 @@ def check_nan(dataframe=None, plot=False, verbose=True):
         Plots missing values in dataset as a heatmap
         
     verbose: bool, Default False
-            
+        shows missing values in the dataset as a dataframe
     Returns
     -------
     Matplotlib Figure:
-        Heatmap plot of missing values
+        Bar plot of missing values
     """
     if dataframe is None:
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
@@ -113,7 +124,7 @@ def check_nan(dataframe=None, plot=False, verbose=True):
     df['missing_percent'] = missing_percent
     nan_values = df.set_index('features')['missing_percent']
     
-    print_devider('Count and Percentage of missing value')
+    print_divider('Count and Percentage of missing value')
     if plot:
         plot_nan(nan_values)
     if verbose:
@@ -179,7 +190,7 @@ def create_schema_file(dataframe, target_column, id_column, project_path, save=T
         else:
             datatype_map[name] = dtype.name
         
-    print_devider('Creating Schema file')
+    print_divider('Creating Schema file')
     
     
     schema = dict(dtype=datatype_map, parse_dates=datetime_fields,
@@ -210,6 +221,10 @@ def check_datefield(dataframe=None, column=None):
     """
     if dataframe is None:
         raise ValueError("data: Expecting a DataFrame or Series") 
+        
+    if not isinstance(column, str):
+      errstr = f'The given type for column is {type(column).__name__}. Expected type is a string'
+      raise TypeError(errstr)
         
     try:
         pd.to_datetime(dataframe[column], infer_datetime_format=True)
@@ -307,7 +322,7 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
     multiple_outliers = list(k for k, v in outlier_indices.items() if v > n)
     
     if verbose:
-        print_devider(f'Table idenifying {n} Outliers')
+        print_divider(f'Table idenifying {n} Outliers')
         display(data.loc[multiple_outliers])
 
     return df
@@ -333,7 +348,7 @@ def drop_uninformative_fields(dataframe):
     data = dataframe.copy()
     is_single = data.apply(lambda s: s.nunique()).le(1)
     single = data.columns[is_single].tolist()
-    print_devider('Dropping uninformative fields')
+    print_divider('Dropping uninformative fields')
     print(f'uninformative fields dropped: {single}')
     data = manage_columns(data,single,drop_columns=True)
     return data
@@ -573,7 +588,7 @@ def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=
     else:
         cat_attributes.remove(id_column)
     
-    print_devider('Identifying columns present in the data')
+    print_divider('Identifying columns present in the data')
     print(f'Target column is {target_column}. Attribute in target column incldes:\n{list(data[target_column].unique())}\n')
     for item in cat_attributes:
         if data[item].nunique() > high_dim:
@@ -591,7 +606,7 @@ def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=
         pprint.pprint(dict_file)
     
     store_attribute(dict_file,output_path)
-    print_devider('Saving Attributes in Yaml file')
+    print_divider('Saving Attributes in Yaml file')
     print(f'\nData columns successfully identified and attributes are stored in {output_path}\n')
         
     
@@ -756,7 +771,7 @@ def map_column(dataframe=None,column_name=None,items=None,add_prefix=True):
      
     data = dataframe.copy()
     
-    print_devider('Mapping passed column')
+    print_divider('Mapping passed column')
     for key,value in items.items():
         print(f'{key} was mapped to {value}\n')
     
@@ -824,7 +839,7 @@ def map_target(dataframe=None,target_column=None,add_prefix=True,drop=False):
     else:
         raise ValueError("dataframe: The target column has only 1 unique value")
     
-    print_devider('Mapping target columns')
+    print_divider('Mapping target columns')
     for key,value in items.items():
         print(f'{key} was mapped to {value}\n')
     if add_prefix:
@@ -961,14 +976,14 @@ def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,verbose=True,
 
         for name, dtype in data.dtypes.iteritems():
             if 'datetime64' in dtype.name:
-                print_devider('Featurize Datetime columns')
+                print_divider('Featurize Datetime columns')
                 print(f'column with datetime type: [{name}]\n') 
                 data = featurize_datetime(data,name,False)#generic #methods to bin
 
             elif 'object' in dtype.name:
                 output = check_datefield(data, name)
                 if output:
-                    print_devider('Featurize Datetime columns')
+                    print_divider('Featurize Datetime columns')
                     print(f'Inferred column with datetime type: [{name}]\n') 
                     data = featurize_datetime(data,name,False)
             else:
@@ -984,11 +999,11 @@ def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,verbose=True,
                 data = map_column(data,column_name=column,items=items)
     
     if verbose:
-        print_devider('Display Top Five rows of the preprocessed data')
+        print_divider('Display Top Five rows of the preprocessed data')
         display(data.head(5))
     
     data.to_pickle(PROCESSED_DATA_PATH)
-    print_devider('Preprocessed data saved')
+    print_divider('Preprocessed data saved')
     print(f'\nDone!. Input data has been preprocessed successfully and stored in {PROCESSED_DATA_PATH}')
 
 
@@ -1042,7 +1057,7 @@ def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
             prefix_name = f'transformed_{target_column}'
             for column in data.columns:
                 if 'age' in column.lower():
-                    print_devider('Bucketize Age columns')
+                    print_divider('Bucketize Age columns')
                     print(f' Inferred age column: [{column}]')
                     match = re.search(r'(.*?)[Aa]ge.*', column).group()
                     age_column = str(match)
@@ -1050,14 +1065,14 @@ def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
 
             for name, dtype in data.dtypes.iteritems():
                 if 'datetime64' in dtype.name:
-                    print_devider('Featurize Datetime columns')
+                    print_divider('Featurize Datetime columns')
                     print(f'column with datetime type: [{name}]\n') 
                     data = featurize_datetime(data,name,False)
 
                 elif 'object' in dtype.name:
                     output = check_datefield(data, name)
                     if output:
-                        print_devider('Featurize Datetime columns')
+                        print_divider('Featurize Datetime columns')
                         print(f'Inferred column with datetime type: [{name}]\n') 
                         data = featurize_datetime(data,name,False)
                 else:
@@ -1078,11 +1093,11 @@ def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
             create_schema_file(data,target_column=prefix_name,project_path=project_path,\
                                verbose=verbose,id_column=data.columns[0])
             if verbose:
-                print_devider('\nDisplay Top Five rows of the preprocessed data')
+                print_divider('\nDisplay Top Five rows of the preprocessed data')
                 display(data.head(5))    
 
             data.to_pickle(PROCESSED_TRAIN_PATH)
-            print_devider('Preprocessed data saved')
+            print_divider('Preprocessed data saved')
             print(f'\n Input data preprocessed successfully and stored in {PROCESSED_TRAIN_PATH}\n')
             
         elif task == 'clustering':
