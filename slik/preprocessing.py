@@ -328,7 +328,7 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
     return df
 
 
-def drop_uninformative_fields(dataframe):
+def drop_uninformative_fields(dataframe = None):
 
     """
     Drop fields that have only a single unique value or are all NaN, meaning
@@ -345,6 +345,10 @@ def drop_uninformative_fields(dataframe):
         dataframe after dropping uninformative fields.
 
     """
+
+    if dataframe is None:
+        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
+
     data = dataframe.copy()
     is_single = data.apply(lambda s: s.nunique()).le(1)
     single = data.columns[is_single].tolist()
@@ -354,7 +358,7 @@ def drop_uninformative_fields(dataframe):
     return data
     
 
-def drop_duplicate(dataframe=None,columns=None,method=None):
+def drop_duplicate(dataframe=None,columns=None,method='rows'):
 
     """
     Drop duplicate values across rows, columns in the dataframe.
@@ -381,9 +385,6 @@ def drop_duplicate(dataframe=None,columns=None,method=None):
             raise ValueError("columns: A list/string is expected as part of the inputs to columns, got 'None'")
         dataframe = dataframe.drop_duplicates(subset=columns)
     
-    elif method ==  None:
-        pass
-
     else:
         raise ValueError("method: must specify a drop_duplicate method, one of ['rows' or 'columns']'")
     return dataframe
@@ -399,7 +400,7 @@ def manage_columns(dataframe=None,columns=None, select_columns=False, drop_colum
     ----------
     dataframe: DataFrame or named Series
     
-    columns: list of features you want to drop
+    columns: used to specify columns to be selected, dropped or used in dropping duplicates. 
     
     select_columns: Boolean True or False, default is False
         The columns you want to select from your dataframe. Requires a list to be passed into the columns param
