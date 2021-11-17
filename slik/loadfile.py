@@ -101,8 +101,4 @@ def split_csv_file(file_path=None, delimiter= ',' , row_limit=1000000, output_pa
             current_out_writer = csv.writer(open(current_out_path, 'w'), delimiter=delimiter)
             if keep_headers:
                 current_out_writer.writerow(headers)
-<<<<<<< HEAD
         current_out_writer.writerow(row)
-=======
-        current_out_writer.writerow(row)
->>>>>>> 66f5c78fecf940e745fd1f949636eeed175d7c79
