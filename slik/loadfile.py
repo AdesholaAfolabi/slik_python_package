@@ -43,7 +43,7 @@ def read_file(file_path, input_col=None, **kwargs):
         
     elif file_path.endswith('.xls') or file_path.endswith('.xlsx'):
         data = pd.read_excel(file_path, usecols = input_col,**kwargs)
-        print('Excel file read success')
+        print('Excel file read successfully')
         data = data.reindex(columns = input_col)
         print ('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]))
         return data
@@ -101,4 +101,8 @@ def split_csv_file(file_path=None, delimiter= ',' , row_limit=1000000, output_pa
             current_out_writer = csv.writer(open(current_out_path, 'w'), delimiter=delimiter)
             if keep_headers:
                 current_out_writer.writerow(headers)
+<<<<<<< HEAD
         current_out_writer.writerow(row)
+=======
+        current_out_writer.writerow(row)
+>>>>>>> 66f5c78fecf940e745fd1f949636eeed175d7c79
