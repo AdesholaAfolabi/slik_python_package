@@ -92,7 +92,7 @@ def change_case(dataframe=None ,column=None,case='lower'):
         raise ValueError(f"case: expected one of 'upper' or 'lower' got {case}")
     
 
-def check_nan(dataframe=None, plot=False, verbose=True):
+def check_nan(dataframe=None, plot=False, display=True):
     
     """
     Display missing values as a pandas dataframe and give a proportion
@@ -127,7 +127,7 @@ def check_nan(dataframe=None, plot=False, verbose=True):
     print_divider('Count and Percentage of missing value')
     if plot:
         plot_nan(nan_values)
-    if verbose:
+    if display:
         display(df)
     check_nan.df = df
 
@@ -328,7 +328,7 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
     return df
 
 
-def drop_uninformative_fields(dataframe):
+def drop_uninformative_fields(dataframe = None):
 
     """
     Drop fields that have only a single unique value or are all NaN, meaning
@@ -345,6 +345,10 @@ def drop_uninformative_fields(dataframe):
         dataframe after dropping uninformative fields.
 
     """
+
+    if dataframe is None:
+        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
+
     data = dataframe.copy()
     is_single = data.apply(lambda s: s.nunique()).le(1)
     single = data.columns[is_single].tolist()
@@ -354,7 +358,7 @@ def drop_uninformative_fields(dataframe):
     return data
     
 
-def drop_duplicate(dataframe=None,columns=None,method=None):
+def drop_duplicate(dataframe=None,columns=None,method='rows'):
 
     """
     Drop duplicate values across rows, columns in the dataframe.
@@ -381,9 +385,6 @@ def drop_duplicate(dataframe=None,columns=None,method=None):
             raise ValueError("columns: A list/string is expected as part of the inputs to columns, got 'None'")
         dataframe = dataframe.drop_duplicates(subset=columns)
     
-    elif method ==  None:
-        pass
-
     else:
         raise ValueError("method: must specify a drop_duplicate method, one of ['rows' or 'columns']'")
     return dataframe
@@ -399,7 +400,7 @@ def manage_columns(dataframe=None,columns=None, select_columns=False, drop_colum
     ----------
     dataframe: DataFrame or named Series
     
-    columns: list of features you want to drop
+    columns: used to specify columns to be selected, dropped or used in dropping duplicates. 
     
     select_columns: Boolean True or False, default is False
         The columns you want to select from your dataframe. Requires a list to be passed into the columns param
@@ -446,7 +447,7 @@ def manage_columns(dataframe=None,columns=None, select_columns=False, drop_colum
     return data
 
 
-def featurize_datetime(dataframe=None, column_name=None, drop=True):
+def featurize_datetime(dataframe=None, column_name=None, date_features=None, drop=True):
     """
     Featurize datetime in the dataset to create new fields such as 
     the Year, Month, Day, Day of the week, Day of the year, Week,
@@ -458,8 +459,13 @@ def featurize_datetime(dataframe=None, column_name=None, drop=True):
     dataframe: DataFrame or name Series.
         Data set to perform operation on.
         
-    column_name: the name of the datetime column in the dataset. A string is expected
+    column_name: String
         The column to perform the operation on.
+
+    date_features: List. 
+        A list of new datetime features to include in the dataset. 
+        Expected list should contain either of the elements in this list ['Year', 'Month', 'Day', 'Dayofweek', 'Dayofyear','Week',
+            'Is_month_end', 'Is_month_start', 'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start']
         
     drop: Bool. Default is set to True
         drop original datetime column. 
@@ -478,13 +484,19 @@ def featurize_datetime(dataframe=None, column_name=None, drop=True):
         raise TypeError(errstr)
         
     df = dataframe.copy()
-    
+    expected_list = ['Year', 'Month', 'Day', 'Dayofweek', 'Dayofyear','Week',\
+            'Is_month_end', 'Is_month_start', 'Is_quarter_end','Hour','Minute',\
+                 'Is_quarter_start', 'Is_year_end', 'Is_year_start']
+    if date_features is None:
+        date_features = expected_list
+        for elem in date_features:
+            if elem not in expected_list:
+                raise KeyError(f'List should contain any of {expected_list}')
     fld = df[column_name]
     if not np.issubdtype(fld.dtype, np.datetime64):
         df.loc[:,column_name] = fld = pd.to_datetime(fld, infer_datetime_format=True,utc=True).dt.tz_localize(None)
     targ_pre_ = re.sub('[Dd]ate$', '', column_name)
-    for n in ('Year', 'Month', 'Day', 'Dayofweek', 'Dayofyear','Week',
-            'Is_month_end', 'Is_month_start', 'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start'):
+    for n in date_features:
         df.loc[:,targ_pre_+n] = getattr(fld.dt,n.lower())
     df.loc[:,targ_pre_+'Elapsed'] = fld.astype(np.int64) // 10**9
     if drop: df.drop(column_name, axis=1, inplace=True)
