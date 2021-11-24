@@ -105,7 +105,7 @@ def check_nan(dataframe=None, plot=False, display=True):
     plot: bool, Default False
         Plots missing values in dataset as a heatmap
         
-    verbose: bool, Default False
+    display: bool, Default False
         shows missing values in the dataset as a dataframe
     Returns
     -------
@@ -132,7 +132,7 @@ def check_nan(dataframe=None, plot=False, display=True):
     check_nan.df = df
 
 
-def create_schema_file(dataframe, target_column, id_column, project_path, save=True, verbose=True):
+def create_schema_file(dataframe, target_column, id_column, project_path, save=True, display=True):
 
     """
     
@@ -156,7 +156,7 @@ def create_schema_file(dataframe, target_column, id_column, project_path, save=T
     save: Bool. Default is set to True
         save schema file to file path.
         
-    verbose: Bool. Default is set to True
+    dsiplay: Bool. Default is set to True
         display dataframe print statements.
 
     Returns
@@ -196,7 +196,7 @@ def create_schema_file(dataframe, target_column, id_column, project_path, save=T
     schema = dict(dtype=datatype_map, parse_dates=datetime_fields,
                   index_col=id_column, target_col = target_column)
     
-    if verbose:
+    if display:
         display(schema)
     # write to YAML file
     if save:
@@ -216,7 +216,7 @@ def check_datefield(dataframe=None, column=None):
         Data set to perform operation on.
         
     column: str
-        The column to perform the operation on.
+        The column name to perform the operation on.
           
     """
     if dataframe is None:
@@ -234,7 +234,7 @@ def check_datefield(dataframe=None, column=None):
         return False
     
     
-def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,fix_method='mean',verbose=True):
+def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,fix_method='mean',display=True):
         
     """
     Detect outliers present in the numerical features and fix the outliers 
@@ -252,18 +252,16 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
     target_column: string
         The target attribute name.
         
-    fix_method: mean or log_transformation
+    fix_method: mean or log_transformatio. Default is 'mean'
         Method of fixing outliers present in the data. mean or 
-        log_transformation. Default is 'mean'
+        log_transformation. 
 
     n: integer
         A value to determine whether there are multiple outliers in a record,
         which is highly dependent on the number of features that are being checked. 
 
-    fix_method: mean or log_transformation.
-
-        One of the two methods that you deem fit to fix the outlier values 
-        present in the dataset.
+    display: Bool. Default is True.
+        Display the outliers present in the data in form of a dataframe.
 
     Returns
     -------
@@ -317,12 +315,12 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
         else:
             raise ValueError("fix: must specify a fix method, one of [mean or log_transformation]")
 
-    # select observations containing more than 2 outliers
+    # select observations containing more than n outliers
     outlier_indices = Counter(outlier_indices)
     multiple_outliers = list(k for k, v in outlier_indices.items() if v > n)
     
-    if verbose:
-        print_divider(f'Table idenifying {n} Outliers')
+    if display:
+        print_divider(f'Table identifying {n} Outliers')
         display(data.loc[multiple_outliers])
 
     return df
@@ -463,8 +461,9 @@ def featurize_datetime(dataframe=None, column_name=None, date_features=None, dro
 
     date_features: List. 
         A list of new datetime features to include in the dataset. 
-        Expected list should contain either of the elements in this list ['Year', 'Month', 'Day', 'Dayofweek', 'Dayofyear','Week',
-            'Is_month_end', 'Is_month_start', 'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start']
+        Expected list should contain either of the elements in this list ['Year', 'Month', 'Day', 'Dayofweek', \
+            'Dayofyear','Week','Hour','Minute','Is_month_end', \
+            'Is_month_start', 'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start']
         
     drop: Bool. Default is set to True
         drop original datetime column. 
