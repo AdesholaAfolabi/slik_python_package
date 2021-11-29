@@ -10,7 +10,7 @@ from sklearn.metrics import (accuracy_score,
                              average_precision_score)
 
 
-def print_devider(title):
+def print_divider(title):
 
     """
     Expand print function with a clear differentiator using -.
