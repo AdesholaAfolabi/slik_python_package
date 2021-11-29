@@ -535,7 +535,7 @@ def get_attributes(data=None,target_column=None):
     return num_attributes, cat_attributes
 
 
-def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=100, verbose=True, project_path=None):
+def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=100, display=True, project_path=None):
     
     """
     Identifies numerical attributes ,categorical attributes with sparse features 
@@ -555,7 +555,7 @@ def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=
     high_dim: int, default 100
         Integer to identify categorical attributes greater than 100 features
         
-    verbose: Bool, default=True
+    display: Bool, default=True
         display print statement
         
     output_path: str
@@ -613,7 +613,7 @@ def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=
                  input_columns = input_columns, target_column = target_column,
                  id_column = id_column)
     
-    if verbose:
+    if display:
         pprint.pprint(dict_file)
     
     store_attribute(dict_file,output_path)
@@ -653,7 +653,7 @@ def _handle_cat_feat(data,fillna,cat_attr):
 
 
 def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
-               drop_outliers=True,thresh_y=75,thresh_x=75, verbose = True,
+               drop_outliers=True,thresh_y=75,thresh_x=75, display = True,
                **kwargs):
     
     """
@@ -687,7 +687,7 @@ def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
     thresh_y: In, Default is 75.
         Threshold for dropping columns with missing value
         
-    verbose: Bool. default is True.
+    display: Bool. default is True.
         display pandas dataframe print statements
             
     Returns
@@ -699,7 +699,7 @@ def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
         
     data = dataframe.copy()
-    check_nan(data,verbose=verbose)
+    check_nan(data,display==display)
     df = check_nan.df
     
     if thresh_x:
@@ -720,7 +720,7 @@ def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
     if drop_outliers:
         if target_name is None:
             raise ValueError("target_name: Expecting Target_column ")
-        data = detect_fix_outliers(data,target_name,verbose=verbose,**kwargs)
+        data = detect_fix_outliers(data,target_name,display=display,**kwargs)
         
     num_attributes, cat_attributes = get_attributes(data,target_name)
 
@@ -936,7 +936,7 @@ def rename_similar_values(dataframe,column_name,cut_off=0.75,n=None):
     return df[column_name].replace(map_dict)
 
     
-def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,verbose=True,
+def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,display=True,
                               select_columns=None,**kwargs):
 
     '''
@@ -951,7 +951,7 @@ def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,verbose=True,
     PROCESSED_DATA_PATH: String
         Path to where the preprocessed data will be stored
 
-    verbose:Bool. Default is  True
+    display:Bool. Default is  True
             
     select_columns: List
         List of columns to be used
@@ -976,8 +976,8 @@ def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,verbose=True,
     
     with HiddenPrints(): 
         #how to indicate columns with outliers 
-        data = detect_fix_outliers(dataframe=test_df,num_features=num_attributes,n=3,verbose=verbose)
-        data = handle_nan(dataframe=data,n=3,drop_outliers=False,verbose=verbose,thresh_x=1,thresh_y=99,**kwargs)
+        data = detect_fix_outliers(dataframe=test_df,num_features=num_attributes,n=3,display=display)
+        data = handle_nan(dataframe=data,n=3,drop_outliers=False,display=display,thresh_x=1,thresh_y=99,**kwargs)
 
         for column in data.columns:
             if 'age' in column.lower():
@@ -1009,7 +1009,7 @@ def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,verbose=True,
                 items = dict(zip(num_unique,counter))
                 data = map_column(data,column_name=column,items=items)
     
-    if verbose:
+    if display:
         print_divider('Display Top Five rows of the preprocessed data')
         display(data.head(5))
     
@@ -1019,7 +1019,7 @@ def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,verbose=True,
 
 
 def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
-               verbose=True,project_path=None,**kwargs): 
+               display=True,project_path=None,**kwargs): 
     
     
     if data is None:
@@ -1063,7 +1063,7 @@ def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
             print(f'\nThe task for preprocessing is {task}')
 
             PROCESSED_TRAIN_PATH = os.path.join(project_path, 'train_data.pkl')
-            data = handle_nan(dataframe=train_df,target_name=target_column,verbose=verbose,n=3)
+            data = handle_nan(dataframe=train_df,target_name=target_column,display=display,n=3)
             data = map_target(data,target_column=target_column,drop=True)
             prefix_name = f'transformed_{target_column}'
             for column in data.columns:
@@ -1102,8 +1102,8 @@ def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
             data = drop_uninformative_fields(data)
 
             create_schema_file(data,target_column=prefix_name,project_path=project_path,\
-                               verbose=verbose,id_column=data.columns[0])
-            if verbose:
+                               display=display,id_column=data.columns[0])
+            if display:
                 print_divider('\nDisplay Top Five rows of the preprocessed data')
                 display(data.head(5))    
 
@@ -1113,7 +1113,7 @@ def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
             
         elif task == 'clustering':
             PROCESSED_CLUSTER_PATH = os.path.join(project_path, 'preprocessed_cluster_data.pkl')
-            _preprocess_non_target_col(data = train_df, PROCESSED_DATA_PATH = PROCESSED_CLUSTER_PATH,verbose=verbose,\
+            _preprocess_non_target_col(data = train_df, PROCESSED_DATA_PATH = PROCESSED_CLUSTER_PATH,display=display,\
                                  select_columns=select_columns,**kwargs)
 
         elif task == 'regression':
@@ -1123,12 +1123,12 @@ def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
 
     else:
         PROCESSED_TEST_PATH = os.path.join(project_path, 'validation_data.pkl')
-        _preprocess_non_target_col(data=train_df,PROCESSED_DATA_PATH = PROCESSED_TEST_PATH,verbose=verbose,\
+        _preprocess_non_target_col(data=train_df,PROCESSED_DATA_PATH = PROCESSED_TEST_PATH,display=display,\
                                  select_columns=select_columns,**kwargs)
 
 
 def preprocess(data=None,target_column=None,train=False,select_columns=None,\
-               verbose=True,logging = 'display',project_path=None,**kwargs): 
+               display=True,logging = 'display',project_path=None,**kwargs): 
     
     """
     Automatically preprocess dataframe/file-path. Handles missing value, Outlier treatment,
@@ -1150,7 +1150,7 @@ def preprocess(data=None,target_column=None,train=False,select_columns=None,\
     project_path: Str
         Path to where the preprocessed data will be stored
         
-    verbose:Bool. Default is  True
+    display:Bool. Default is  True
     
     Returns
     -------
@@ -1161,11 +1161,11 @@ def preprocess(data=None,target_column=None,train=False,select_columns=None,\
 
     if logging == 'display':
         _preprocess(data=data,target_column=target_column,train=train,select_columns=select_columns,\
-               verbose=verbose,project_path=project_path,**kwargs)
+               display=display,project_path=project_path,**kwargs)
     elif logging == 'silent':
         with HiddenPrints():
             _preprocess(data=data,target_column=target_column,train=train,select_columns=select_columns,\
-               verbose=verbose,project_path=project_path,**kwargs)
+               display=display,project_path=project_path,**kwargs)
     else:
         raise ValueError ("logging: Should be one of display or silent")
 
