@@ -493,6 +493,8 @@ def featurize_datetime(dataframe=None, column_name=None, date_features=None, dro
         for elem in date_features:
             if elem not in expected_list:
                 raise KeyError(f'List should contain any of {expected_list}')
+
+    df[column_name] = df[column_name].fillna(0)
     fld = df[column_name]
     if not np.issubdtype(fld.dtype, np.datetime64):
         df.loc[:,column_name] = fld = pd.to_datetime(fld, infer_datetime_format=True,utc=True).dt.tz_localize(None)
@@ -1008,7 +1010,7 @@ def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,display_inline
                 if output:
                     print_divider('Featurize Datetime columns')
                     print(f'Inferred column with datetime type: [{name}]\n') 
-                    data = featurize_datetime(data,name,False)
+                    data = featurize_datetime(data,name,drop=False)
             else:
                 pass
 

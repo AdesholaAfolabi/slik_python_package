@@ -139,7 +139,7 @@ def _build_model(dataframe=None,target_column=None,numerical_transformer=None,ca
         use_cols =  numerical_attribute + categorical_attribute
     
     train_df = manage_columns(dataframe,columns=input_columns,select_columns=True)
-    y = dataframe['transformed_event_type'].loc[list(train_df.index)]
+    y = dataframe[f'{target_column}'].loc[list(train_df.index)]
     
     if balance_data:
         oversample = SMOTE()
@@ -488,6 +488,9 @@ def pipeline_transform_predict(data=None,select_columns=None,project_path=None,m
         list of numpy array predictions
 
     """
+
+    with HiddenPrints():
+        preprocess(data=data,train=False,display_inline=False,project_path=project_path)
     
     if os.path.exists(f"{project_path}/data/metadata/store_file.yaml"):
         config = yaml.safe_load(open(f"{project_path}/data/metadata/store_file.yaml"))
@@ -503,8 +506,7 @@ def pipeline_transform_predict(data=None,select_columns=None,project_path=None,m
             else:
                 raise ValueError(f"{columns} is not present in the training data.")
 
-    with HiddenPrints():
-        preprocess(data=data,train=False,display_inline=False,project_path=project_path,select_columns=input_columns)
+    
                 
     data = load_pickle(f'{project_path}/data/validation_data.pkl')
     data = data.reindex(columns = input_columns)
@@ -631,9 +633,9 @@ def evaluate_model(model_path=None,eval_data=None,select_columns=None,project_pa
         
     with HiddenPrints():    
         preprocess(data=eval_data,train=False,display_inline=False,project_path=project_path,select_columns=select_columns)
-        eval_data = map_target(eval_data,target_column)
-        y_test = eval_data['transformed_'+target_column]
         data = load_pickle(f'{project_path}/data/validation_data.pkl')
+        eval_data = map_target(eval_data,target_column)
+        y_test = eval_data['transformed_'+target_column].loc[list(data.index)]
         data = data.reindex(columns = input_columns)
         estimator = load_pickle(model_path)
         
