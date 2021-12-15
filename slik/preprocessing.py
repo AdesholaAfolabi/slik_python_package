@@ -1,3 +1,4 @@
+from matplotlib.pyplot import plot
 import pandas as pd
 # pd.options.mode.chained_assignment = None
 import re, os
@@ -92,7 +93,7 @@ def change_case(dataframe=None ,column=None,case='lower'):
         raise ValueError(f"case: expected one of 'upper' or 'lower' got {case}")
     
 
-def check_nan(dataframe=None, plot=False, display=True):
+def check_nan(dataframe=None, plot=False, display_inline=True):
     
     """
     Display missing values as a pandas dataframe and give a proportion
@@ -105,7 +106,7 @@ def check_nan(dataframe=None, plot=False, display=True):
     plot: bool, Default False
         Plots missing values in dataset as a heatmap
         
-    display: bool, Default False
+    display_inline: bool, Default False
         shows missing values in the dataset as a dataframe
     Returns
     -------
@@ -127,12 +128,12 @@ def check_nan(dataframe=None, plot=False, display=True):
     print_divider('Count and Percentage of missing value')
     if plot:
         plot_nan(nan_values)
-    if display:
+    if display_inline:
         display(df)
     check_nan.df = df
 
 
-def create_schema_file(dataframe, target_column, id_column, project_path, save=True, display=True):
+def create_schema_file(dataframe, target_column, id_column, project_path, save=True, display_inline=True):
 
     """
     
@@ -156,7 +157,7 @@ def create_schema_file(dataframe, target_column, id_column, project_path, save=T
     save: Bool. Default is set to True
         save schema file to file path.
         
-    dsiplay: Bool. Default is set to True
+    dsiplay_inline: Bool. Default is set to True
         display dataframe print statements.
 
     Returns
@@ -196,13 +197,13 @@ def create_schema_file(dataframe, target_column, id_column, project_path, save=T
     schema = dict(dtype=datatype_map, parse_dates=datetime_fields,
                   index_col=id_column, target_col = target_column)
     
-    if display:
+    if display_inline:
         display(schema)
     # write to YAML file
     if save:
         with open(f'{output_path}/schema.yaml', 'w') as yaml_file:
             yaml.dump(schema, yaml_file)
-        print(f'Schema file stored in {output_path}')
+        print(f'\n\nSchema file stored in {output_path}')
 
         
 def check_datefield(dataframe=None, column=None):
@@ -234,7 +235,7 @@ def check_datefield(dataframe=None, column=None):
         return False
     
     
-def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,fix_method='mean',display=True):
+def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,fix_method='mean',display_inline=True):
         
     """
     Detect outliers present in the numerical features and fix the outliers 
@@ -272,9 +273,9 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
     if dataframe is None:
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'") 
 
-    data = dataframe.copy()
+    # data = dataframe.copy()
     
-    df = data.copy()
+    df = dataframe.copy()
     
     outlier_indices = []
     
@@ -282,17 +283,17 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
         if not isinstance(target_column,str):
             errstr = f'The given type for target_column is {type(target_column).__name__}. Expected type is str'
             raise TypeError(errstr) 
-        num_attributes, cat_attributes = get_attributes(data,target_column)
+        num_attributes, cat_attributes = get_attributes(dataframe,target_column)
     else:
         num_attributes = num_features
 
     for column in num_attributes:
         
-        data.loc[:,column] = abs(data[column])
-        mean = data[column].mean()
+        dataframe.loc[:,column] = abs(dataframe[column])
+        mean = dataframe[column].mean()
 
         #calculate the interquartlie range
-        q25, q75 = np.percentile(data[column].dropna(), 25), np.percentile(data[column].dropna(), 75)
+        q25, q75 = np.percentile(dataframe[column].dropna(), 25), np.percentile(dataframe[column].dropna(), 75)
         iqr = q75 - q25
 
         #calculate the outlier cutoff
@@ -301,7 +302,7 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
 
         #identify outliers
         # Determine a list of indices of outliers for feature col
-        outlier_list_col = data[(data[column] < lower) | (data[column] > upper)].index
+        outlier_list_col = dataframe[(dataframe[column] < lower) | (dataframe[column] > upper)].index
 
         # append the found outlier indices for col to the list of outlier indices
         outlier_indices.extend(outlier_list_col)
@@ -319,9 +320,10 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
     outlier_indices = Counter(outlier_indices)
     multiple_outliers = list(k for k, v in outlier_indices.items() if v > n)
     
-    if display:
-        print_divider(f'Table identifying {n} Outliers')
-        display(data.loc[multiple_outliers])
+    
+    if display_inline:
+        print_divider(f'Table identifying at least {n} outliers in a row')
+        display(dataframe.loc[multiple_outliers])
 
     return df
 
@@ -388,7 +390,7 @@ def drop_duplicate(dataframe=None,columns=None,method='rows'):
     return dataframe
 
 
-def manage_columns(dataframe=None,columns=None, select_columns=False, drop_columns=False, drop_duplicates=None):
+def manage_columns(dataframe=None,columns=None, select_columns=False, drop_columns=False, drop_duplicates='rows'):
     
     """
     Manage operations on pandas dataframe based on columns. Operations include 
@@ -491,6 +493,8 @@ def featurize_datetime(dataframe=None, column_name=None, date_features=None, dro
         for elem in date_features:
             if elem not in expected_list:
                 raise KeyError(f'List should contain any of {expected_list}')
+
+    df[column_name] = df[column_name].fillna(0)
     fld = df[column_name]
     if not np.issubdtype(fld.dtype, np.datetime64):
         df.loc[:,column_name] = fld = pd.to_datetime(fld, infer_datetime_format=True,utc=True).dt.tz_localize(None)
@@ -535,7 +539,7 @@ def get_attributes(data=None,target_column=None):
     return num_attributes, cat_attributes
 
 
-def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=100, verbose=True, project_path=None):
+def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=100, display_inline=True, project_path=None):
     
     """
     Identifies numerical attributes ,categorical attributes with sparse features 
@@ -555,10 +559,10 @@ def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=
     high_dim: int, default 100
         Integer to identify categorical attributes greater than 100 features
         
-    verbose: Bool, default=True
+    display: Bool, default=True
         display print statement
         
-    output_path: str
+    project_path: str
         path to where the yaml file is saved.   
     """
     if dataframe is None:
@@ -569,9 +573,19 @@ def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=
         raise TypeError(errstr)
         
     if not isinstance(id_column,str):
-        errstr = f'The given type for id_column is {type(id_column).__name__}. Expected type is str'
+        if type(id_column).__name__ == 'NoneType':
+            errstr = f'Nothing was passed for param id_column'
+        else:
+            errstr = f'The given type for id_column is {type(id_column).__name__}. Expected type is str'
         raise TypeError(errstr)
-        
+
+    if not isinstance(project_path,str):
+        if type(project_path).__name__ == 'NoneType':
+            errstr = f'Nothing was passed for param project_path'
+        else:
+            errstr = f'The given type for id_column is {type(project_path).__name__}. Expected type is str'
+        raise TypeError(errstr)
+
     try:
         os.mkdir(project_path)
     except:
@@ -613,11 +627,11 @@ def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=
                  input_columns = input_columns, target_column = target_column,
                  id_column = id_column)
     
-    if verbose:
+    if display_inline:
         pprint.pprint(dict_file)
     
     store_attribute(dict_file,output_path)
-    print_divider('Saving Attributes in Yaml file')
+    print_divider('Saving Attributes in Project path')
     print(f'\nData columns successfully identified and attributes are stored in {output_path}\n')
         
     
@@ -653,7 +667,7 @@ def _handle_cat_feat(data,fillna,cat_attr):
 
 
 def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
-               drop_outliers=True,thresh_y=75,thresh_x=75, verbose = True,
+               drop_outliers=True,thresh_y=75,thresh_x=75, display_inline = True,
                **kwargs):
     
     """
@@ -687,7 +701,7 @@ def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
     thresh_y: In, Default is 75.
         Threshold for dropping columns with missing value
         
-    verbose: Bool. default is True.
+    display_inline: Bool. default is True.
         display pandas dataframe print statements
             
     Returns
@@ -699,7 +713,7 @@ def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
         
     data = dataframe.copy()
-    check_nan(data,verbose=verbose)
+    check_nan(data,display_inline=display_inline,plot=False)
     df = check_nan.df
     
     if thresh_x:
@@ -720,7 +734,7 @@ def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
     if drop_outliers:
         if target_name is None:
             raise ValueError("target_name: Expecting Target_column ")
-        data = detect_fix_outliers(data,target_name,verbose=verbose,**kwargs)
+        data = detect_fix_outliers(data,target_name,display_inline=display_inline)
         
     num_attributes, cat_attributes = get_attributes(data,target_name)
 
@@ -936,7 +950,7 @@ def rename_similar_values(dataframe,column_name,cut_off=0.75,n=None):
     return df[column_name].replace(map_dict)
 
     
-def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,verbose=True,
+def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,display_inline=True,
                               select_columns=None,**kwargs):
 
     '''
@@ -951,7 +965,7 @@ def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,verbose=True,
     PROCESSED_DATA_PATH: String
         Path to where the preprocessed data will be stored
 
-    verbose:Bool. Default is  True
+    display_inline:Bool. Default is  True
             
     select_columns: List
         List of columns to be used
@@ -976,8 +990,8 @@ def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,verbose=True,
     
     with HiddenPrints(): 
         #how to indicate columns with outliers 
-        data = detect_fix_outliers(dataframe=test_df,num_features=num_attributes,n=3,verbose=verbose)
-        data = handle_nan(dataframe=data,n=3,drop_outliers=False,verbose=verbose,thresh_x=1,thresh_y=99,**kwargs)
+        data = detect_fix_outliers(dataframe=test_df,num_features=num_attributes,n=3,display_inline=display_inline)
+        data = handle_nan(dataframe=data,n=3,drop_outliers=False,display_inline=display_inline,thresh_x=1,thresh_y=99,**kwargs)
 
         for column in data.columns:
             if 'age' in column.lower():
@@ -996,7 +1010,7 @@ def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,verbose=True,
                 if output:
                     print_divider('Featurize Datetime columns')
                     print(f'Inferred column with datetime type: [{name}]\n') 
-                    data = featurize_datetime(data,name,False)
+                    data = featurize_datetime(data,name,drop=False)
             else:
                 pass
 
@@ -1009,8 +1023,8 @@ def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,verbose=True,
                 items = dict(zip(num_unique,counter))
                 data = map_column(data,column_name=column,items=items)
     
-    if verbose:
-        print_divider('Display Top Five rows of the preprocessed data')
+    if display_inline:
+        print_divider('Display the preprocessed data')
         display(data.head(5))
     
     data.to_pickle(PROCESSED_DATA_PATH)
@@ -1019,7 +1033,7 @@ def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,verbose=True,
 
 
 def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
-               verbose=True,project_path=None,**kwargs): 
+               display_inline=True,project_path=None,**kwargs): 
     
     
     if data is None:
@@ -1063,7 +1077,7 @@ def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
             print(f'\nThe task for preprocessing is {task}')
 
             PROCESSED_TRAIN_PATH = os.path.join(project_path, 'train_data.pkl')
-            data = handle_nan(dataframe=train_df,target_name=target_column,verbose=verbose,n=3)
+            data = handle_nan(dataframe=train_df,target_name=target_column,display_inline=display_inline,n=3)
             data = map_target(data,target_column=target_column,drop=True)
             prefix_name = f'transformed_{target_column}'
             for column in data.columns:
@@ -1102,9 +1116,9 @@ def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
             data = drop_uninformative_fields(data)
 
             create_schema_file(data,target_column=prefix_name,project_path=project_path,\
-                               verbose=verbose,id_column=data.columns[0])
-            if verbose:
-                print_divider('\nDisplay Top Five rows of the preprocessed data')
+                               display_inline=display_inline,id_column=data.columns[0])
+            if display_inline:
+                print_divider('Preview the preprocessed data')
                 display(data.head(5))    
 
             data.to_pickle(PROCESSED_TRAIN_PATH)
@@ -1113,7 +1127,7 @@ def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
             
         elif task == 'clustering':
             PROCESSED_CLUSTER_PATH = os.path.join(project_path, 'preprocessed_cluster_data.pkl')
-            _preprocess_non_target_col(data = train_df, PROCESSED_DATA_PATH = PROCESSED_CLUSTER_PATH,verbose=verbose,\
+            _preprocess_non_target_col(data = train_df, PROCESSED_DATA_PATH = PROCESSED_CLUSTER_PATH,display_inline=display_inline,\
                                  select_columns=select_columns,**kwargs)
 
         elif task == 'regression':
@@ -1123,12 +1137,12 @@ def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
 
     else:
         PROCESSED_TEST_PATH = os.path.join(project_path, 'validation_data.pkl')
-        _preprocess_non_target_col(data=train_df,PROCESSED_DATA_PATH = PROCESSED_TEST_PATH,verbose=verbose,\
+        _preprocess_non_target_col(data=train_df,PROCESSED_DATA_PATH = PROCESSED_TEST_PATH,display_inline=display_inline,\
                                  select_columns=select_columns,**kwargs)
 
 
 def preprocess(data=None,target_column=None,train=False,select_columns=None,\
-               verbose=True,logging = 'display',project_path=None,**kwargs): 
+               display_inline=True,logging = 'display',project_path=None,**kwargs): 
     
     """
     Automatically preprocess dataframe/file-path. Handles missing value, Outlier treatment,
@@ -1150,7 +1164,7 @@ def preprocess(data=None,target_column=None,train=False,select_columns=None,\
     project_path: Str
         Path to where the preprocessed data will be stored
         
-    verbose:Bool. Default is  True
+    display_inline:Bool. Default is  True
     
     Returns
     -------
@@ -1161,11 +1175,11 @@ def preprocess(data=None,target_column=None,train=False,select_columns=None,\
 
     if logging == 'display':
         _preprocess(data=data,target_column=target_column,train=train,select_columns=select_columns,\
-               verbose=verbose,project_path=project_path,**kwargs)
+               display_inline=display_inline,project_path=project_path,**kwargs)
     elif logging == 'silent':
         with HiddenPrints():
             _preprocess(data=data,target_column=target_column,train=train,select_columns=select_columns,\
-               verbose=verbose,project_path=project_path,**kwargs)
+               display_inline=display_inline,project_path=project_path,**kwargs)
     else:
         raise ValueError ("logging: Should be one of display or silent")
 
