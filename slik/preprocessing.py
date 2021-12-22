@@ -1141,7 +1141,7 @@ def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
                                  select_columns=select_columns,**kwargs)
 
 
-def preprocess(data=None,target_column=None,train=False,select_columns=None,\
+def preprocess(data=None,target_column=None,train=True,select_columns=None,\
                display_inline=True,logging = 'display',project_path=None,**kwargs): 
     
     """
