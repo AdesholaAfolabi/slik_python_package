@@ -101,7 +101,7 @@ def check_nan(dataframe=None, plot=False, display_inline=True):
 
     Parameters
     ----------
-    data: DataFrame or named Series
+    data: pandas DataFrame or named Series
     
     plot: bool, Default False
         Plots missing values in dataset as a heatmap
@@ -125,10 +125,11 @@ def check_nan(dataframe=None, plot=False, display_inline=True):
     df['missing_percent'] = missing_percent
     nan_values = df.set_index('features')['missing_percent']
     
-    print_divider('Count and Percentage of missing value')
+    
     if plot:
         plot_nan(nan_values)
     if display_inline:
+        print_divider('Count and Percentage of missing value')
         display(df)
     check_nan.df = df
 
@@ -190,19 +191,19 @@ def create_schema_file(dataframe, target_column, id_column, project_path, save=T
             datetime_fields.append(name)
         else:
             datatype_map[name] = dtype.name
-        
-    print_divider('Creating Schema file')
     
     
     schema = dict(dtype=datatype_map, parse_dates=datetime_fields,
                   index_col=id_column, target_col = target_column)
     
-    if display_inline:
-        display(schema)
     # write to YAML file
     if save:
         with open(f'{output_path}/schema.yaml', 'w') as yaml_file:
             yaml.dump(schema, yaml_file)
+            
+    if display_inline:
+        print_divider('Creating Schema file')
+        display(schema)
         print(f'\n\nSchema file stored in {output_path}')
 
         
@@ -224,8 +225,8 @@ def check_datefield(dataframe=None, column=None):
         raise ValueError("data: Expecting a DataFrame or Series") 
         
     if not isinstance(column, str):
-      errstr = f'The given type for column is {type(column).__name__}. Expected type is a string'
-      raise TypeError(errstr)
+        errstr = f'The given type for column is {type(column).__name__}. Expected type is a string'
+        raise TypeError(errstr)
         
     try:
         pd.to_datetime(dataframe[column], infer_datetime_format=True)
@@ -261,7 +262,7 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
         A value to determine whether there are multiple outliers in a record,
         which is highly dependent on the number of features that are being checked. 
 
-    display: Bool. Default is True.
+    display_inline: Bool. Default is True.
         Display the outliers present in the data in form of a dataframe.
 
     Returns
@@ -328,7 +329,7 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
     return df
 
 
-def drop_uninformative_fields(dataframe = None):
+def drop_uninformative_fields(dataframe = None,display_inline=True):
 
     """
     Drop fields that have only a single unique value or are all NaN, meaning
@@ -338,7 +339,10 @@ def drop_uninformative_fields(dataframe = None):
     -----------
     dataframe: DataFrame or name Series.
         Data set to perform operation on.
-
+        
+    display_inline: Bool. Default is True.
+        Display print statements.
+        
     Returns
     -------
     Dataframe:
@@ -352,13 +356,14 @@ def drop_uninformative_fields(dataframe = None):
     data = dataframe.copy()
     is_single = data.apply(lambda s: s.nunique()).le(1)
     single = data.columns[is_single].tolist()
-    print_divider('Dropping uninformative fields')
-    print(f'uninformative fields dropped: {single}')
-    data = manage_columns(data,single,drop_columns=True)
+    if display_inline:
+        print_divider('Dropping uninformative fields')
+        print(f'uninformative fields dropped: {single}')
+    data = manage_columns(data,single,drop_columns=True,drop_duplicates=None)
     return data
     
 
-def drop_duplicate(dataframe=None,columns=None,method='rows'):
+def drop_duplicate(dataframe=None,columns=None,method='rows',display_inline=True):
 
     """
     Drop duplicate values across rows, columns in the dataframe.
@@ -369,9 +374,12 @@ def drop_duplicate(dataframe=None,columns=None,method='rows'):
         Data set to perform operation on.
     columns: List/String.
         list of column names 
-    method: 'rows' or 'columns', default is None
+    method: 'rows' or 'columns', default is 'rows'
         Drop duplicate values across rows, columns. 
-
+    
+    display_inline: Bool. Default is True.
+        Display print statements.
+        
     Returns
     -------
     Dataframe:
@@ -385,12 +393,19 @@ def drop_duplicate(dataframe=None,columns=None,method='rows'):
             raise ValueError("columns: A list/string is expected as part of the inputs to columns, got 'None'")
         dataframe = dataframe.drop_duplicates(subset=columns)
     
+    elif method is None:
+        pass
+        
     else:
         raise ValueError("method: must specify a drop_duplicate method, one of ['rows' or 'columns']'")
+        
+    if display_inline:
+        print_divider(f'Dropping duplicates across the {method}\n')
+        print(f'New datashape is {dataframe.shape}')
     return dataframe
 
 
-def manage_columns(dataframe=None,columns=None, select_columns=False, drop_columns=False, drop_duplicates='rows'):
+def manage_columns(dataframe=None,columns=None, select_columns=False, drop_columns=False, drop_duplicates=None):
     
     """
     Manage operations on pandas dataframe based on columns. Operations include 
@@ -443,7 +458,9 @@ def manage_columns(dataframe=None,columns=None, select_columns=False, drop_colum
     if drop_columns:
         data = data.drop(columns,axis=1)
         
-    data = drop_duplicate(data,columns,method=drop_duplicates)
+    if drop_duplicates:
+        data = drop_duplicate(data,columns,method=drop_duplicates)
+        
     return data
 
 
@@ -464,9 +481,11 @@ def featurize_datetime(dataframe=None, column_name=None, date_features=None, dro
 
     date_features: List. 
         A list of new datetime features to include in the dataset. 
-        Expected list should contain either of the elements in this list ['Year', 'Month', 'Day', 'Dayofweek', \
-            'Dayofyear','Week','Hour','Minute','Is_month_end', \
-            'Is_month_start', 'Is_quarter_end', 'Is_quarter_start', 'Is_year_end', 'Is_year_start']
+        Expected list should contain either of the elements in this list\
+                                ['Year', 'Month', 'Day', 'Dayofweek', 'Dayofyear',\
+                                'Week','Is_month_end', 'Is_month_start', 'Is_quarter_end',\
+                                'Hour','Minute','Is_quarter_start', 'Is_year_end', 'Is_year_start',\
+                                'Date']
         
     drop: Bool. Default is set to True
         drop original datetime column. 
@@ -487,21 +506,23 @@ def featurize_datetime(dataframe=None, column_name=None, date_features=None, dro
     df = dataframe.copy()
     expected_list = ['Year', 'Month', 'Day', 'Dayofweek', 'Dayofyear','Week',\
             'Is_month_end', 'Is_month_start', 'Is_quarter_end','Hour','Minute',\
-                 'Is_quarter_start', 'Is_year_end', 'Is_year_start']
+                 'Is_quarter_start', 'Is_year_end', 'Is_year_start','Date']
     if date_features is None:
         date_features = expected_list
         for elem in date_features:
             if elem not in expected_list:
                 raise KeyError(f'List should contain any of {expected_list}')
 
-    df[column_name] = df[column_name].fillna(0)
     fld = df[column_name]
     if not np.issubdtype(fld.dtype, np.datetime64):
         df.loc[:,column_name] = fld = pd.to_datetime(fld, infer_datetime_format=True,utc=True).dt.tz_localize(None)
     targ_pre_ = re.sub('[Dd]ate$', '', column_name)
     for n in date_features:
         df.loc[:,targ_pre_+n] = getattr(fld.dt,n.lower())
-    df.loc[:,targ_pre_+'Elapsed'] = fld.astype(np.int64) // 10**9
+        if n.lower() == 'dayofweek':
+            df.loc[:,targ_pre_+'Isweekend'] = df.loc[:,targ_pre_+n] > 4
+
+#     df.loc[:,targ_pre_+'Elapsed'] = fld.astype(np.int64) // 10**9
     if drop: df.drop(column_name, axis=1, inplace=True)
     return df
 
@@ -604,7 +625,6 @@ def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=
         
     low_cat = []
     hash_features = []
-#     dict_file = {}
     input_columns = [cols for cols in data.columns]
     input_columns.remove(target_column)
     input_columns.remove(id_column)
@@ -613,21 +633,24 @@ def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=
     else:
         cat_attributes.remove(id_column)
     
-    print_divider('Identifying columns present in the data')
-    print(f'Target column is {target_column}. Attribute in target column incldes:\n{list(data[target_column].unique())}\n')
     for item in cat_attributes:
         if data[item].nunique() > high_dim:
             hash_features.append(item)
         else:
             low_cat.append(item)
             
-    print(f'Features with high cardinality:{hash_features}\n')        
+           
     dict_file = dict(num_feat=num_attributes, cat_feat=cat_attributes,
                   high_card_feat= hash_features, lower_cat = low_cat,
                  input_columns = input_columns, target_column = target_column,
                  id_column = id_column)
     
     if display_inline:
+        print_divider('Identifying columns present in the data')
+        print(f'Target column is {target_column}. Attribute in target column:\n\
+        {list(data[target_column].unique())}\n')
+        
+        print(f'Features with high cardinality:{hash_features}\n') 
         pprint.pprint(dict_file)
     
     store_attribute(dict_file,output_path)
@@ -716,21 +739,21 @@ def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
     check_nan(data,display_inline=display_inline,plot=False)
     df = check_nan.df
     
-    if thresh_x:
-        thresh = thresh_x/100
-        initial_row = data.shape[0]
-        drop_row = data.shape[1] * thresh
-        data = data.dropna(thresh=drop_row)
-        dropped_records = initial_row - data.shape[0]
-        print(f'\nDropping rows with {thresh_x}% missing value: Number of records dropped is {dropped_records}')
-        
-        
-    if thresh_y:
-        drop_col = df[df['missing_percent'] > thresh_y].features.to_list()
-        print(f'\nDropping Columns with {thresh_y}% missing value: {drop_col}')
-        data = manage_columns(data,columns = drop_col, drop_columns=True)
-        print(f'\nNew data shape is {data.shape}')
     
+    thresh = thresh_x/100
+    initial_row = data.shape[0]
+    drop_row = data.shape[1] * thresh
+    data = data.dropna(thresh=drop_row)
+    dropped_records = initial_row - data.shape[0]
+    
+    drop_col = df[df['missing_percent'] > thresh_y].features.to_list()
+    data = manage_columns(data,columns = drop_col, drop_columns=True,drop_duplicates=None)
+    
+    if display_inline:
+        print(f'\nDropping rows with {thresh_x}% missing value: Number of records dropped is {dropped_records}')
+        print(f'\nDropping Columns with {thresh_y}% missing value: {drop_col}')
+        print(f'\nNew data shape is {data.shape}')
+        
     if drop_outliers:
         if target_name is None:
             raise ValueError("target_name: Expecting Target_column ")
@@ -809,7 +832,7 @@ def map_column(dataframe=None,column_name=None,items=None,add_prefix=True):
     return data
 
 
-def map_target(dataframe=None,target_column=None,add_prefix=True,drop=False):
+def map_target(dataframe=None,target_column=None,add_prefix=True,drop=False,display_inline=True):
 
     """
     Map target column in  a pandas dataframe column with a dict.
@@ -827,6 +850,8 @@ def map_target(dataframe=None,target_column=None,add_prefix=True,drop=False):
         
     drop: Bool. Default is True
         drop original target column name
+        
+    display_inline:Bool. Default is  True
     
     Returns
     -------
@@ -863,10 +888,11 @@ def map_target(dataframe=None,target_column=None,add_prefix=True,drop=False):
     
     else:
         raise ValueError("dataframe: The target column has only 1 unique value")
-    
-    print_divider('Mapping target columns')
-    for key,value in items.items():
-        print(f'{key} was mapped to {value}\n')
+        
+    if display_inline:
+        print_divider('Mapping target columns')
+        for key,value in items.items():
+            print(f'{key} was mapped to {value}\n')
     if add_prefix:
         prefix_name = f'transformed_{target_column}'
     else:
@@ -874,7 +900,7 @@ def map_target(dataframe=None,target_column=None,add_prefix=True,drop=False):
     data.loc[:,prefix_name] = data[target_column].map(items)
     
     if drop:
-        data = manage_columns(data,target_column,drop_columns=True)
+        data = manage_columns(data,target_column,drop_columns=True,drop_duplicates=None)
     return data
     
 
@@ -950,7 +976,7 @@ def rename_similar_values(dataframe,column_name,cut_off=0.75,n=None):
     return df[column_name].replace(map_dict)
 
     
-def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,display_inline=True,
+def _preprocess_non_target_col(data=None,processed_data_path=None,display_inline=True,
                               select_columns=None,**kwargs):
 
     '''
@@ -962,7 +988,7 @@ def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,display_inline
     data: DataFrame or named Series
         Dataframe or dath path to the data
         
-    PROCESSED_DATA_PATH: String
+    processed_data_path: String
         Path to where the preprocessed data will be stored
 
     display_inline:Bool. Default is  True
@@ -981,12 +1007,12 @@ def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,display_inline
         if isinstance(data, pd.DataFrame):
             test_df = data
             if select_columns:
-                test_df = manage_columns(test_df, columns=select_columns,select_columns=True)
+                test_df = manage_columns(test_df, columns=select_columns,select_columns=True,drop_duplicates=None)
         else:
             test_df = read_file(data, input_col= select_columns,**kwargs)
             
-    test_df = drop_uninformative_fields(test_df)
-    num_attributes = test_df.select_dtypes(exclude=['object', 'datetime64']).columns.tolist()
+    test_df = drop_uninformative_fields(test_df,display_inline=display_inline)
+    num_attributes = test_df.select_dtypes(exclude=['object', 'datetime64','bool']).columns.tolist()
     
     with HiddenPrints(): 
         #how to indicate columns with outliers 
@@ -1027,12 +1053,12 @@ def _preprocess_non_target_col(data=None,PROCESSED_DATA_PATH=None,display_inline
         print_divider('Display the preprocessed data')
         display(data.head(5))
     
-    data.to_pickle(PROCESSED_DATA_PATH)
+    data.to_pickle(processed_data_path)
     print_divider('Preprocessed data saved')
-    print(f'\nDone!. Input data has been preprocessed successfully and stored in {PROCESSED_DATA_PATH}')
+    print(f'\nDone!. Input data has been preprocessed successfully and stored in {processed_data_path}')
 
 
-def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
+def _preprocess(data=None,target_column=None,train=True,select_columns=None,\
                display_inline=True,project_path=None,**kwargs): 
     
     
@@ -1042,7 +1068,14 @@ def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
     if project_path is None:
         raise ValueError("project_path: Expecting a path to store the preprocessed data")
         
+    if train:
+        if target_column is None:
+            raise ValueError("target_column: You need to specify a target column")
         
+    if os.path.exists(project_path):
+        pass
+    else:
+        os.mkdir(project_path) 
     project_path = os.path.join(project_path, 'data')
     if os.path.exists(project_path):
         pass
@@ -1053,7 +1086,7 @@ def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
         if isinstance(data, pd.DataFrame):
             train_df = data
             if select_columns:
-                train_df = manage_columns(train_df,columns=select_columns,select_columns=True)
+                train_df = manage_columns(train_df,columns=select_columns,select_columns=True,drop_duplicates=None)
         else:
             train_df = read_file(data, input_col= select_columns,**kwargs)
         
@@ -1078,7 +1111,7 @@ def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
 
             PROCESSED_TRAIN_PATH = os.path.join(project_path, 'train_data.pkl')
             data = handle_nan(dataframe=train_df,target_name=target_column,display_inline=display_inline,n=3)
-            data = map_target(data,target_column=target_column,drop=True)
+            data = map_target(data,target_column=target_column,drop=True,display_inline=display_inline)
             prefix_name = f'transformed_{target_column}'
             for column in data.columns:
                 if 'age' in column.lower():
@@ -1113,7 +1146,7 @@ def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
                     data = map_column(data,column_name=column,items=items)
                     data = manage_columns(data,columns=column,drop_columns=True)
 
-            data = drop_uninformative_fields(data)
+            data = drop_uninformative_fields(data,display_inline=display_inline)
 
             create_schema_file(data,target_column=prefix_name,project_path=project_path,\
                                display_inline=display_inline,id_column=data.columns[0])
