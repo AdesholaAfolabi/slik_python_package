@@ -297,7 +297,7 @@ def _build_model(dataframe=None,target_column=None,numerical_transformer=None,ca
 def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=True,
                         project_path=None,numerical_transformer=None,categorical_transformer=None,
                         select_columns=None,pca=True,algorithm=None,grid_search=False,display_inline=False,
-                        hashing=False,params=None,hash_size=500,
+                        hashing=False,params=None,hash_size=500,balance_data=False,
                         **kwargs):
     """
     Build data and model pipeline.
@@ -375,13 +375,13 @@ def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=T
         print_divider(f'Loading clean data')
         print(f'\nClean data exists in {PROCESSED_TRAIN_PATH}\n')
         train_df = load_pickle(PROCESSED_TRAIN_PATH)
-        
+#         print(train_df.head())
     else:
         if data is None:
-            raise ValueError("data: Expecting a DataFrame or Series or a data path, got None")
+            raise ValueError("data: Expecting a pandas dataFrame or a data path, got None")
             
     if clean_data is True and data is None:
-        raise ValueError("data: Expecting a DataFrame or Series or a data path, if clean_data set to True")
+        raise ValueError("data: Expecting a pandas dataFrame or a data path, if clean_data set to True")
         
     if numerical_transformer is None:
         raise ValueError("numerical_transformer: Expecting a pipeline object for numerical transformation , got None")
@@ -408,12 +408,13 @@ def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=T
         errstr = f'The given type for id_column is {type(id_column).__name__}. Expected type is str'
         raise TypeError(errstr)
           
-
+    target_column = f'transformed_{target_column}'
+    
     if os.path.exists(PROCESSED_TRAIN_PATH):
         Question = input("Use clean data:(y/n) \n")
         if Question == ("y"):
             clean_data = False
-            target_column = f'transformed_{target_column}'
+            
         elif Question == ("n"):
             if data is not None:
                 if isinstance(data, pd.DataFrame):
@@ -426,36 +427,27 @@ def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=T
                     train_df = read_file(data, input_col= select_columns, **kwargs)
                     if display_inline == True:
                         print(f'\nTarget column is {target_column}. Attribute in target column incldes:\n{list(train_df[target_column].unique())}')
+            else:
+                raise ValueError("data: Expecting a pandas dataFrame or a data path")
 
         
     if clean_data:
-        if os.path.exists(PROCESSED_TRAIN_PATH):
-            pass
-        else:
-            if isinstance(data, pd.DataFrame):
-                train_df = data
-                print(f'\nTarget column is {target_column}. Attribute in target column incldes:\n{list(train_df[target_column].unique())}')
-                if select_columns:
-                    train_df = manage_columns(train_df,columns=select_columns,select_columns=True)
-            else:
-                train_df = read_file(data, input_col= select_columns, **kwargs)
-                print(f'\nTarget column is {target_column}. Attribute in target column incldes:\n{list(train_df[target_column].unique())}')
-                    
         if display_inline == False:
             logging = 'silent'
         preprocess(data=train_df,target_column=target_column,train=True,display_inline=display_inline,
                            project_path=project_path,select_columns=select_columns,logging=logging,**kwargs)
         train_df = load_pickle(PROCESSED_TRAIN_PATH)
-        target_column = f'transformed_{target_column}'
+        
 
     else:
-        train_df = data
-        warnings.warn("Using raw data without proper data preprocessing can lead to several errors when building your model. It is advised tht you Set clean_data to True")
+        if data is not None:
+            train_df = data
+            warnings.warn("Using raw data without proper data preprocessing can lead to several errors when building your model. It is advised tht you Set clean_data to True")
     
     output = _build_model(dataframe = train_df,target_column=target_column,numerical_transformer=numerical_transformer,\
-                        categorical_transformer=categorical_transformer,pca=pca,algorithm=algorithm,
-                        grid_search=grid_search,params=params,id_column=id_column,display_inline=display_inline,hashing=hashing,
-                        hash_size=hash_size,project_path=project_path)
+                        categorical_transformer=categorical_transformer,pca=pca,algorithm=algorithm,\
+                    grid_search=grid_search,params=params,id_column=id_column,display_inline=display_inline,hashing=hashing,
+                        hash_size=hash_size,project_path=project_path,balance_data=balance_data)
     
     return output
     
@@ -488,9 +480,6 @@ def pipeline_transform_predict(data=None,select_columns=None,project_path=None,m
         list of numpy array predictions
 
     """
-
-    with HiddenPrints():
-        preprocess(data=data,train=False,display_inline=False,project_path=project_path)
     
     if os.path.exists(f"{project_path}/data/metadata/store_file.yaml"):
         config = yaml.safe_load(open(f"{project_path}/data/metadata/store_file.yaml"))
@@ -505,6 +494,9 @@ def pipeline_transform_predict(data=None,select_columns=None,project_path=None,m
                 pass
             else:
                 raise ValueError(f"{columns} is not present in the training data.")
+                
+    with HiddenPrints():
+        preprocess(data=data,train=False,display_inline=False,project_path=project_path,select_columns=input_columns)
 
     
                 
