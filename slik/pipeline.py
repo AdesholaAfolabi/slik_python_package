@@ -13,6 +13,7 @@ from sklearn.model_selection import train_test_split
 import os,scipy,inspect
 import sklearn,warnings
 import re
+import warnings
 
 # To display multiple output from a single cell.
 # from IPython.core.interactiveshell import InteractiveShell
@@ -21,7 +22,7 @@ import re
 import pandas as pd
 from .loadfile import read_file
 from .preprocessing import identify_columns,preprocess,map_target
-from .utils import load_pickle,print_devider,store_pipeline, HiddenPrints, get_scores, log_plot
+from .utils import load_pickle,print_divider,store_pipeline, HiddenPrints, get_scores, log_plot
 from slik import plot_funcs as pf
 
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler, OneHotEncoder
@@ -91,7 +92,7 @@ class DenseTransformer(TransformerMixin):
     
 
 def _build_model(dataframe=None,target_column=None,numerical_transformer=None,categorical_transformer=None
-                ,pca=False, algorithm=None, balance_data=False,
+                ,pca=False, algorithm=None, balance_data=False,display_inline=True,
                 grid_search=False,params=None,hashing=False,hash_size=500,project_path=None,
                 **kwargs):
     
@@ -102,7 +103,7 @@ def _build_model(dataframe=None,target_column=None,numerical_transformer=None,ca
     except:
         pass
     
-    identify_columns(dataframe,target_column,project_path=data_path,**kwargs)
+    identify_columns(dataframe,target_column,project_path=data_path,display_inline=display_inline,**kwargs)
     
     model_preprocessor_pipeline = os.path.join(project_path, 'model/')
     try:
@@ -115,7 +116,7 @@ def _build_model(dataframe=None,target_column=None,numerical_transformer=None,ca
         numerical_attribute = config['num_feat']
         categorical_attribute = config['cat_feat']
         lower_categorical_attribute = config['lower_cat']
-        hash_features = config['hash_feat']
+        hash_features = config['high_card_feat']
         input_columns = config['input_columns']
     else:
         raise ValueError('path: No file found in f"{project_path}/data/metadata/"')
@@ -138,7 +139,7 @@ def _build_model(dataframe=None,target_column=None,numerical_transformer=None,ca
         use_cols =  numerical_attribute + categorical_attribute
     
     train_df = manage_columns(dataframe,columns=input_columns,select_columns=True)
-    y = dataframe[target_column]
+    y = dataframe[f'{target_column}'].loc[list(train_df.index)]
     
     if balance_data:
         oversample = SMOTE()
@@ -161,7 +162,7 @@ def _build_model(dataframe=None,target_column=None,numerical_transformer=None,ca
     
          
     if pca:
-        print_devider('Applying PCA to the data')
+        print_divider('Applying PCA to the data')
         if scipy.sparse.issparse(X_train_copy):
             X_train_array = X_train_copy.toarray()
 #         elif isinstance(X_train_copy, np.ndarray):
@@ -280,7 +281,7 @@ def _build_model(dataframe=None,target_column=None,numerical_transformer=None,ca
 #     X_test = data_transformer.transform(X_test)        
     y_pred = output.predict(X_test)
     
-    print_devider('Metric Performance')
+    print_divider('Metric Performance')
             
     met_perf = get_scores(y_test,y_pred)
     
@@ -295,8 +296,8 @@ def _build_model(dataframe=None,target_column=None,numerical_transformer=None,ca
     
 def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=True,
                         project_path=None,numerical_transformer=None,categorical_transformer=None,
-                        select_columns=None,pca=True,algorithm=None,grid_search=False,verbose=True,
-                        hashing=False,params=None,hash_size=500,
+                        select_columns=None,pca=True,algorithm=None,grid_search=False,display_inline=False,
+                        hashing=False,params=None,hash_size=500,balance_data=False,
                         **kwargs):
     """
     Build data and model pipeline.
@@ -346,7 +347,7 @@ def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=T
     params: dict.
         dictionary of keyword arguments.  
         
-    verbose: Bool, default is True
+    display_inline: Bool, default is True
         display dataframe print statement
         
     hash_size: int, default is 500
@@ -371,16 +372,16 @@ def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=T
     PROCESSED_TRAIN_PATH = os.path.join(data_path, 'train_data.pkl')
     
     if os.path.exists(PROCESSED_TRAIN_PATH):
-        print_devider(f'Loading clean data')
+        print_divider(f'Loading clean data')
         print(f'\nClean data exists in {PROCESSED_TRAIN_PATH}\n')
         train_df = load_pickle(PROCESSED_TRAIN_PATH)
-        
+#         print(train_df.head())
     else:
         if data is None:
-            raise ValueError("data: Expecting a DataFrame or Series or a data path, got None")
+            raise ValueError("data: Expecting a pandas dataFrame or a data path, got None")
             
     if clean_data is True and data is None:
-        raise ValueError("data: Expecting a DataFrame or Series or a data path, if clean_data set to True")
+        raise ValueError("data: Expecting a pandas dataFrame or a data path, if clean_data set to True")
         
     if numerical_transformer is None:
         raise ValueError("numerical_transformer: Expecting a pipeline object for numerical transformation , got None")
@@ -407,46 +408,46 @@ def build_data_pipeline(data=None,target_column=None,id_column=None,clean_data=T
         errstr = f'The given type for id_column is {type(id_column).__name__}. Expected type is str'
         raise TypeError(errstr)
           
-
+    target_column = f'transformed_{target_column}'
+    
     if os.path.exists(PROCESSED_TRAIN_PATH):
         Question = input("Use clean data:(y/n) \n")
         if Question == ("y"):
             clean_data = False
-            target_column = f'transformed_{target_column}'
+            
         elif Question == ("n"):
             if data is not None:
                 if isinstance(data, pd.DataFrame):
                     train_df = data
-                    print(f'\nTarget column is {target_column}. Attribute in target column incldes:\n{list(train_df[target_column].unique())}')
+                    if display_inline == True:
+                        print(f'\nTarget column is {target_column}. Attribute in target column incldes:\n{list(train_df[target_column].unique())}')
                     if select_columns:
                         train_df = manage_columns(train_df,columns=select_columns,select_columns=True)
                 else:
                     train_df = read_file(data, input_col= select_columns, **kwargs)
-                    print(f'\nTarget column is {target_column}. Attribute in target column incldes:\n{list(train_df[target_column].unique())}')
+                    if display_inline == True:
+                        print(f'\nTarget column is {target_column}. Attribute in target column incldes:\n{list(train_df[target_column].unique())}')
+            else:
+                raise ValueError("data: Expecting a pandas dataFrame or a data path")
 
         
     if clean_data:
-        if os.path.exists(PROCESSED_TRAIN_PATH):
-            pass
-        else:
-            if isinstance(data, pd.DataFrame):
-                train_df = data
-                print(f'\nTarget column is {target_column}. Attribute in target column incldes:\n{list(train_df[target_column].unique())}')
-                if select_columns:
-                    train_df = manage_columns(train_df,columns=select_columns,select_columns=True)
-            else:
-                train_df = read_file(data, input_col= select_columns, **kwargs)
-                print(f'\nTarget column is {target_column}. Attribute in target column incldes:\n{list(train_df[target_column].unique())}')
-                    
-        preprocess(data=train_df,target_column=target_column,train=True,verbose=verbose,
-                           project_path=project_path,select_columns=select_columns,**kwargs)
+        if display_inline == False:
+            logging = 'silent'
+        preprocess(data=train_df,target_column=target_column,train=True,display_inline=display_inline,
+                           project_path=project_path,select_columns=select_columns,logging=logging,**kwargs)
         train_df = load_pickle(PROCESSED_TRAIN_PATH)
-        target_column = f'transformed_{target_column}'
+        
+
+    else:
+        if data is not None:
+            train_df = data
+            warnings.warn("Using raw data without proper data preprocessing can lead to several errors when building your model. It is advised tht you Set clean_data to True")
     
     output = _build_model(dataframe = train_df,target_column=target_column,numerical_transformer=numerical_transformer,\
-                        categorical_transformer=categorical_transformer,pca=pca,algorithm=algorithm,
-                        grid_search=grid_search,params=params,id_column=id_column,verbose=verbose,hashing=hashing,
-                        hash_size=hash_size,project_path=project_path)
+                        categorical_transformer=categorical_transformer,pca=pca,algorithm=algorithm,\
+                    grid_search=grid_search,params=params,id_column=id_column,display_inline=display_inline,hashing=hashing,
+                        hash_size=hash_size,project_path=project_path,balance_data=balance_data)
     
     return output
     
@@ -479,8 +480,6 @@ def pipeline_transform_predict(data=None,select_columns=None,project_path=None,m
         list of numpy array predictions
 
     """
-    with HiddenPrints():
-        preprocess(data=data,train=False,verbose=False,project_path=project_path,select_columns=select_columns)
     
     if os.path.exists(f"{project_path}/data/metadata/store_file.yaml"):
         config = yaml.safe_load(open(f"{project_path}/data/metadata/store_file.yaml"))
@@ -495,6 +494,11 @@ def pipeline_transform_predict(data=None,select_columns=None,project_path=None,m
                 pass
             else:
                 raise ValueError(f"{columns} is not present in the training data.")
+                
+    with HiddenPrints():
+        preprocess(data=data,train=False,display_inline=False,project_path=project_path,select_columns=input_columns)
+
+    
                 
     data = load_pickle(f'{project_path}/data/validation_data.pkl')
     data = data.reindex(columns = input_columns)
@@ -620,17 +624,17 @@ def evaluate_model(model_path=None,eval_data=None,select_columns=None,project_pa
             eval_data = read_file(eval_data, input_col= select_columns,**kwargs)
         
     with HiddenPrints():    
-        preprocess(data=eval_data,train=False,verbose=False,project_path=project_path,select_columns=select_columns)
-        eval_data = map_target(eval_data,target_column)
-        y_test = eval_data['transformed_'+target_column]
+        preprocess(data=eval_data,train=False,display_inline=False,project_path=project_path,select_columns=select_columns)
         data = load_pickle(f'{project_path}/data/validation_data.pkl')
+        eval_data = map_target(eval_data,target_column)
+        y_test = eval_data['transformed_'+target_column].loc[list(data.index)]
         data = data.reindex(columns = input_columns)
         estimator = load_pickle(model_path)
         
     y_pred = estimator.predict(data)
     y_proba = estimator.predict_proba(data)[:, 1]
     scores_valid = get_scores(y_test,y_pred)
-    print_devider('Metric Performance')
+    print_divider('Metric Performance')
     print(scores_valid)
     
     plot_path = os.path.join(project_path, 'plots/')
@@ -639,7 +643,7 @@ def evaluate_model(model_path=None,eval_data=None,select_columns=None,project_pa
     
     from collections import defaultdict
     scores = defaultdict(int)
-    print_devider('Saving Plots')
+    print_divider('Saving Plots')
     # record scores
     for k, v in scores_valid.items():
         scores[k] += v 
