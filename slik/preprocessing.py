@@ -261,7 +261,7 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
         A value to determine whether there are multiple outliers in a record,
         which is highly dependent on the number of features that are being checked. 
 
-    display: Bool. Default is True.
+    display_inline: Bool. Default is True.
         Display the outliers present in the data in form of a dataframe.
 
     Returns
