@@ -400,7 +400,7 @@ def manage_columns(dataframe=None,columns=None, select_columns=False, drop_colum
     ----------
     dataframe: DataFrame or named Series
     
-    columns: used to specify columns to be selected, dropped or used in dropping duplicates. 
+    columns: specify columns to be selected, dropped or used in dropping duplicates. 
     
     select_columns: Boolean True or False, default is False
         The columns you want to select from your dataframe. Requires a list to be passed into the columns param
