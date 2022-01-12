@@ -559,7 +559,7 @@ def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=
     high_dim: int, default 100
         Integer to identify categorical attributes greater than 100 features
         
-    display: Bool, default=True
+    display_inlne: Bool, default=True
         display print statement
         
     project_path: str
