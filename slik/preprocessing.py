@@ -1092,14 +1092,14 @@ def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
                 if 'datetime64' in dtype.name:
                     print_divider('Featurize Datetime columns')
                     print(f'column with datetime type: [{name}]\n') 
-                    data = featurize_datetime(data,name,False)
+                    data = featurize_datetime(data,name,drop = False)
 
                 elif 'object' in dtype.name:
                     output = check_datefield(data, name)
                     if output:
                         print_divider('Featurize Datetime columns')
                         print(f'Inferred column with datetime type: [{name}]\n') 
-                        data = featurize_datetime(data,name,False)
+                        data = featurize_datetime(data,name,drop=False)
                 else:
                     pass
 
@@ -1141,7 +1141,7 @@ def _preprocess(data=None,target_column=None,train=False,select_columns=None,\
                                  select_columns=select_columns,**kwargs)
 
 
-def preprocess(data=None,target_column=None,train=False,select_columns=None,\
+def preprocess(data=None,target_column=None,train=True,select_columns=None,\
                display_inline=True,logging = 'display',project_path=None,**kwargs): 
     
     """
