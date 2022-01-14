@@ -415,7 +415,7 @@ def manage_columns(dataframe=None,columns=None, select_columns=False, drop_colum
     ----------
     dataframe: DataFrame or named Series
     
-    columns: used to specify columns to be selected, dropped or used in dropping duplicates. 
+    columns: specify columns to be selected, dropped or used in dropping duplicates. 
     
     select_columns: Boolean True or False, default is False
         The columns you want to select from your dataframe. Requires a list to be passed into the columns param
@@ -580,7 +580,7 @@ def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=
     high_dim: int, default 100
         Integer to identify categorical attributes greater than 100 features
         
-    display: Bool, default=True
+    display_inlne: Bool, default=True
         display print statement
         
     project_path: str
@@ -1125,14 +1125,14 @@ def _preprocess(data=None,target_column=None,train=True,select_columns=None,\
                 if 'datetime64' in dtype.name:
                     print_divider('Featurize Datetime columns')
                     print(f'column with datetime type: [{name}]\n') 
-                    data = featurize_datetime(data,name,False)
+                    data = featurize_datetime(data,name,drop = False)
 
                 elif 'object' in dtype.name:
                     output = check_datefield(data, name)
                     if output:
                         print_divider('Featurize Datetime columns')
                         print(f'Inferred column with datetime type: [{name}]\n') 
-                        data = featurize_datetime(data,name,False)
+                        data = featurize_datetime(data,name,drop=False)
                 else:
                     pass
 
