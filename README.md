@@ -12,7 +12,7 @@ Slik has several tools that make it easy to load data of any format, clean and i
 
 This library is in very active development, so it’s not recommended for production use.
 
-- 📖 [Documentation](https://sensei-akin.github.io/slik_python_package/index.html)
+- 📖 [Documentation](https://sensei-akin.github.io/slik_python_package/html/index.html)
 - 🐞 [Issue Tracker](https://github.com/AdesholaAfolabi/slik_python_package/issues) - Report bugs or suggest new features
 
 
