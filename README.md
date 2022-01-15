@@ -1,7 +1,7 @@
 <p align="center">
 
 
- <img  src="https://github.com/Sensei-akin/slik_python_package/blob/staging/docs/_images/SLIK-LOGO-BLACK-2.jpg" width=900 height=300>
+ <img  src="https://github.com/Sensei-akin/slik_python_package/blob/staging/docs/html/_images/SLIK-LOGO-BLACK-2.jpg" width=900 height=300>
 
 </p>
 
