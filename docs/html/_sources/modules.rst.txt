@@ -1,7 +1,0 @@
-slik
-====
-
-.. toctree::
-   :maxdepth: 4
-
-   slik
