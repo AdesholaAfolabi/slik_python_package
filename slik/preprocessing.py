@@ -1175,7 +1175,7 @@ def _preprocess(data=None,target_column=None,train=True,select_columns=None,\
 
 
 def preprocess(data=None,target_column=None,train=False,select_columns=None,\
-               display_inline=True,logging = 'display',project_path=None,**kwargs): 
+               display_inline=True,project_path=None,**kwargs): 
     
     """
     Automatically preprocess dataframe/file-path. Handles missing value, Outlier treatment,
@@ -1206,15 +1206,14 @@ def preprocess(data=None,target_column=None,train=False,select_columns=None,\
     """
     
 
-    if logging == 'display':
+    if display_inline:
         _preprocess(data=data,target_column=target_column,train=train,select_columns=select_columns,\
                display_inline=display_inline,project_path=project_path,**kwargs)
-    elif logging == 'silent':
+    else:
         with HiddenPrints():
             _preprocess(data=data,target_column=target_column,train=train,select_columns=select_columns,\
                display_inline=display_inline,project_path=project_path,**kwargs)
-    else:
-        raise ValueError ("logging: Should be one of display or silent")
+    
 
 
 def trim_all_columns(dataframe):
