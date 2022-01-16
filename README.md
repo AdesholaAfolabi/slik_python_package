@@ -1,7 +1,7 @@
 <p align="center">
 
 
- <img  src="https://github.com/Sensei-akin/slik_python_package/blob/staging/docs/_images/SLIK-LOGO-BLACK-2.jpg" width=900 height=300>
+ <img  src="https://github.com/Sensei-akin/slik_python_package/blob/staging/docs/html/_images/SLIK-LOGO-BLACK-2.jpg" width=900 height=300>
 
 </p>
 
@@ -12,7 +12,7 @@ Slik has several tools that make it easy to load data of any format, clean and i
 
 This library is in very active development, so it’s not recommended for production use.
 
-- 📖 [Documentation](https://sensei-akin.github.io/slik_python_package/index.html)
+- 📖 [Documentation](https://sensei-akin.github.io/slik_python_package/html/index.html)
 - 🐞 [Issue Tracker](https://github.com/AdesholaAfolabi/slik_python_package/issues) - Report bugs or suggest new features
 
 
