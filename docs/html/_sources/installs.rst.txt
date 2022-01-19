@@ -4,7 +4,7 @@ Installing Slik
 ###############################################
 
 Slik is available as a Python package for Linux, MacOS and Windows, and can be installed like any other Python package. You can visit our 
-`GitHub repository <https://github.com/Sensei-akin/slik_python_package/tree/staging/>`_ or get the latest version from 
+`GitHub repository <https://github.com/AdesholaAfolabi/slik_python_package/blob/staging/slik/preprocessing.py>`_ or get the latest version from 
 `PyPI <https://pypi.org/project/slik/>`_
 
 Install in existing environment
@@ -64,4 +64,4 @@ What is this repository for
 * Quick summary: The application employs the modular style of putting the applications together.
 * Version: 1.0
 * Learn Markdown (https://bitbucket.org/tutorials/markdowndemo)
-* Repo owner: Adeshola Afolabi, Komolafe Akinwande
+* Repo owner: Adeshola Afolabi, Komolafe Akinwande, Justus Ilemobayo
