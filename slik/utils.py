@@ -89,24 +89,6 @@ def get_scores(y_true, y_pred):
       'f1': f1_score(y_true, y_pred),
     }
     
-class HiddenPrints:
-    """
-    Hide prints of a function
-
-    Parameters:
-        None
-        
-    Returns:
-        None
-    """
-    def __enter__(self):
-        self._original_stdout = sys.stdout
-        sys.stdout = open(os.devnull,'w')
-        
-    def __exit__(self, exc_type, exc_va, exc_tb):
-        sys.stdout.close()
-        sys.stdout = self._original_stdout
-        
 def log_plot(args, plot_func, fp):
 
     '''
@@ -130,3 +112,23 @@ def log_plot(args, plot_func, fp):
 
     plot_func(*args, fp)
     print(f'Logged {fp}')
+
+
+
+class HiddenPrints:
+    """
+    Hide prints of a function
+
+    Parameters:
+        None
+        
+    Returns:
+        None
+    """
+    def __enter__(self):
+        self._original_stdout = sys.stdout
+        sys.stdout = open(os.devnull,'w')
+        
+    def __exit__(self, exc_type, exc_va, exc_tb):
+        sys.stdout.close()
+        sys.stdout = self._original_stdout

@@ -158,7 +158,7 @@ def create_schema_file(dataframe, target_column, id_column, project_path, save=T
     save: Bool. Default is set to True
         save schema file to file path.
         
-    dsiplay_inline: Bool. Default is set to True
+    display_inline: Bool. Default is set to True
         display dataframe print statements.
 
     Returns
@@ -187,14 +187,13 @@ def create_schema_file(dataframe, target_column, id_column, project_path, save=T
     datetime_fields = []
     for name, dtype in df.dtypes.iteritems():
         if 'datetime64' in dtype.name:
-            datatype_map[name] = 'object'
+            datatype_map[name] = dtype.name
             datetime_fields.append(name)
         else:
             datatype_map[name] = dtype.name
     
     
-    schema = dict(dtype=datatype_map, parse_dates=datetime_fields,
-                  index_col=id_column, target_col = target_column)
+    schema = dict(dtype=datatype_map)
     
     # write to YAML file
     if save:
@@ -405,65 +404,6 @@ def drop_duplicate(dataframe=None,columns=None,method='rows',display_inline=True
     return dataframe
 
 
-def manage_columns(dataframe=None,columns=None, select_columns=False, drop_columns=False, drop_duplicates=None):
-    
-    """
-    Manage operations on pandas dataframe based on columns. Operations include 
-    selecting of columns, dropping column and dropping duplicates.
-    
-    Parameters
-    ----------
-    dataframe: DataFrame or named Series
-    
-    columns: used to specify columns to be selected, dropped or used in dropping duplicates. 
-    
-    select_columns: Boolean True or False, default is False
-        The columns you want to select from your dataframe. Requires a list to be passed into the columns param
-        
-    drop_columns: Boolean True or False, default is False
-        The columns you want to drop from your dataset. Requires a list to be passed into the columns param
-        
-    drop_duplicates: 'rows' or 'columns', default is None
-        Drop duplicate values across rows, columns. If columns, a list is required to be passed into the columns param
-    
-    Returns
-    -------
-    Pandas Dataframe:
-        A new dataframe after dropping/selecting/removing duplicate columns or the original 
-        dataframe if params are left as default
-    """
-    if dataframe is None:
-        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
-        
-    if not isinstance(select_columns,bool):
-        errstr = f'The given type for items is {type(select_columns).__name__}. Expected type is boolean True/False'
-        raise TypeError(errstr)
-        
-    if not isinstance(drop_columns,bool):
-        errstr = f'The given type for items is {type(drop_columns).__name__}. Expected type is boolean True/False'
-        raise TypeError(errstr)
-
-    if columns is None:
-        raise ValueError("columns: A list/string is expected as part of the inputs to drop columns, got 'None'") 
-
-    if select_columns and drop_columns:
-        raise ValueError("Select one of select_columns or drop_columns at a time")  
-
-      
-    data = dataframe.copy()
-    
-    if select_columns:
-        data = data[columns]
-    
-    if drop_columns:
-        data = data.drop(columns,axis=1)
-        
-    if drop_duplicates:
-        data = drop_duplicate(data,columns,method=drop_duplicates)
-        
-    return data
-
-
 def featurize_datetime(dataframe=None, column_name=None, date_features=None, drop=True):
     """
     Featurize datetime in the dataset to create new fields such as 
@@ -558,8 +498,132 @@ def get_attributes(data=None,target_column=None):
     else:
         pass
     return num_attributes, cat_attributes
+        
+    
+def _handle_cat_feat(data,fillna,cat_attr):
+
+    """
+    Handle missing values present in a categorical pandas dataframe. 
+
+    Parameters
+    -----------
+    data: DataFrame or name Series.
+        Data set to perform operation on.
+        
+    fillna: str. Default is 'mode'
+        Method of filling categorical features
+        
+    cat_attr: list.
+        List of categorical attributes to pass.
+            
+    Returns
+    -------
+        Pandas Dataframe:
+           Dataframe without missing values
+    """
+    if fillna == 'mode':
+        for item in cat_attr:
+            data.loc[:,item] = data[item].fillna(data[item].value_counts().index[0])
+           
+    else:
+        for item in cat_attr:
+            data.loc[:,item] = data[item].fillna(fillna)
+    return data
 
 
+def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
+               drop_outliers=True,thresh_y=75,thresh_x=75, display_inline = True,
+               **kwargs):
+    
+    """
+    
+    Handle missing values present in a pandas dataframe. 
+    
+    Take care of missing values in the data both cateforical and 
+    numerical features by dropping or filling missing values. Using the 
+    threshold parameter you can also drop missing values present in the data.
+    Outliers are treated before handling missing values by default.
+
+    Parameters
+    -----------
+    data: DataFrame or name Series.
+        Data set to perform operation on.
+        
+    target_name: str
+        Name of the target column
+        
+    strategy: str. Default is 'mean'
+        Method of filling numerical features
+        
+    fillna: str. Default is 'mode'
+        Method of filling categorical features
+        
+    drop_outliers: bool, Default True
+        Drops outliers present in the data.
+        
+    thresh_x: Int, Default is 75.
+        Threshold for dropping rows with missing values.  
+        
+    thresh_y: In, Default is 75.
+        Threshold for dropping columns with missing value
+        
+    display_inline: Bool. default is True.
+        display pandas dataframe print statements
+            
+    Returns
+    -------
+        Pandas Dataframe:
+           Dataframe without missing values
+    """
+    if dataframe is None:
+        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
+        
+    data = dataframe.copy()
+    check_nan(data,display_inline=False,plot=False)
+    df = check_nan.df
+    
+    
+    thresh = thresh_x/100
+    initial_row = data.shape[0]
+    drop_row = data.shape[1] * thresh
+    data = data.dropna(thresh=drop_row)
+    dropped_records = initial_row - data.shape[0]
+    
+    drop_col = df[df['missing_percent'] > thresh_y].features.to_list()
+    data = manage_columns(data,columns = drop_col, drop_columns=True,drop_duplicates=None)
+    
+    if display_inline:
+        print(f'\nDropping rows with {thresh_x}% missing value: Number of records dropped is {dropped_records}')
+        print(f'\nDropping Columns with {thresh_y}% missing value: {drop_col}')
+        print(f'\nNew data shape is {data.shape}')
+        
+    if drop_outliers:
+        if target_name is None:
+            raise ValueError("target_name: Expecting Target_column ")
+        data = detect_fix_outliers(data,target_name,display_inline=False)
+        
+    num_attributes, cat_attributes = get_attributes(data,target_name)
+
+    if strategy == 'mean':
+        for item in num_attributes:
+            data.loc[:,item] = data[item].fillna(data[item].mean())
+            
+    elif strategy == 'median':
+        for item in num_attributes:
+            median = data[item].median()
+            data.loc[:,item] = data[item].fillna(median)
+            
+    elif strategy == 'mode':
+        for item in num_attributes:
+            mode = data[item].mode()[0]
+            data.loc[:,item] = data[item].fillna(mode)
+   
+    else:
+        raise ValueError("method: must specify a fill method, one of [mean, mode or median]'")
+        
+    data = _handle_cat_feat(data,fillna,cat_attributes)
+    return data
+    
 def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=100, display_inline=True, project_path=None):
     
     """
@@ -578,7 +642,7 @@ def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=
         unique identifier column.
         
     high_dim: int, default 100
-        Integer to identify categorical attributes greater than 100 features
+        Integer to identify categorical attributes greater than 100 observations
         
     display: Bool, default=True
         display print statement
@@ -638,151 +702,90 @@ def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=
             hash_features.append(item)
         else:
             low_cat.append(item)
+
+    datetime_fields = []
+    for name, dtype in data.dtypes.iteritems():
+        if 'datetime64' in dtype.name:
+            datetime_fields.append(name)
             
            
     dict_file = dict(num_feat=num_attributes, cat_feat=cat_attributes,
                   high_card_feat= hash_features, lower_cat = low_cat,
-                 input_columns = input_columns, target_column = target_column,
+                 input_columns = input_columns, parse_dates=datetime_fields,
+                  target_column = target_column,
                  id_column = id_column)
     
     if display_inline:
         print_divider('Identifying columns present in the data')
-        print(f'Target column is {target_column}. Attribute in target column:\n\
-        {list(data[target_column].unique())}\n')
+        print(f'Target column is {target_column}. Attribute in target column:{list(data[target_column].unique())}\n')
         
         print(f'Features with high cardinality:{hash_features}\n') 
         pprint.pprint(dict_file)
-    
+        
+        print(f'\nAttributes are stored in {output_path}\n')
+
     store_attribute(dict_file,output_path)
-    print_divider('Saving Attributes in Project path')
-    print(f'\nData columns successfully identified and attributes are stored in {output_path}\n')
-        
+
+
+def manage_columns(dataframe=None,columns=None, select_columns=False, drop_columns=False, drop_duplicates=None):
     
-def _handle_cat_feat(data,fillna,cat_attr):
-
     """
-    Handle missing values present in a categorical pandas dataframe. 
-
+    Manage operations on pandas dataframe based on columns. Operations include 
+    selecting of columns, dropping column and dropping duplicates.
+    
     Parameters
-    -----------
-    data: DataFrame or name Series.
-        Data set to perform operation on.
+    ----------
+    dataframe: DataFrame or named Series
+    
+    columns: used to specify columns to be selected, dropped or used in dropping duplicates. 
+    
+    select_columns: Boolean True or False, default is False
+        The columns you want to select from your dataframe. Requires a list to be passed into the columns param
         
-    fillna: str. Default is 'mode'
-        Method of filling categorical features
+    drop_columns: Boolean True or False, default is False
+        The columns you want to drop from your dataset. Requires a list to be passed into the columns param
         
-    cat_attr: list.
-        List of categorical attributes to pass.
-            
+    drop_duplicates: 'rows' or 'columns', default is None
+        Drop duplicate values across rows, columns. If columns, a list is required to be passed into the columns param
+    
     Returns
     -------
-        Pandas Dataframe:
-           Dataframe without missing values
-    """
-    if fillna == 'mode':
-        for item in cat_attr:
-            data.loc[:,item] = data[item].fillna(data[item].value_counts().index[0])
-           
-    else:
-        for item in cat_attr:
-            data.loc[:,item] = data[item].fillna(fillna)
-    return data
-
-
-def handle_nan(dataframe=None,target_name=None, strategy='mean',fillna='mode',\
-               drop_outliers=True,thresh_y=75,thresh_x=75, display_inline = True,
-               **kwargs):
-    
-    """
-    
-    Handle missing values present in a pandas dataframe. 
-    
-    Take care of missing values in the data both cateforical and 
-    numerical features by dropping or filling missing values.
-    Outliers are treated before handling missing values by default.
-
-    Parameters
-    -----------
-    data: DataFrame or name Series.
-        Data set to perform operation on.
-        
-    target_name: str
-        Name of the target column
-        
-    strategy: str. Default is 'mean'
-        Method of filling numerical features
-        
-    fillna: str. Default is 'mode'
-        Method of filling categorical features
-        
-    drop_outliers: bool, Default True
-        Drops outliers present in the data.
-        
-    thresh_x: Int, Default is 75.
-        Threshold for dropping rows with missing values 
-        
-    thresh_y: In, Default is 75.
-        Threshold for dropping columns with missing value
-        
-    display_inline: Bool. default is True.
-        display pandas dataframe print statements
-            
-    Returns
-    -------
-        Pandas Dataframe:
-           Dataframe without missing values
+    Pandas Dataframe:
+        A new dataframe after dropping/selecting/removing duplicate columns or the original 
+        dataframe if params are left as default
     """
     if dataframe is None:
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
         
-    data = dataframe.copy()
-    check_nan(data,display_inline=display_inline,plot=False)
-    df = check_nan.df
-    
-    
-    thresh = thresh_x/100
-    initial_row = data.shape[0]
-    drop_row = data.shape[1] * thresh
-    data = data.dropna(thresh=drop_row)
-    dropped_records = initial_row - data.shape[0]
-    
-    drop_col = df[df['missing_percent'] > thresh_y].features.to_list()
-    data = manage_columns(data,columns = drop_col, drop_columns=True,drop_duplicates=None)
-    
-    if display_inline:
-        print(f'\nDropping rows with {thresh_x}% missing value: Number of records dropped is {dropped_records}')
-        print(f'\nDropping Columns with {thresh_y}% missing value: {drop_col}')
-        print(f'\nNew data shape is {data.shape}')
+    if not isinstance(select_columns,bool):
+        errstr = f'The given type for items is {type(select_columns).__name__}. Expected type is boolean True/False'
+        raise TypeError(errstr)
         
-    if drop_outliers:
-        if target_name is None:
-            raise ValueError("target_name: Expecting Target_column ")
-        data = detect_fix_outliers(data,target_name,display_inline=display_inline)
-        
-    num_attributes, cat_attributes = get_attributes(data,target_name)
+    if not isinstance(drop_columns,bool):
+        errstr = f'The given type for items is {type(drop_columns).__name__}. Expected type is boolean True/False'
+        raise TypeError(errstr)
 
-    if strategy == 'mean':
-        for item in num_attributes:
-            data.loc[:,item] = data[item].fillna(data[item].mean())
-            
-    elif strategy == 'median':
-        for item in num_attributes:
-            median = data[item].median()
-            data.loc[:,item] = data[item].fillna(median)
-            
-    elif strategy == 'mode':
-        for item in num_attributes:
-            mode = data[item].mode()[0]
-            data.loc[:,item] = data[item].fillna(mode)
-   
-    else:
-        raise ValueError("method: must specify a fill method, one of [mean, mode or median]'")
+    if columns is None:
+        raise ValueError("columns: A list/string is expected as part of the inputs to drop columns, got 'None'") 
+
+    if select_columns and drop_columns:
+        raise ValueError("Select one of select_columns or drop_columns at a time")  
+
+      
+    data = dataframe.copy()
+    
+    if select_columns:
+        data = data[columns]
+    
+    if drop_columns:
+        data = data.drop(columns,axis=1)
         
-    data = _handle_cat_feat(data,fillna,cat_attributes)
+    if drop_duplicates:
+        data = drop_duplicate(data,columns,method=drop_duplicates)
+        
     return data
-    
-    
-    
+
+
 def map_column(dataframe=None,column_name=None,items=None,add_prefix=True):
     
     """
@@ -902,78 +905,6 @@ def map_target(dataframe=None,target_column=None,add_prefix=True,drop=False,disp
     if drop:
         data = manage_columns(data,target_column,drop_columns=True,drop_duplicates=None)
     return data
-    
-
-def rename_similar_values(dataframe,column_name,cut_off=0.75,n=None):
-
-    """
-    Use Sequence Matcher to check for best "good enough" matches.
-    
-    Rename values based on similar matches.
-    
-
-    Parameters
-    ----------
-        dataframe: Pandas Series
-        
-        column_name: str. 
-            Name of pandas column to perform operation on
-            
-        cut_off: int
-            Possibilities that don't score at least that similar to word are ignored        
-            
-        n(optional): int. default 2. 
-            The maximum number of close matches to return.  n must be > 0.
-
-    
-    Returns
-    -------
-        Pandas Dataframe.
-        
-    Example
-    -------
-    >>> pd.dataframe(["Lagos", "Lag", "Abuja", "Abuja FCT", 'Ibadan'],column=['column_name'])
-    >>> Applying the function to this pandas series yields 
-    
-    >>> ["Lagos", "Lagos", "Abuja", "Abuja", 'Ibadan']
-    
-    """
-    
-    if dataframe is None:
-        raise ValueError("data: Expecting a pandas Series, got 'None'")
-    
-    if not isinstance(column_name,str):
-        errstr = f'The given type for column_name is {type(column_name).__name__}. Expected type is str'
-        raise TypeError(errstr)
-  
-    if n is not None and n is not isinstance(n,int):
-        errstr = f'The given type for n is {type(n).__name__}. Expected type is int'
-        raise TypeError(errstr)
-     
-    if n is not None and n < 1:
-        raise ValueError("n: n must be greater than ")
-    
-    df = dataframe.copy()
-    l = df[column_name].tolist()
-    map_dict = {}
-    while l:
-        word = l.pop(0)
-        matches = get_close_matches(word, l, cutoff=0.70)
-        if len(matches)==1:
-            match = matches[0]
-            map_dict[match] = word
-            l.remove(match)
-        elif len(matches)>=2:
-            match1 = matches[0]
-            match2 = matches[1]
-            map_dict[match1] = word
-            map_dict[match2] = word
-            l.remove(match1)
-            l.remove(match2)
-        else:
-            map_dict[word] = word
-    rename_similar_values.map_dict = map_dict
-    return df[column_name].replace(map_dict)
 
     
 def _preprocess_non_target_col(data=None,processed_data_path=None,display_inline=True,
@@ -1110,7 +1041,7 @@ def _preprocess(data=None,target_column=None,train=True,select_columns=None,\
             print(f'\nThe task for preprocessing is {task}')
 
             PROCESSED_TRAIN_PATH = os.path.join(project_path, 'train_data.pkl')
-            data = handle_nan(dataframe=train_df,target_name=target_column,display_inline=display_inline,n=3)
+            data = handle_nan(dataframe=train_df,target_name=target_column,display_inline=display_inline,n=3,**kwargs)
             data = map_target(data,target_column=target_column,drop=True,display_inline=display_inline)
             prefix_name = f'transformed_{target_column}'
             for column in data.columns:
@@ -1122,17 +1053,25 @@ def _preprocess(data=None,target_column=None,train=True,select_columns=None,\
                     data = bin_age(data,age_column)
 
             for name, dtype in data.dtypes.iteritems():
-                if 'datetime64' in dtype.name:
-                    print_divider('Featurize Datetime columns')
-                    print(f'column with datetime type: [{name}]\n') 
-                    data = featurize_datetime(data,name,False)
+                if 'datetime64' in dtype.name or 'time' in name.lower() or 'date' in name.lower():
+                    date_feature = True
+                    output = check_datefield(data, name)
+                    if output:
+                        print_divider('Featurize Datetime columns')
+                        print(f'column with datetime type: [{name}]\n') 
+                        data = featurize_datetime(data,name,False)
 
                 elif 'object' in dtype.name:
                     output = check_datefield(data, name)
                     if output:
-                        print_divider('Featurize Datetime columns')
-                        print(f'Inferred column with datetime type: [{name}]\n') 
-                        data = featurize_datetime(data,name,False)
+                        if date_feature:
+                            print(f'Inferred column with datetime type: [{name}]\n') 
+                            data = featurize_datetime(data,name,False)
+
+                        else:
+                            print_divider('Featurize Datetime columns')
+                            print(f'Inferred column with datetime type: [{name}]\n') 
+                            data = featurize_datetime(data,name,False)
                 else:
                     pass
 
@@ -1214,6 +1153,77 @@ def preprocess(data=None,target_column=None,train=False,select_columns=None,\
             _preprocess(data=data,target_column=target_column,train=train,select_columns=select_columns,\
                display_inline=display_inline,project_path=project_path,**kwargs)
     
+
+def rename_similar_values(dataframe,column_name,cut_off=0.75,n=None):
+
+    """
+    Use Sequence Matcher to check for best "good enough" matches.
+    
+    Rename values based on similar matches.
+    
+
+    Parameters
+    ----------
+        dataframe: Pandas Series
+        
+        column_name: str. 
+            Name of pandas column to perform operation on
+            
+        cut_off: int
+            Possibilities that don't score at least that similar to word are ignored        
+            
+        n(optional): int. default 2. 
+            The maximum number of close matches to return.  n must be > 0.
+
+    
+    Returns
+    -------
+        Pandas Dataframe.
+        
+    Example
+    -------
+    >>> pd.dataframe(["Lagos", "Lag", "Abuja", "Abuja FCT", 'Ibadan'],column=['column_name'])
+    >>> Applying the function to this pandas series yields 
+    
+    >>> ["Lagos", "Lagos", "Abuja", "Abuja", 'Ibadan']
+    
+    """
+    
+    if dataframe is None:
+        raise ValueError("data: Expecting a pandas Series, got 'None'")
+    
+    if not isinstance(column_name,str):
+        errstr = f'The given type for column_name is {type(column_name).__name__}. Expected type is str'
+        raise TypeError(errstr)
+  
+    if n is not None and n is not isinstance(n,int):
+        errstr = f'The given type for n is {type(n).__name__}. Expected type is int'
+        raise TypeError(errstr)
+     
+    if n is not None and n < 1:
+        raise ValueError("n: n must be greater than ")
+    
+    df = dataframe.copy()
+    l = df[column_name].tolist()
+    map_dict = {}
+    while l:
+        word = l.pop(0)
+        matches = get_close_matches(word, l, cutoff=0.70)
+        if len(matches)==1:
+            match = matches[0]
+            map_dict[match] = word
+            l.remove(match)
+        elif len(matches)>=2:
+            match1 = matches[0]
+            match2 = matches[1]
+            map_dict[match1] = word
+            map_dict[match2] = word
+            l.remove(match1)
+            l.remove(match2)
+        else:
+            map_dict[word] = word
+    rename_similar_values.map_dict = map_dict
+    return df[column_name].replace(map_dict)
 
 
 def trim_all_columns(dataframe):

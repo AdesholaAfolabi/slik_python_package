@@ -52,7 +52,7 @@ let's try and continue with what slik is doing
 automatically for now. Now we can handle missing values with slik.
 
     >>> slik.preprocessing.handle_nan(dataframe=titanic,target_name='Survived',strategy='mean',fillna='mode',
-    >>>                                thresh_x=50,thresh_y=50,verbose=False)
+    >>>                                thresh_x=50,thresh_y=50)
         Dropping rows with 50% missing value :Number of records dropped from 891 to 891
         Dropping Columns with 50% missing value: ['Cabin']
         New data shape is (891, 11)
@@ -61,32 +61,67 @@ automatically for now. Now we can handle missing values with slik.
  In slik, we can also identify each columns present in the data:
     
     >>> slik.preprocessing.identify_columns(titanic,'Survived',id_column='PassengerId',project_path='Titanic')
-        ------------------------- Identifying columns present in the data -------------------------
-        Target column is Survived. Attribute in target column incldes:
-        [0, 1]
-        Features with high cardinality:['Name', 'Ticket', 'Cabin']
-        {'cat_feat': ['Name', 'Sex', 'Ticket', 'Cabin', 'Embarked'],
-        'hash_feat': ['Name', 'Ticket', 'Cabin'],
-        'id_column': 'PassengerId',
-        'input_columns': ['Pclass',
-                        'Name',
-                        'Sex',
-                        'Age',
-                        'SibSp',
-                        'Parch',
-                        'Ticket',
-                        'Fare',
-                        'Cabin',
-                        'Embarked'],
-        'lower_cat': ['Sex', 'Embarked'],
-        'num_feat': ['Pclass', 'Age', 'SibSp', 'Parch', 'Fare'],
-        'target_column': 'Survived'}
-        ------------------------- Saving Attributes in Yaml file -------------------------
-        Data columns successfully identified and attributes are stored in Titanic/metadata
+        The task for preprocessing is classification
+
+        Dropping rows with 75% missing value: Number of records dropped is 0
+
+        Dropping Columns with 20% missing value: []
+
+        New data shape is (891, 11)
+
+        --------------- Mapping target columns ---------------
+
+        0 was mapped to 0
+
+        1 was mapped to 1
+
+
+        --------------- Bucketize Age columns ---------------
+
+        Inferred age column: [Age]
+
+        --------------- Mapping passed column ---------------
+
+        male was mapped to 0
+
+        female was mapped to 1
+
+        uninformative fields dropped: []
+
+        --------------- Creating Schema file ---------------
+
+        {'dtype': {'PassengerId': 'int64',
+        'Pclass': 'int64',
+        'Name': 'object',
+        'Age': 'float64',
+        'SibSp': 'float64',
+        'Parch': 'float64',
+        'Ticket': 'object',
+        'Fare': 'float64',
+        'Embarked': 'object',
+        'transformed_Survived': 'int64',
+        'binned_Age': 'object',
+        'transformed_Sex': 'int64'}}
+
+        Schema file stored in Titanic/data/metadata
+
+        --------------- Preview the preprocessed data ---------------
+
+        PassengerId	Pclass	Name	Age	SibSp	Parch	Ticket	Fare	Embarked	transformed_Survived	binned_Age	transformed_Sex
+        0	1	3	Braund, Mr. Owen Harris	22.0	1.0	0.0	A/5 21171	7.250000	S	0	Young Adult	0
+        1	2	1	Cumings, Mrs. John Bradley (Florence Briggs Th...	38.0	1.0	0.0	PC 17599	32.204208	C	1	Mid-Age	1
+        2	3	3	Heikkinen, Miss. Laina	26.0	0.0	0.0	STON/O2. 3101282	7.925000	S	1	Young Adult	1
+        3	4	1	Futrelle, Mrs. Jacques Heath (Lily May Peel)	35.0	1.0	0.0	113803	53.100000	S	1	Mid-Age	1
+        4	5	3	Allen, Mr. William Henry	35.0	0.0	0.0	373450	8.050000	S	0	Mid-Age	0
+
+        --------------- Preprocessed data saved ---------------
+
+        Input data preprocessed successfully and stored in ./Titanic/data/train_data.pkl
+
 
 Slik can clean your data in one line of code. The `slik.preprocessing.preprocess` function cleans your data
-by removing outliers present in the data, handing missing values, featurizing datetime columns, and mapping columns.
-The functions saves the preprocessed file in a project path.
+by removing outliers present in the data, handing missing values, featurizing datetime columns, and mapping relevant columns.
+The functions saves the preprocessed file in a project path that you specify.
 
     
 
