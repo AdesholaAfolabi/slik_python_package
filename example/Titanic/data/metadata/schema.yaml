@@ -1,0 +1,13 @@
+dtype:
+  Age: float64
+  Embarked: object
+  Fare: float64
+  Name: object
+  Parch: float64
+  PassengerId: int64
+  Pclass: int64
+  SibSp: float64
+  Ticket: object
+  binned_Age: object
+  transformed_Sex: int64
+  transformed_Survived: int64
