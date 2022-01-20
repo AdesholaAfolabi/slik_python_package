@@ -25,7 +25,7 @@ This project tries to help make supervised machine learning more accessible for 
 
 This library is in very active development, so it's not recommended for production use.
 
-Development at `github.com/Sensei-akin/slik_python_package/staging/ <https://github.com/AdesholaAfolabi/slik_python_package/blob/staging/slik/preprocessing.py>`_.
+Development at `github.com/AdesholaAfolabi/slik_python_package/staging/ <https://github.com/AdesholaAfolabi/slik_python_package/staging>`_.
 
 Examples
 --------
