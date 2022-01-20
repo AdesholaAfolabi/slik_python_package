@@ -219,6 +219,10 @@ def check_datefield(dataframe=None, column=None):
     column: str
         The column name to perform the operation on.
           
+    Returns
+    -------
+    Boolean:
+        Returns True if the data point is a datefield.
     """
     if dataframe is None:
         raise ValueError("data: Expecting a DataFrame or Series") 
@@ -399,73 +403,11 @@ def drop_duplicate(dataframe=None,columns=None,method='rows',display_inline=True
         raise ValueError("method: must specify a drop_duplicate method, one of ['rows' or 'columns']'")
         
     if display_inline:
-        print_divider(f'Dropping duplicates across the {method}\n')
+        print_divider(f'Dropping duplicates across the {method}')
         print(f'New datashape is {dataframe.shape}')
     return dataframe
 
 
-<<<<<<< HEAD
-=======
-def manage_columns(dataframe=None,columns=None, select_columns=False, drop_columns=False, drop_duplicates=None):
-    
-    """
-    Manage operations on pandas dataframe based on columns. Operations include 
-    selecting of columns, dropping column and dropping duplicates.
-    
-    Parameters
-    ----------
-    dataframe: DataFrame or named Series
-    
-    columns: specify columns to be selected, dropped or used in dropping duplicates. 
-    
-    select_columns: Boolean True or False, default is False
-        The columns you want to select from your dataframe. Requires a list to be passed into the columns param
-        
-    drop_columns: Boolean True or False, default is False
-        The columns you want to drop from your dataset. Requires a list to be passed into the columns param
-        
-    drop_duplicates: 'rows' or 'columns', default is None
-        Drop duplicate values across rows, columns. If columns, a list is required to be passed into the columns param
-    
-    Returns
-    -------
-    Pandas Dataframe:
-        A new dataframe after dropping/selecting/removing duplicate columns or the original 
-        dataframe if params are left as default
-    """
-    if dataframe is None:
-        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
-        
-    if not isinstance(select_columns,bool):
-        errstr = f'The given type for items is {type(select_columns).__name__}. Expected type is boolean True/False'
-        raise TypeError(errstr)
-        
-    if not isinstance(drop_columns,bool):
-        errstr = f'The given type for items is {type(drop_columns).__name__}. Expected type is boolean True/False'
-        raise TypeError(errstr)
-
-    if columns is None:
-        raise ValueError("columns: A list/string is expected as part of the inputs to drop columns, got 'None'") 
-
-    if select_columns and drop_columns:
-        raise ValueError("Select one of select_columns or drop_columns at a time")  
-
-      
-    data = dataframe.copy()
-    
-    if select_columns:
-        data = data[columns]
-    
-    if drop_columns:
-        data = data.drop(columns,axis=1)
-        
-    if drop_duplicates:
-        data = drop_duplicate(data,columns,method=drop_duplicates)
-        
-    return data
-
-
->>>>>>> 8147e51c877895e9d2105bdd52f45589063a0a98
 def featurize_datetime(dataframe=None, column_name=None, date_features=None, drop=True):
     """
     Featurize datetime in the dataset to create new fields such as 
@@ -560,107 +502,6 @@ def get_attributes(data=None,target_column=None):
     else:
         pass
     return num_attributes, cat_attributes
-<<<<<<< HEAD
-=======
-
-
-def identify_columns(dataframe=None,target_column=None,id_column=None, high_dim=100, display_inline=True, project_path=None):
-    
-    """
-    Identifies numerical attributes ,categorical attributes with sparse features 
-    and categorical attributes with lower features present in the data and saves
-    the output in a yaml file.
-        
-    Parameters
-    -----------
-    dataframe: DataFrame or named Series 
-    
-    target_column: str
-        Label or Target column.
-        
-    id_column: str
-        unique identifier column.
-        
-    high_dim: int, default 100
-        Integer to identify categorical attributes greater than 100 features
-        
-    display_inlne: Bool, default=True
-        display print statement
-        
-    project_path: str
-        path to where the yaml file is saved.   
-    """
-    if dataframe is None:
-        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
-    
-    if not isinstance(target_column,str):
-        errstr = f'The given type for target_column is {type(target_column).__name__}. Expected type is str'
-        raise TypeError(errstr)
-        
-    if not isinstance(id_column,str):
-        if type(id_column).__name__ == 'NoneType':
-            errstr = f'Nothing was passed for param id_column'
-        else:
-            errstr = f'The given type for id_column is {type(id_column).__name__}. Expected type is str'
-        raise TypeError(errstr)
-
-    if not isinstance(project_path,str):
-        if type(project_path).__name__ == 'NoneType':
-            errstr = f'Nothing was passed for param project_path'
-        else:
-            errstr = f'The given type for id_column is {type(project_path).__name__}. Expected type is str'
-        raise TypeError(errstr)
-
-    try:
-        os.mkdir(project_path)
-    except:
-        pass
-
-    output_path =  os.path.join(project_path,'metadata')
-    output_path = pathlib.Path(output_path)
-    if os.path.exists(output_path):
-        pass
-    else:
-        os.mkdir(output_path)
-    output_path.touch(exist_ok=True)
-
-    data = dataframe.copy()
-    num_attributes, cat_attributes = get_attributes(data,target_column)
-        
-    low_cat = []
-    hash_features = []
-    input_columns = [cols for cols in data.columns]
-    input_columns.remove(target_column)
-    input_columns.remove(id_column)
-    if id_column in num_attributes:
-        num_attributes.remove(id_column)
-    else:
-        cat_attributes.remove(id_column)
-    
-    for item in cat_attributes:
-        if data[item].nunique() > high_dim:
-            hash_features.append(item)
-        else:
-            low_cat.append(item)
-            
-           
-    dict_file = dict(num_feat=num_attributes, cat_feat=cat_attributes,
-                  high_card_feat= hash_features, lower_cat = low_cat,
-                 input_columns = input_columns, target_column = target_column,
-                 id_column = id_column)
-    
-    if display_inline:
-        print_divider('Identifying columns present in the data')
-        print(f'Target column is {target_column}. Attribute in target column:\n\
-        {list(data[target_column].unique())}\n')
-        
-        print(f'Features with high cardinality:{hash_features}\n') 
-        pprint.pprint(dict_file)
-    
-    store_attribute(dict_file,output_path)
-    print_divider('Saving Attributes in Project path')
-    print(f'\nData columns successfully identified and attributes are stored in {output_path}\n')
->>>>>>> 8147e51c877895e9d2105bdd52f45589063a0a98
         
     
 def _handle_cat_feat(data,fillna,cat_attr):
@@ -1216,7 +1057,6 @@ def _preprocess(data=None,target_column=None,train=True,select_columns=None,\
                     data = bin_age(data,age_column)
 
             for name, dtype in data.dtypes.iteritems():
-<<<<<<< HEAD
                 if 'datetime64' in dtype.name or 'time' in name.lower() or 'date' in name.lower():
                     date_feature = True
                     output = check_datefield(data, name)
@@ -1236,19 +1076,6 @@ def _preprocess(data=None,target_column=None,train=True,select_columns=None,\
                             print_divider('Featurize Datetime columns')
                             print(f'Inferred column with datetime type: [{name}]\n') 
                             data = featurize_datetime(data,name,False)
-=======
-                if 'datetime64' in dtype.name:
-                    print_divider('Featurize Datetime columns')
-                    print(f'column with datetime type: [{name}]\n') 
-                    data = featurize_datetime(data,name,drop = False)
-
-                elif 'object' in dtype.name:
-                    output = check_datefield(data, name)
-                    if output:
-                        print_divider('Featurize Datetime columns')
-                        print(f'Inferred column with datetime type: [{name}]\n') 
-                        data = featurize_datetime(data,name,drop=False)
->>>>>>> 8147e51c877895e9d2105bdd52f45589063a0a98
                 else:
                     pass
 

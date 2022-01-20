@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SLIK PREPROCESSING SAMPLE NOTEBOOK &mdash; Slik 1. documentation</title>
+  <title>SLIK Preprocessing API &mdash; Slik 1. documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -47,7 +47,7 @@
 <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quickstart to ML with Slik</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">SLIK PREPROCESSING SAMPLE NOTEBOOK</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">SLIK Preprocessing API</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">slik API:</span></p>
 <ul>
@@ -68,7 +68,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>SLIK PREPROCESSING SAMPLE NOTEBOOK</li>
+      <li>SLIK Preprocessing API</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/titanic.ipynb.txt" rel="nofollow"> View page source</a>
       </li>
@@ -348,11 +348,11 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<section id="SLIK-PREPROCESSING-SAMPLE-NOTEBOOK">
-<h1>SLIK PREPROCESSING SAMPLE NOTEBOOK<a class="headerlink" href="#SLIK-PREPROCESSING-SAMPLE-NOTEBOOK" title="Permalink to this headline"></a></h1>
+<section id="SLIK-Preprocessing-API">
+<h1>SLIK Preprocessing API<a class="headerlink" href="#SLIK-Preprocessing-API" title="Permalink to this headline"></a></h1>
 <p>Brief description on how to use the preprocessing module in the slik package. This sample notebook explains some very important methods in the preprocessing module</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
@@ -360,10 +360,10 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<p>Using slik load file module you only need to specify your data path. It can infer the file type that was passed and read it as a pandas dataframe.</p>
+<p>Using slik load file module you only need to specify your data path. Slik can infer the file type that was passed and read it as a pandas dataframe.</p>
 <p>Slik <code class="docutils literal notranslate"><span class="pre">slik.loadfile.read_file</span></code> function makes use of the same keyword arguments as pandas read functions.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">slik</span> <span class="kn">import</span> <span class="n">loadfile</span> <span class="k">as</span> <span class="n">lf</span>
@@ -372,7 +372,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>You can get a brief summary of the rows and column that was loaded by Slik</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">train</span> <span class="o">=</span> <span class="n">lf</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s1">&#39;data/titanic.csv&#39;</span><span class="p">)</span>
@@ -401,7 +401,7 @@ Data has 891 rows and 12 columns
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">slik</span> <span class="kn">import</span> <span class="n">preprocessing</span> <span class="k">as</span> <span class="n">pp</span>
@@ -410,7 +410,7 @@ Data has 891 rows and 12 columns
 </div>
 <p>Slik will identify the data type of each data point, data points with high cardinality and save it in a file. With Slik, data integrity can be done efficiently to validate downstream data points</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pp</span><span class="o">.</span><span class="n">identify_columns</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="s1">&#39;Survived&#39;</span><span class="p">,</span><span class="s1">&#39;PassengerId&#39;</span><span class="p">,</span><span class="n">project_path</span><span class="o">=</span><span class="s1">&#39;./data&#39;</span><span class="p">)</span>
@@ -453,7 +453,7 @@ Attributes are stored in data/metadata
 </div>
 <p>You can map your data observations more efficiently with Slik by passing the dictionary of the observation you want to map/rename</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pp</span><span class="o">.</span><span class="n">map_column</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="n">column_name</span><span class="o">=</span><span class="s1">&#39;Sex&#39;</span><span class="p">,</span><span class="n">items</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;male&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;female&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">})</span>
@@ -475,7 +475,7 @@ female was mapped to 0
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1363,7 +1363,7 @@ uninformative fields dropped: []
 <p>Slik helps you manage your data points better by handling different management operations techniques on pandas dataframe based on columns.</p>
 <p>Operations include selecting of columns, dropping column and dropping duplicates. By selecting the list data points that you need to perform the transformation on and choosing the particular transformation you want</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pp</span><span class="o">.</span><span class="n">manage_columns</span><span class="p">(</span><span class="n">train</span><span class="p">,[</span><span class="s1">&#39;PassengerId&#39;</span><span class="p">],</span><span class="n">drop_duplicates</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -1376,14 +1376,13 @@ uninformative fields dropped: []
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 
---------------- Dropping duplicates across the columns
- ---------------
+--------------- Dropping duplicates across the columns ---------------
 
 New datashape is (891, 12)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1499,7 +1498,7 @@ New datashape is (891, 12)
 </table>
 </div></div>
 </div>
-<p>Trim whitespaces from ends of each value across all series in a pandas dataframe</p>
+<p>Trim whitespaces from ends of each value across all data points in a pandas dataframe</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
@@ -1718,39 +1717,221 @@ New datashape is (891, 12)
 </div>
 <p>Slik can clean your data in one line of code. The <code class="docutils literal notranslate"><span class="pre">slik.preprocessing.preprocess</span></code> function cleans your data by removing outliers present in the data, handing missing values, featurizing datetime columns, and mapping relevant columns. The functions saves the preprocessed file in a project path that you specify.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pp</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span><span class="n">target_column</span><span class="o">=</span><span class="s1">&#39;Survived&#39;</span><span class="p">,</span><span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">display_inline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">project_path</span><span class="o">=</span><span class="s1">&#39;./Titanic&#39;</span><span class="p">,</span><span class="n">logging</span><span class="o">=</span><span class="s1">&#39;display&#39;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pp</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">train</span><span class="p">,</span><span class="n">target_column</span><span class="o">=</span><span class="s1">&#39;Survived&#39;</span><span class="p">,</span><span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">display_inline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">project_path</span><span class="o">=</span><span class="s1">&#39;./Titanic&#39;</span><span class="p">,</span><span class="n">logging</span><span class="o">=</span><span class="s1">&#39;display&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+The task for preprocessing is classification
+
+Dropping rows with 75% missing value: Number of records dropped is 0
+
+Dropping Columns with 75% missing value: [&#39;Cabin&#39;]
+
+New data shape is (891, 11)
+
+--------------- Mapping target columns ---------------
+
+0 was mapped to 0
+
+1 was mapped to 1
+
+
+--------------- Bucketize Age columns ---------------
+
+ Inferred age column: [Age]
+
+--------------- Mapping passed column ---------------
+
+male was mapped to 0
+
+female was mapped to 1
+
+
+--------------- Dropping uninformative fields ---------------
+
+uninformative fields dropped: []
+
+--------------- Creating Schema file ---------------
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;dtype&#39;: {&#39;PassengerId&#39;: &#39;int64&#39;,
+  &#39;Pclass&#39;: &#39;int64&#39;,
+  &#39;Name&#39;: &#39;object&#39;,
+  &#39;Age&#39;: &#39;float64&#39;,
+  &#39;SibSp&#39;: &#39;float64&#39;,
+  &#39;Parch&#39;: &#39;float64&#39;,
+  &#39;Ticket&#39;: &#39;object&#39;,
+  &#39;Fare&#39;: &#39;float64&#39;,
+  &#39;Embarked&#39;: &#39;object&#39;,
+  &#39;transformed_Survived&#39;: &#39;int64&#39;,
+  &#39;binned_Age&#39;: &#39;object&#39;,
+  &#39;transformed_Sex&#39;: &#39;int64&#39;}}
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+
+Schema file stored in Titanic/data/metadata
+
+--------------- Preview the preprocessed data ---------------
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PassengerId</th>
+      <th>Pclass</th>
+      <th>Name</th>
+      <th>Age</th>
+      <th>SibSp</th>
+      <th>Parch</th>
+      <th>Ticket</th>
+      <th>Fare</th>
+      <th>Embarked</th>
+      <th>transformed_Survived</th>
+      <th>binned_Age</th>
+      <th>transformed_Sex</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>3</td>
+      <td>Braund, Mr. Owen Harris</td>
+      <td>22.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>A/5 21171</td>
+      <td>7.250000</td>
+      <td>S</td>
+      <td>0</td>
+      <td>Young Adult</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>1</td>
+      <td>Cumings, Mrs. John Bradley (Florence Briggs Th...</td>
+      <td>38.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>PC 17599</td>
+      <td>32.204208</td>
+      <td>C</td>
+      <td>1</td>
+      <td>Mid-Age</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>3</td>
+      <td>Heikkinen, Miss. Laina</td>
+      <td>26.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>STON/O2. 3101282</td>
+      <td>7.925000</td>
+      <td>S</td>
+      <td>1</td>
+      <td>Young Adult</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>1</td>
+      <td>Futrelle, Mrs. Jacques Heath (Lily May Peel)</td>
+      <td>35.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>113803</td>
+      <td>53.100000</td>
+      <td>S</td>
+      <td>1</td>
+      <td>Mid-Age</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>3</td>
+      <td>Allen, Mr. William Henry</td>
+      <td>35.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>373450</td>
+      <td>8.050000</td>
+      <td>S</td>
+      <td>0</td>
+      <td>Mid-Age</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">ValueError</span>                                Traceback (most recent call last)
-<span class="ansi-green-fg">/var/folders/q0/hk55g1451tvgb6zdm5c55nsww228mn/T/ipykernel_81256/1318524496.py</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>pp<span class="ansi-blue-fg">.</span>preprocess<span class="ansi-blue-fg">(</span>data<span class="ansi-blue-fg">=</span>data<span class="ansi-blue-fg">,</span>target_column<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;Survived&#39;</span><span class="ansi-blue-fg">,</span>train<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">True</span><span class="ansi-blue-fg">,</span>display_inline<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">True</span><span class="ansi-blue-fg">,</span>project_path<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;./Titanic&#39;</span><span class="ansi-blue-fg">,</span>logging<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;display&#39;</span><span class="ansi-blue-fg">)</span>
 
-<span class="ansi-green-fg">~/Downloads/slik_python_package/slik/preprocessing.py</span> in <span class="ansi-cyan-fg">preprocess</span><span class="ansi-blue-fg">(data, target_column, train, select_columns, display_inline, project_path, **kwargs)</span>
-<span class="ansi-green-intense-fg ansi-bold">   1147</span>
-<span class="ansi-green-intense-fg ansi-bold">   1148</span>     <span class="ansi-green-fg">if</span> display_inline<span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">-&gt; 1149</span><span class="ansi-red-fg">         _preprocess(data=data,target_column=target_column,train=train,select_columns=select_columns,\
-</span><span class="ansi-green-intense-fg ansi-bold">   1150</span>                display_inline=display_inline,project_path=project_path,**kwargs)
-<span class="ansi-green-intense-fg ansi-bold">   1151</span>     <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+--------------- Preprocessed data saved ---------------
 
-<span class="ansi-green-fg">~/Downloads/slik_python_package/slik/preprocessing.py</span> in <span class="ansi-cyan-fg">_preprocess</span><span class="ansi-blue-fg">(data, target_column, train, select_columns, display_inline, project_path, **kwargs)</span>
-<span class="ansi-green-intense-fg ansi-bold">   1104</span>
-<span class="ansi-green-intense-fg ansi-bold">   1105</span>         <span class="ansi-green-fg">elif</span> task <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;regression&#39;</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">-&gt; 1106</span><span class="ansi-red-fg">             </span><span class="ansi-green-fg">raise</span> ValueError<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;task: Does not support regression tasks for now&#34;</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">   1107</span>         <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">   1108</span>             <span class="ansi-green-fg">raise</span> ValueError<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;task: Does not support NLP tasks for now&#34;</span><span class="ansi-blue-fg">)</span>
 
-<span class="ansi-red-fg">ValueError</span>: task: Does not support regression tasks for now
+ Input data preprocessed successfully and stored in ./Titanic/data/train_data.pkl
+
 </pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 </div>
 </section>
 

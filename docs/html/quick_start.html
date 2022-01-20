@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="&lt;no title&gt;" href="titanic.html" />
+    <link rel="next" title="SLIK Preprocessing API" href="titanic.html" />
     <link rel="prev" title="Installing Slik" href="installs.html" /> 
 </head>
 
@@ -45,6 +45,7 @@
 <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart to ML with Slik</a></li>
+<li class="toctree-l1"><a class="reference internal" href="titanic.html">SLIK Preprocessing API</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">slik API:</span></p>
 <ul>
@@ -159,53 +160,73 @@ automatically for now. Now we can handle missing values with slik.</p>
 </pre></div>
 </div>
 <p>In slik, we can also identify each columns present in the data:</p>
-<blockquote>
-<div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">slik</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">identify_columns</span><span class="p">(</span><span class="n">titanic</span><span class="p">,</span><span class="s1">&#39;Survived&#39;</span><span class="p">,</span><span class="n">id_column</span><span class="o">=</span><span class="s1">&#39;PassengerId&#39;</span><span class="p">,</span><span class="n">project_path</span><span class="o">=</span><span class="s1">&#39;Titanic&#39;</span><span class="p">)</span>
-<span class="go">    The task for preprocessing is classification</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">slik</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">identify_columns</span><span class="p">(</span><span class="n">titanic</span><span class="p">,</span><span class="s1">&#39;Survived&#39;</span><span class="p">,</span><span class="n">id_column</span><span class="o">=</span><span class="s1">&#39;PassengerId&#39;</span><span class="p">,</span><span class="n">project_path</span><span class="o">=</span><span class="s1">&#39;Titanic&#39;</span><span class="p">)</span>
+<span class="go">    --------------- Identifying columns present in the data ---------------</span>
+<span class="go">    Target column is Survived. Attribute in target column:[0, 1]</span>
+<span class="go">    Features with high cardinality:[&#39;Name&#39;, &#39;Ticket&#39;, &#39;Cabin&#39;]</span>
+<span class="go">    {&#39;cat_feat&#39;: [&#39;Name&#39;, &#39;Sex&#39;, &#39;Ticket&#39;, &#39;Cabin&#39;, &#39;Embarked&#39;],</span>
+<span class="go">    &#39;high_card_feat&#39;: [&#39;Name&#39;, &#39;Ticket&#39;, &#39;Cabin&#39;],</span>
+<span class="go">    &#39;id_column&#39;: &#39;PassengerId&#39;,</span>
+<span class="go">    &#39;input_columns&#39;: [&#39;Pclass&#39;,</span>
+<span class="go">                    &#39;Name&#39;,</span>
+<span class="go">                    &#39;Sex&#39;,</span>
+<span class="go">                    &#39;Age&#39;,</span>
+<span class="go">                    &#39;SibSp&#39;,</span>
+<span class="go">                    &#39;Parch&#39;,</span>
+<span class="go">                    &#39;Ticket&#39;,</span>
+<span class="go">                    &#39;Fare&#39;,</span>
+<span class="go">                    &#39;Cabin&#39;,</span>
+<span class="go">                    &#39;Embarked&#39;],</span>
+<span class="go">    &#39;lower_cat&#39;: [&#39;Sex&#39;, &#39;Embarked&#39;],</span>
+<span class="go">    &#39;num_feat&#39;: [&#39;Pclass&#39;, &#39;Age&#39;, &#39;SibSp&#39;, &#39;Parch&#39;, &#39;Fare&#39;],</span>
+<span class="go">    &#39;parse_dates&#39;: [],</span>
+<span class="go">    &#39;target_column&#39;: &#39;Survived&#39;}</span>
+<span class="go">    Attributes are stored in data/metadata</span>
 </pre></div>
 </div>
-<blockquote>
-<div><p>Dropping rows with 75% missing value: Number of records dropped is 0</p>
-<p>Dropping Columns with 20% missing value: []</p>
-<p>New data shape is (891, 11)</p>
-<p>————— Mapping target columns —————</p>
-<p>0 was mapped to 0</p>
-<p>1 was mapped to 1</p>
-<p>————— Bucketize Age columns —————</p>
-<p>Inferred age column: [Age]</p>
-<p>————— Mapping passed column —————</p>
-<p>male was mapped to 0</p>
-<p>female was mapped to 1</p>
-<p>uninformative fields dropped: []</p>
-<p>————— Creating Schema file —————</p>
-<p>{‘dtype’: {‘PassengerId’: ‘int64’,
-‘Pclass’: ‘int64’,
-‘Name’: ‘object’,
-‘Age’: ‘float64’,
-‘SibSp’: ‘float64’,
-‘Parch’: ‘float64’,
-‘Ticket’: ‘object’,
-‘Fare’: ‘float64’,
-‘Embarked’: ‘object’,
-‘transformed_Survived’: ‘int64’,
-‘binned_Age’: ‘object’,
-‘transformed_Sex’: ‘int64’}}</p>
-<p>Schema file stored in Titanic/data/metadata</p>
-<p>————— Preview the preprocessed data —————</p>
-<p>PassengerId     Pclass  Name    Age     SibSp   Parch   Ticket  Fare    Embarked        transformed_Survived    binned_Age      transformed_Sex
-0       1       3       Braund, Mr. Owen Harris 22.0    1.0     0.0     A/5 21171       7.250000        S       0       Young Adult     0
-1       2       1       Cumings, Mrs. John Bradley (Florence Briggs Th…       38.0    1.0     0.0     PC 17599        32.204208       C       1       Mid-Age 1
-2       3       3       Heikkinen, Miss. Laina  26.0    0.0     0.0     STON/O2. 3101282        7.925000        S       1       Young Adult     1
-3       4       1       Futrelle, Mrs. Jacques Heath (Lily May Peel)    35.0    1.0     0.0     113803  53.100000       S       1       Mid-Age 1
-4       5       3       Allen, Mr. William Henry        35.0    0.0     0.0     373450  8.050000        S       0       Mid-Age 0</p>
-<p>————— Preprocessed data saved —————</p>
-<p>Input data preprocessed successfully and stored in ./Titanic/data/train_data.pkl</p>
-</div></blockquote>
-</div></blockquote>
 </div></blockquote>
 <p>Slik can clean your data in one line of code. The <cite>slik.preprocessing.preprocess</cite> function cleans your data
 by removing outliers present in the data, handing missing values, featurizing datetime columns, and mapping relevant columns.
 The functions saves the preprocessed file in a project path that you specify.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">slik</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">train</span><span class="p">,</span><span class="n">target_column</span><span class="o">=</span><span class="s1">&#39;Survived&#39;</span><span class="p">,</span><span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">display_inline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                                  <span class="n">project_path</span><span class="o">=</span><span class="s1">&#39;./Titanic&#39;</span><span class="p">,</span><span class="n">logging</span><span class="o">=</span><span class="s1">&#39;display&#39;</span><span class="p">)</span>
+<span class="go">        The task for preprocessing is classification</span>
+<span class="go">        Dropping rows with 75% missing value: Number of records dropped is 0</span>
+<span class="go">        Dropping Columns with 20% missing value: []</span>
+<span class="go">        New data shape is (891, 11)</span>
+<span class="go">        --------------- Mapping target columns ---------------</span>
+<span class="go">        0 was mapped to 0</span>
+<span class="go">        1 was mapped to 1</span>
+<span class="go">        --------------- Bucketize Age columns ---------------</span>
+<span class="go">        Inferred age column: [Age]</span>
+<span class="go">        --------------- Mapping passed column ---------------</span>
+<span class="go">        male was mapped to 0</span>
+<span class="go">        female was mapped to 1</span>
+<span class="go">        --------------- Creating Schema file ---------------</span>
+<span class="go">        {&#39;dtype&#39;: {&#39;PassengerId&#39;: &#39;int64&#39;,</span>
+<span class="go">        &#39;Pclass&#39;: &#39;int64&#39;,</span>
+<span class="go">        &#39;Name&#39;: &#39;object&#39;,</span>
+<span class="go">        &#39;Age&#39;: &#39;float64&#39;,</span>
+<span class="go">        &#39;SibSp&#39;: &#39;float64&#39;,</span>
+<span class="go">        &#39;Parch&#39;: &#39;float64&#39;,</span>
+<span class="go">        &#39;Ticket&#39;: &#39;object&#39;,</span>
+<span class="go">        &#39;Fare&#39;: &#39;float64&#39;,</span>
+<span class="go">        &#39;Embarked&#39;: &#39;object&#39;,</span>
+<span class="go">        &#39;transformed_Survived&#39;: &#39;int64&#39;,</span>
+<span class="go">        &#39;binned_Age&#39;: &#39;object&#39;,</span>
+<span class="go">        &#39;transformed_Sex&#39;: &#39;int64&#39;}}</span>
+<span class="go">        Schema file stored in Titanic/data/metadata</span>
+<span class="go">        --------------- Preview the preprocessed data ---------------</span>
+<span class="go">        PassengerId Pclass  Name    Age     SibSp   Parch   Ticket  Fare    Embarked        transformed_Survived    binned_Age      transformed_Sex</span>
+<span class="go">        0   1       3       Braund, Mr. Owen Harris 22.0    1.0     0.0     A/5 21171       7.250000        S       0       Young Adult     0</span>
+<span class="go">        1   2       1       Cumings, Mrs. John Bradley (Florence Briggs Th...       38.0    1.0     0.0     PC 17599        32.204208       C       1       Mid-Age 1</span>
+<span class="go">        2   3       3       Heikkinen, Miss. Laina  26.0    0.0     0.0     STON/O2. 3101282        7.925000        S       1       Young Adult     1</span>
+<span class="go">        3   4       1       Futrelle, Mrs. Jacques Heath (Lily May Peel)    35.0    1.0     0.0     113803  53.100000       S       1       Mid-Age 1</span>
+<span class="go">        4   5       3       Allen, Mr. William Henry        35.0    0.0     0.0     373450  8.050000        S       0       Mid-Age 0</span>
+<span class="go">        --------------- Preprocessed data saved ---------------</span>
+<span class="go">        Input data preprocessed successfully and stored in ./Titanic/data/train_data.pkl</span>
+</pre></div>
+</div>
 </section>
 
 
@@ -213,7 +234,7 @@ The functions saves the preprocessed file in a project path that you specify.</p
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="installs.html" class="btn btn-neutral float-left" title="Installing Slik" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="titanic.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="titanic.html" class="btn btn-neutral float-right" title="SLIK Preprocessing API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
