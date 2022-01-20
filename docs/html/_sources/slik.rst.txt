@@ -4,7 +4,7 @@ slik package
 Submodules
 ----------
 
-slik.loadfile module
+slik.loadfile
 --------------------
 
 .. automodule:: slik.loadfile
@@ -14,17 +14,17 @@ slik.loadfile module
 
 .. note:: Allows keyword arguements from pandas read function.
 
-slik.pipeline module
+slik.pipeline
 --------------------
+.. warning:: Transfomers must be passed. Understand how pipeline transformation works before using the build pipeline function.
+
 
 .. automodule:: slik.pipeline
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. warning:: Transfomers must be passed. Understand how pipeline transformation works cdbefore using the build pipeline function.
-
-slik.plot\_funcs module
+slik.plot\_funcs
 -----------------------
 
 .. automodule:: slik.plot_funcs
@@ -32,7 +32,7 @@ slik.plot\_funcs module
    :undoc-members:
    :show-inheritance:
 
-slik.preprocessing module
+slik.preprocessing
 -------------------------
 
 .. automodule:: slik.preprocessing
@@ -40,7 +40,7 @@ slik.preprocessing module
    :undoc-members:
    :show-inheritance:
 
-slik.utils module
+slik.utils
 -----------------
 
 .. automodule:: slik.utils

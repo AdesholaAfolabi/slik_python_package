@@ -61,7 +61,3 @@ import slik
 What is this repository for
 ---------------------------
 
-* Quick summary: The application employs the modular style of putting the applications together.
-* Version: 1.0
-* Learn Markdown (https://bitbucket.org/tutorials/markdowndemo)
-* Repo owner: Adeshola Afolabi, Komolafe Akinwande, Justus Ilemobayo
