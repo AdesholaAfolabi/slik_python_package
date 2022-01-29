@@ -1,0 +1,21 @@
+dtype:
+  cal_accepted_count: float64
+  cal_declined_count: float64
+  cal_events_count: float64
+  cal_noresponse_count: float64
+  cal_organizer_count: float64
+  cal_tentative_count: float64
+  events_summary: object
+  issue_description: object
+  issue_summary: object
+  pms_assignee_count: float64
+  pms_comment_count: float64
+  pms_create_count: float64
+  pms_events_count: float64
+  pms_navigation_count: float64
+  pms_priority_count: float64
+  pms_status_count: float64
+  suggestion_summary: object
+  total_events_count: float64
+  transformed_outcome: int64
+  user_id: object
