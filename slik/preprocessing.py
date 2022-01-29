@@ -11,6 +11,7 @@ from difflib import get_close_matches
 import pprint
 from .loadfile import read_file
 from .utils import store_attribute, print_divider, HiddenPrints
+from pandas.errors import ParserError
 from .plot_funcs import plot_nan
 
 
@@ -83,14 +84,26 @@ def change_case(dataframe=None ,column=None,case='lower'):
         raise TypeError(errstr)
 
     df = dataframe.copy()
+
+    def capitalize_case(x):
+        list_of_str = x.split(' ')
+        new_list =[]
+        for item in list_of_str:
+            new_list.append(item.capitalize())
+        JoinedStr = ' '.join(new_list)
+        return JoinedStr
+    
     if case == 'lower':
-        df = df[column].apply(lambda x: x.lower())
+        df[column] = df[column].apply(lambda x: x.lower())
         return df
     elif case == 'upper':
-        df = df[column].apply(lambda x: x.upper())
+        df[column] = df[column].apply(lambda x: x.upper())
+        return df
+    elif case=='capitalize':
+        df[column] = df[column].apply(lambda x: capitalize_case(x))
         return df
     else:
-        raise ValueError(f"case: expected one of 'upper' or 'lower' got {case}")
+        raise ValueError(f"case: expected one of upper,lower or captitalize got {case}")
     
 
 def check_nan(dataframe=None, plot=False, display_inline=True):
@@ -134,7 +147,7 @@ def check_nan(dataframe=None, plot=False, display_inline=True):
     check_nan.df = df
 
 
-def create_schema_file(dataframe, target_column, id_column, project_path, save=True, display_inline=True):
+def create_schema_file(dataframe, target_column, id_column, project_path=None, save=True, display_inline=True):
 
     """
     
@@ -174,13 +187,6 @@ def create_schema_file(dataframe, target_column, id_column, project_path, save=T
     except:
         pass
 
-    output_path =  os.path.join(project_path,'metadata')
-    output_path = pathlib.Path(output_path)
-    if os.path.exists(output_path):
-        pass
-    else:
-        os.mkdir(output_path)
-    output_path.touch(exist_ok=True)
 
     # get dtypes schema
     datatype_map = {}
@@ -197,13 +203,21 @@ def create_schema_file(dataframe, target_column, id_column, project_path, save=T
     
     # write to YAML file
     if save:
+        output_path =  os.path.join(project_path,'metadata')
+        output_path = pathlib.Path(output_path)
+        if os.path.exists(output_path):
+            pass
+        else:
+            os.mkdir(output_path)
+        output_path.touch(exist_ok=True)
         with open(f'{output_path}/schema.yaml', 'w') as yaml_file:
             yaml.dump(schema, yaml_file)
             
     if display_inline:
         print_divider('Creating Schema file')
         display(schema)
-        print(f'\n\nSchema file stored in {output_path}')
+        if save:
+            print(f'\n\nSchema file stored in {output_path}')
 
         
 def check_datefield(dataframe=None, column=None):
@@ -230,14 +244,12 @@ def check_datefield(dataframe=None, column=None):
     if not isinstance(column, str):
         errstr = f'The given type for column is {type(column).__name__}. Expected type is a string'
         raise TypeError(errstr)
-        
-    try:
-        pd.to_datetime(dataframe[column], infer_datetime_format=True)
-        return True
-    except Exception as e:
-        e
+
+    if isinstance(dataframe.dtypes[column],object):
         return False
-    
+    if pd.to_datetime(dataframe[column], infer_datetime_format=True):
+        return True
+
     
 def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,fix_method='mean',display_inline=True):
         
@@ -332,7 +344,7 @@ def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,
     return df
 
 
-def drop_uninformative_fields(dataframe = None,display_inline=True):
+def drop_uninformative_fields(dataframe = None, exclude= None, display_inline=True):
 
     """
     Drop fields that have only a single unique value or are all NaN, meaning
@@ -342,6 +354,9 @@ def drop_uninformative_fields(dataframe = None,display_inline=True):
     -----------
     dataframe: DataFrame or name Series.
         Data set to perform operation on.
+
+    exclude: string/list.
+        A column or list of columns you want to exclude from being dropped.
         
     display_inline: Bool. Default is True.
         Display print statements.
@@ -359,6 +374,8 @@ def drop_uninformative_fields(dataframe = None,display_inline=True):
     data = dataframe.copy()
     is_single = data.apply(lambda s: s.nunique()).le(1)
     single = data.columns[is_single].tolist()
+    if exclude:
+        single = [column_name for column_name in single if column_name not in exclude]
     if display_inline:
         print_divider('Dropping uninformative fields')
         print(f'uninformative fields dropped: {single}')
@@ -871,9 +888,14 @@ def map_target(dataframe=None,target_column=None,add_prefix=True,drop=False,disp
     if not isinstance(target_column,str):
         errstr = f'The given type for column_name is {type(target_column).__name__}. Expected type is str'
         raise TypeError(errstr)
-        
-    data = dataframe.copy()
+
+    new_data = dataframe.copy()
+    data = new_data[new_data[target_column].notnull()].reset_index(drop=True)
     num_unique = data[target_column].unique()
+    if new_data.shape[0] != data.shape[0]:
+        if display_inline:
+            print('Records with Null/Nan values in the target_column have been dropped\n')
+            print(f'New data shape is {data.shape}')
     elem = data[target_column].value_counts()
     idx = elem.index.tolist()
     if len(num_unique) == 2:
