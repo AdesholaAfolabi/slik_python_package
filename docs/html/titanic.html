@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="slik" href="modules.html" />
-    <link rel="prev" title="Quickstart to ML with Slik" href="quick_start.html" /> 
+    <link rel="prev" title="Quickstart to ML with Slik-ML" href="quick_start.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,7 +46,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quickstart to ML with Slik</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quickstart to ML with Slik-ML</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">SLIK Preprocessing API</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">slik API:</span></p>
@@ -351,28 +351,19 @@ div.rendered_html tbody tr:hover {
 <section id="SLIK-Preprocessing-API">
 <h1>SLIK Preprocessing API<a class="headerlink" href="#SLIK-Preprocessing-API" title="Permalink to this headline"></a></h1>
 <p>Brief description on how to use the preprocessing module in the slik package. This sample notebook explains some very important methods in the preprocessing module</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;/Users/akinwande.komolafe/Downloads/slik_python_package/&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
 <p>Using slik load file module you only need to specify your data path. Slik can infer the file type that was passed and read it as a pandas dataframe.</p>
 <p>Slik <code class="docutils literal notranslate"><span class="pre">slik.loadfile.read_file</span></code> function makes use of the same keyword arguments as pandas read functions.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">slik</span> <span class="kn">import</span> <span class="n">loadfile</span> <span class="k">as</span> <span class="n">lf</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">slik_wrangler</span> <span class="kn">import</span> <span class="n">loadfile</span> <span class="k">as</span> <span class="n">lf</span>
 </pre></div>
 </div>
 </div>
 <p>You can get a brief summary of the rows and column that was loaded by Slik</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">train</span> <span class="o">=</span> <span class="n">lf</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s1">&#39;data/titanic.csv&#39;</span><span class="p">)</span>
@@ -393,18 +384,26 @@ Data has 891 rows and 12 columns
 <p>Working with a large csv file and you can not load the whole data to Excel or with pandas, with slik you can split a csv into multiple csv files.</p>
 <p>Specify the number of rows that should be present in each csv file</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lf</span><span class="o">.</span><span class="n">split_csv_file</span><span class="p">(</span><span class="s1">&#39;data/titanic.csv&#39;</span><span class="p">,</span><span class="n">row_limit</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># train = pp.bin_age(train,&#39;Age&#39;)</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">slik</span> <span class="kn">import</span> <span class="n">preprocessing</span> <span class="k">as</span> <span class="n">pp</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># lf.split_csv_file(&#39;data/titanic.csv&#39;,row_limit=200)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">slik_wrangler</span> <span class="kn">import</span> <span class="n">preprocessing</span> <span class="k">as</span> <span class="n">pp</span>
 </pre></div>
 </div>
 </div>
@@ -696,10 +695,10 @@ female was mapped to 0
 </div>
 <p>Slik currently relies on the Interquartile range approach to detect outliers present in a data point. Slik also fixes the outlier present in the data using different methods like replacing an outlier with the mean of the data point. You can also select the numerical features you want to perform the operation on. You can also display a table identifying at least ‘n’ outliers in a row.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">det</span> <span class="o">=</span> <span class="n">pp</span><span class="o">.</span><span class="n">detect_fix_outliers</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="n">target_column</span><span class="o">=</span><span class="s1">&#39;Survived&#39;</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">det</span> <span class="o">=</span> <span class="n">pp</span><span class="o">.</span><span class="n">detect_fix_outliers</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="n">target_column</span><span class="o">=</span><span class="s1">&#39;Age&#39;</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -709,7 +708,7 @@ female was mapped to 0
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 
---------------- Table identifying at least 2 outliers in a row ---------------
+--------------- Table identifying at least 1 outliers in a row ---------------
 
 </pre></div></div>
 </div>
@@ -751,18 +750,48 @@ female was mapped to 0
   </thead>
   <tbody>
     <tr>
-      <th>745</th>
-      <td>746</td>
+      <th>7</th>
+      <td>8</td>
       <td>0</td>
-      <td>1</td>
-      <td>Crosby, Capt. Edward Gifford</td>
+      <td>3</td>
+      <td>Palsson, Master. Gosta Leonard</td>
       <td>male</td>
-      <td>70.0</td>
+      <td>2.0</td>
+      <td>3</td>
       <td>1</td>
+      <td>349909</td>
+      <td>21.0750</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>17</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Rice, Master. Eugene</td>
+      <td>male</td>
+      <td>2.0</td>
+      <td>4</td>
       <td>1</td>
-      <td>WE/P 5735</td>
-      <td>71.00</td>
-      <td>B22</td>
+      <td>382652</td>
+      <td>29.1250</td>
+      <td>NaN</td>
+      <td>Q</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>25</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Palsson, Miss. Torborg Danira</td>
+      <td>female</td>
+      <td>8.0</td>
+      <td>3</td>
+      <td>1</td>
+      <td>349909</td>
+      <td>21.0750</td>
+      <td>NaN</td>
       <td>S</td>
     </tr>
     <tr>
@@ -776,147 +805,118 @@ female was mapped to 0
       <td>3</td>
       <td>2</td>
       <td>19950</td>
-      <td>263.00</td>
+      <td>263.0000</td>
       <td>C23 C25 C27</td>
       <td>S</td>
     </tr>
     <tr>
-      <th>88</th>
-      <td>89</td>
+      <th>50</th>
+      <td>51</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Panula, Master. Juha Niilo</td>
+      <td>male</td>
+      <td>7.0</td>
+      <td>4</td>
+      <td>1</td>
+      <td>3101295</td>
+      <td>39.6875</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>802</th>
+      <td>803</td>
       <td>1</td>
       <td>1</td>
-      <td>Fortune, Miss. Mabel Helen</td>
-      <td>female</td>
-      <td>23.0</td>
-      <td>3</td>
-      <td>2</td>
-      <td>19950</td>
-      <td>263.00</td>
-      <td>C23 C25 C27</td>
-      <td>S</td>
-    </tr>
-    <tr>
-      <th>159</th>
-      <td>160</td>
-      <td>0</td>
-      <td>3</td>
-      <td>Sage, Master. Thomas Henry</td>
+      <td>Carter, Master. William Thornton II</td>
       <td>male</td>
-      <td>NaN</td>
-      <td>8</td>
+      <td>11.0</td>
+      <td>1</td>
       <td>2</td>
-      <td>CA. 2343</td>
-      <td>69.55</td>
-      <td>NaN</td>
+      <td>113760</td>
+      <td>120.0000</td>
+      <td>B96 B98</td>
       <td>S</td>
     </tr>
     <tr>
-      <th>180</th>
-      <td>181</td>
-      <td>0</td>
-      <td>3</td>
-      <td>Sage, Miss. Constance Gladys</td>
-      <td>female</td>
-      <td>NaN</td>
-      <td>8</td>
-      <td>2</td>
-      <td>CA. 2343</td>
-      <td>69.55</td>
-      <td>NaN</td>
-      <td>S</td>
-    </tr>
-    <tr>
-      <th>201</th>
-      <td>202</td>
-      <td>0</td>
-      <td>3</td>
-      <td>Sage, Mr. Frederick</td>
-      <td>male</td>
-      <td>NaN</td>
-      <td>8</td>
-      <td>2</td>
-      <td>CA. 2343</td>
-      <td>69.55</td>
-      <td>NaN</td>
-      <td>S</td>
-    </tr>
-    <tr>
-      <th>324</th>
-      <td>325</td>
-      <td>0</td>
-      <td>3</td>
-      <td>Sage, Mr. George John Jr</td>
-      <td>male</td>
-      <td>NaN</td>
-      <td>8</td>
-      <td>2</td>
-      <td>CA. 2343</td>
-      <td>69.55</td>
-      <td>NaN</td>
-      <td>S</td>
-    </tr>
-    <tr>
-      <th>341</th>
-      <td>342</td>
+      <th>820</th>
+      <td>821</td>
       <td>1</td>
       <td>1</td>
-      <td>Fortune, Miss. Alice Elizabeth</td>
+      <td>Hays, Mrs. Charles Melville (Clara Jennings Gr...</td>
       <td>female</td>
-      <td>24.0</td>
-      <td>3</td>
-      <td>2</td>
-      <td>19950</td>
-      <td>263.00</td>
-      <td>C23 C25 C27</td>
+      <td>52.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>12749</td>
+      <td>93.5000</td>
+      <td>B69</td>
       <td>S</td>
     </tr>
     <tr>
-      <th>792</th>
-      <td>793</td>
-      <td>0</td>
-      <td>3</td>
-      <td>Sage, Miss. Stella Anna</td>
+      <th>835</th>
+      <td>836</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Compton, Miss. Sara Rebecca</td>
       <td>female</td>
-      <td>NaN</td>
-      <td>8</td>
-      <td>2</td>
-      <td>CA. 2343</td>
-      <td>69.55</td>
+      <td>39.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>PC 17756</td>
+      <td>83.1583</td>
+      <td>E49</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <th>856</th>
+      <td>857</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Wick, Mrs. George Dennick (Mary Hitchcock)</td>
+      <td>female</td>
+      <td>45.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>36928</td>
+      <td>164.8667</td>
       <td>NaN</td>
       <td>S</td>
     </tr>
     <tr>
-      <th>846</th>
-      <td>847</td>
-      <td>0</td>
-      <td>3</td>
-      <td>Sage, Mr. Douglas Bullen</td>
-      <td>male</td>
-      <td>NaN</td>
-      <td>8</td>
-      <td>2</td>
-      <td>CA. 2343</td>
-      <td>69.55</td>
-      <td>NaN</td>
-      <td>S</td>
-    </tr>
-    <tr>
-      <th>863</th>
-      <td>864</td>
-      <td>0</td>
-      <td>3</td>
-      <td>Sage, Miss. Dorothy Edith "Dolly"</td>
+      <th>879</th>
+      <td>880</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Potter, Mrs. Thomas Jr (Lily Alexenia Wilson)</td>
       <td>female</td>
-      <td>NaN</td>
-      <td>8</td>
-      <td>2</td>
-      <td>CA. 2343</td>
-      <td>69.55</td>
-      <td>NaN</td>
-      <td>S</td>
+      <td>56.0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>11767</td>
+      <td>83.1583</td>
+      <td>C50</td>
+      <td>C</td>
     </tr>
   </tbody>
 </table>
+<p>81 rows × 12 columns</p>
 </div></div>
 </div>
 <p>With slik you can check the mssing values in your data and even plot a percentage distribution to see the top 30 missing values in your dataset</p>
@@ -924,7 +924,8 @@ female was mapped to 0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pp</span><span class="o">.</span><span class="n">check_nan</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">slik_wrangler</span> <span class="kn">import</span> <span class="n">preprocessing</span> <span class="k">as</span> <span class="n">pp</span>
+<span class="n">pp</span><span class="o">.</span><span class="n">check_nan</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1939,7 +1940,7 @@ Schema file stored in Titanic/data/metadata
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="quick_start.html" class="btn btn-neutral float-left" title="Quickstart to ML with Slik" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="quick_start.html" class="btn btn-neutral float-left" title="Quickstart to ML with Slik-ML" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="modules.html" class="btn btn-neutral float-right" title="slik" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

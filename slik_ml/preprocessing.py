@@ -509,6 +509,7 @@ def get_attributes(data=None,target_column=None):
     if data is None:
         raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
         
+        
     num_attributes = data.select_dtypes(include=np.number).columns.tolist()
     cat_attributes = [x for x in data.columns if x not in num_attributes]
     
