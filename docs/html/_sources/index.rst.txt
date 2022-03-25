@@ -1,10 +1,10 @@
-.. Slik documentation master file, created by
+.. slik-ml documentation master file, created by
    sphinx-quickstart on Thu Mar 18 18:16:23 2021.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Slik's documentation!
-================================
+Welcome to SLIK-ML documentation!
+==================================
 
 .. image:: images/slik.png
    :width: 300px
@@ -13,25 +13,25 @@ Welcome to Slik's documentation!
    :alt: alternate text
    :align: center
 
-Slik is a data to modeling tool that helps data scientists navigate the issues of basic data wrangling and preprocessing steps. The idea behind Slik is to jump-start supervised learning projects. Data scientists struggle to prepare their data for building machine learning models and all machine learning projects require data wrangling, data preprocessing, feature engineering which takes about 80% of the model building process.
+slik-ml is a data to modeling tool that helps data scientists navigate the issues of basic data wrangling and preprocessing steps. The idea behind slik-ml is to jump-start supervised learning projects. Data scientists struggle to prepare their data for building machine learning models and all machine learning projects require data wrangling, data preprocessing, feature engineering which takes about 80% of the model building process.
 
-Slik has several tools that make it easy to load data of any format, clean and inspect your data. It offers a quick way to pre-process data and perform feature engineering. Building machine learning models is an inherently iterative task and data scientists face challenges of reproducing the models and productionalizing model pipelines.
+slik-ml has several tools that make it easy to load data of any format, clean and inspect your data. It offers a quick way to pre-process data and perform feature engineering. Building machine learning models is an inherently iterative task and data scientists face challenges of reproducing the models and productionalizing model pipelines.
 
-With Slik, Data scientists can build model pipelines. Slik provides explainability in the pipeline process in the form of DAG showing each step in the build process. With every build process/experiment, Slik logs the metadata for each run.
+With slik-ml, Data scientists can build model pipelines. slik-ml provides explainability in the pipeline process in the form of DAG showing each step in the build process. With every build process/experiment, slik-ml logs the metadata for each run.
 
-Slik provides an easy-to-use solution for supervised machine learning. Here is a link to the staging repository.
+slik-ml provides an easy-to-use solution for supervised machine learning. Here is a link to the staging repository.
 
 This project tries to help make supervised machine learning more accessible for beginners, and reduce boilerplate for common tasks.
 
 This library is in very active development, so it's not recommended for production use.
 
-Development at `github.com/AdesholaAfolabi/slik_python_package/staging/ <https://github.com/AdesholaAfolabi/slik_python_package/tree/staging>`_.
+Development at `github.com/AdesholaAfolabi/slik-ml_python_package/staging/ <https://github.com/AdesholaAfolabi/slik-ml_python_package/tree/staging>`_.
 
 Examples
 --------
-A minimum example of using slik for preprocessing is:
+A minimum example of using slik-ml for preprocessing is:
 
-    >>> from slik import preprocessing as pp
+    >>> from slik-ml import preprocessing as pp
     >>> from sklearn.model_selection import train_test_split
     >>> from sklearn.datasets import titanic
     >>> X, y = titanic(return_X_y=True)
@@ -62,7 +62,7 @@ A minimum example of using slik for preprocessing is:
 
 .. toctree::
    :maxdepth: 2
-   :caption: slik API:
+   :caption: slik-ml API:
 
    modules
 
