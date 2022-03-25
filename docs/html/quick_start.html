@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quickstart to ML with Slik &mdash; Slik 1. documentation</title>
+  <title>Quickstart to ML with Slik-ML &mdash; Slik 1. documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,8 +19,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="SLIK Preprocessing API" href="titanic.html" />
-    <link rel="prev" title="Installing Slik" href="installs.html" /> 
+    <link rel="next" title="SLIK-ML Preprocessing API" href="titanic.html" />
+    <link rel="prev" title="Installing Slik-ML" href="installs.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -40,14 +40,14 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="installs.html">Installing Slik</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installs.html">Installing Slik-ML</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart to ML with Slik</a></li>
-<li class="toctree-l1"><a class="reference internal" href="titanic.html">SLIK Preprocessing API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart to ML with Slik-ML</a></li>
+<li class="toctree-l1"><a class="reference internal" href="titanic.html">SLIK-ML Preprocessing API</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">slik API:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Slik-ML API:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">slik</a></li>
 </ul>
@@ -66,7 +66,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Quickstart to ML with Slik</li>
+      <li>Quickstart to ML with Slik-ML</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/quick_start.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -100,18 +100,18 @@
     text-align: unset;
 }
 </style>
-<section id="quickstart-to-ml-with-slik">
-<h1>Quickstart to ML with Slik<a class="headerlink" href="#quickstart-to-ml-with-slik" title="Permalink to this headline"></a></h1>
+<section id="quickstart-to-ml-with-slik-ml">
+<h1>Quickstart to ML with Slik-ML<a class="headerlink" href="#quickstart-to-ml-with-slik-ml" title="Permalink to this headline"></a></h1>
 <p>Let’s dive right in!</p>
 <p>Let’s start with the classic. You have the titanic.csv file and want to predict
 whether a passenger survived or not based on the information about the
 passenger in that file.
 We know, for tabular data like this, pandas is our friend.
-Clearly we need to start with loading our data. Slik has a read_file function
+Clearly we need to start with loading our data. Slik-ML has a read_file function
 that reads either CSV, Excel or parquet files</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">slik</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">slik</span> <span class="kn">import</span> <span class="n">loadfile</span> <span class="k">as</span> <span class="n">lf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">Slik_ML</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">Slik_ML</span> <span class="kn">import</span> <span class="n">loadfile</span> <span class="k">as</span> <span class="n">lf</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">titanic</span> <span class="o">=</span> <span class="n">lf</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s1">&#39;titanic.csv&#39;</span><span class="p">)</span>
 <span class="go">    CSV file read sucessfully</span>
 <span class="go">    Data has 891 rows and 12 columns</span>
@@ -136,9 +136,9 @@ columns, what do they look like?</p>
 <p>[5 rows x 14 columns]</p>
 </div></blockquote>
 <p>So far so good! There’s already a bunch of things going on in the data that we
-can see here, Lets ask slik to check if there are missing values present in the dataset:</p>
+can see here, Lets ask Slik-ML to check if there are missing values present in the dataset:</p>
 <blockquote>
-<div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">slik</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">check_nan</span><span class="p">(</span><span class="n">titanic</span><span class="p">,</span><span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Slik</span><span class="o">-</span><span class="n">ML</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">check_nan</span><span class="p">(</span><span class="n">titanic</span><span class="p">,</span><span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 <blockquote>
@@ -149,18 +149,18 @@ can see here, Lets ask slik to check if there are missing values present in the 
 In this case, we might have been able to figure this out quickly from the call to head,
 but in larger datasets this might be a bit tricky.
 For example we can see that there are several dirty columns with “NaN” in it.
-let’s try and continue with what slik is doing
-automatically for now. Now we can handle missing values with slik.</p>
+let’s try and continue with what Slik-ML is doing
+automatically for now. Now we can handle missing values with Slik-ML.</p>
 <blockquote>
-<div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">slik</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">handle_nan</span><span class="p">(</span><span class="n">dataframe</span><span class="o">=</span><span class="n">titanic</span><span class="p">,</span><span class="n">target_name</span><span class="o">=</span><span class="s1">&#39;Survived&#39;</span><span class="p">,</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span><span class="n">fillna</span><span class="o">=</span><span class="s1">&#39;mode&#39;</span><span class="p">,</span>
+<div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Slik</span><span class="o">-</span><span class="n">ML</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">handle_nan</span><span class="p">(</span><span class="n">dataframe</span><span class="o">=</span><span class="n">titanic</span><span class="p">,</span><span class="n">target_name</span><span class="o">=</span><span class="s1">&#39;Survived&#39;</span><span class="p">,</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span><span class="n">fillna</span><span class="o">=</span><span class="s1">&#39;mode&#39;</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>                               <span class="n">thresh_x</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">thresh_y</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
 <span class="go">    Dropping rows with 50% missing value :Number of records dropped from 891 to 891</span>
 <span class="go">    Dropping Columns with 50% missing value: [&#39;Cabin&#39;]</span>
 <span class="go">    New data shape is (891, 11)</span>
 </pre></div>
 </div>
-<p>In slik, we can also identify each columns present in the data:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">slik</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">identify_columns</span><span class="p">(</span><span class="n">titanic</span><span class="p">,</span><span class="s1">&#39;Survived&#39;</span><span class="p">,</span><span class="n">id_column</span><span class="o">=</span><span class="s1">&#39;PassengerId&#39;</span><span class="p">,</span><span class="n">project_path</span><span class="o">=</span><span class="s1">&#39;Titanic&#39;</span><span class="p">)</span>
+<p>In Slik-ML, we can also identify each columns present in the data:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Slik</span><span class="o">-</span><span class="n">ML</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">identify_columns</span><span class="p">(</span><span class="n">titanic</span><span class="p">,</span><span class="s1">&#39;Survived&#39;</span><span class="p">,</span><span class="n">id_column</span><span class="o">=</span><span class="s1">&#39;PassengerId&#39;</span><span class="p">,</span><span class="n">project_path</span><span class="o">=</span><span class="s1">&#39;Titanic&#39;</span><span class="p">)</span>
 <span class="go">    --------------- Identifying columns present in the data ---------------</span>
 <span class="go">    Target column is Survived. Attribute in target column:[0, 1]</span>
 <span class="go">    Features with high cardinality:[&#39;Name&#39;, &#39;Ticket&#39;, &#39;Cabin&#39;]</span>
@@ -185,10 +185,10 @@ automatically for now. Now we can handle missing values with slik.</p>
 </pre></div>
 </div>
 </div></blockquote>
-<p>Slik can clean your data in one line of code. The <cite>slik.preprocessing.preprocess</cite> function cleans your data
+<p>Slik-ML can clean your data in one line of code. The <cite>Slik-ML.preprocessing.preprocess</cite> function cleans your data
 by removing outliers present in the data, handing missing values, featurizing datetime columns, and mapping relevant columns.
 The functions saves the preprocessed file in a project path that you specify.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">slik</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">train</span><span class="p">,</span><span class="n">target_column</span><span class="o">=</span><span class="s1">&#39;Survived&#39;</span><span class="p">,</span><span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">display_inline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Slik</span><span class="o">-</span><span class="n">ML</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">train</span><span class="p">,</span><span class="n">target_column</span><span class="o">=</span><span class="s1">&#39;Survived&#39;</span><span class="p">,</span><span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">display_inline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>                                  <span class="n">project_path</span><span class="o">=</span><span class="s1">&#39;./Titanic&#39;</span><span class="p">,</span><span class="n">logging</span><span class="o">=</span><span class="s1">&#39;display&#39;</span><span class="p">)</span>
 <span class="go">        The task for preprocessing is classification</span>
 <span class="go">        Dropping rows with 75% missing value: Number of records dropped is 0</span>
@@ -233,8 +233,8 @@ The functions saves the preprocessed file in a project path that you specify.</p
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="installs.html" class="btn btn-neutral float-left" title="Installing Slik" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="titanic.html" class="btn btn-neutral float-right" title="SLIK Preprocessing API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="installs.html" class="btn btn-neutral float-left" title="Installing Slik-ML" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="titanic.html" class="btn btn-neutral float-right" title="SLIK-ML Preprocessing API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

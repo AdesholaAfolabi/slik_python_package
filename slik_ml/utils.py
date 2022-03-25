@@ -66,6 +66,7 @@ def store_pipeline(pipeline_object, pipeline_path):
         None
     """
     # save the model to disk
+    
     pickle.dump(pipeline_object, open(pipeline_path, 'wb'))
 
 def get_scores(y_true, y_pred):

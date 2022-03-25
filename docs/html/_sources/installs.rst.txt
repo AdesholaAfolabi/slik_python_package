@@ -1,25 +1,25 @@
 
 ###############################################
-Installing Slik
+Installing Slik-ML
 ###############################################
 
-Slik is available as a Python package for Linux, MacOS and Windows, and can be installed like any other Python package. You can visit our 
-`GitHub repository <https://github.com/AdesholaAfolabi/slik_python_package/blob/staging/slik/preprocessing.py>`_ or get the latest version from 
-`PyPI <https://pypi.org/project/slik/>`_
+Slik-ML is available as a Python package for Linux, MacOS and Windows, and can be installed like any other Python package. You can visit our 
+`GitHub repository <https://github.com/AdesholaAfolabi/Slik_python_package/blob/staging/Slik/preprocessing.py>`_ or get the latest version from 
+`PyPI <https://pypi.org/project/Slik/>`_
 
 Install in existing environment
 -------------------------------
 
-If you have an existing Python environment activated, you can install slik with the command:
+If you have an existing Python environment activated, you can install Slik-ML with the command:
 
 
->>> $ pip install slik
+>>> $ pip install Slik-ML
 
 
 Install in a new virtual environment
 ------------------------------------
 
-To install slik in a virtual environment, you can use the Anaconda package.
+To install Slik-ML in a virtual environment, you can use the Anaconda package.
 
 You must have  `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`_ or `Anaconda Distribution <https://docs.anaconda.com/anaconda/>`_ installed.
 
@@ -40,10 +40,10 @@ Activate your environment:
 >>> $ source activate yourenvname
 
 
-Install slik and other packages you need for your project
+Install Slik-ML and other packages you need for your project
 
 
->>> $ pip install slik
+>>> $ pip install Slik-ML
 
 
 Test your installation
@@ -54,7 +54,7 @@ Test your installation
     Python 3.7.5 (default, Oct 25 2019, 15:51:11) 
     [GCC 7.3.0] :: Anaconda, Inc. on linux
 Type "help", "copyright", "credits" or "license" for more information.
-import slik
+import Slik-ML
 
 
 
