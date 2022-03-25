@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to Slik’s documentation! &mdash; Slik 1. documentation</title>
+  <title>Welcome to Slik-ML documentation! &mdash; Slik 1. documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installing Slik" href="installs.html" /> 
+    <link rel="next" title="Installing Slik-ML" href="installs.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -39,14 +39,14 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="installs.html">Installing Slik</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installs.html">Installing Slik-ML</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quickstart to ML with Slik</a></li>
-<li class="toctree-l1"><a class="reference internal" href="titanic.html">SLIK Preprocessing API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quickstart to ML with Slik-ML</a></li>
+<li class="toctree-l1"><a class="reference internal" href="titanic.html">SLIK-ML Preprocessing API</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">slik API:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Slik-ML API:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">slik</a></li>
 </ul>
@@ -65,7 +65,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home"></a> &raquo;</li>
-      <li>Welcome to Slik’s documentation!</li>
+      <li>Welcome to Slik-ML documentation!</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -99,20 +99,20 @@
     text-align: unset;
 }
 </style>
-<section id="welcome-to-slik-s-documentation">
-<h1>Welcome to Slik’s documentation!<a class="headerlink" href="#welcome-to-slik-s-documentation" title="Permalink to this headline"></a></h1>
+<section id="welcome-to-slik-ml-documentation">
+<h1>Welcome to Slik-ML documentation!<a class="headerlink" href="#welcome-to-slik-ml-documentation" title="Permalink to this headline"></a></h1>
 <a class="reference internal image-reference" href="_images/slik.png"><img alt="alternate text" class="align-center" src="_images/slik.png" style="width: 300.0px; height: 200.0px;" /></a>
-<p>Slik is a data to modeling tool that helps data scientists navigate the issues of basic data wrangling and preprocessing steps. The idea behind Slik is to jump-start supervised learning projects. Data scientists struggle to prepare their data for building machine learning models and all machine learning projects require data wrangling, data preprocessing, feature engineering which takes about 80% of the model building process.</p>
-<p>Slik has several tools that make it easy to load data of any format, clean and inspect your data. It offers a quick way to pre-process data and perform feature engineering. Building machine learning models is an inherently iterative task and data scientists face challenges of reproducing the models and productionalizing model pipelines.</p>
-<p>With Slik, Data scientists can build model pipelines. Slik provides explainability in the pipeline process in the form of DAG showing each step in the build process. With every build process/experiment, Slik logs the metadata for each run.</p>
-<p>Slik provides an easy-to-use solution for supervised machine learning. Here is a link to the staging repository.</p>
+<p>Slik-ML is a data to modeling tool that helps data scientists navigate the issues of basic data wrangling and preprocessing steps. The idea behind Slik-ML is to jump-start supervised learning projects. Data scientists struggle to prepare their data for building machine learning models and all machine learning projects require data wrangling, data preprocessing, feature engineering which takes about 80% of the model building process.</p>
+<p>Slik-ML has several tools that make it easy to load data of any format, clean and inspect your data. It offers a quick way to pre-process data and perform feature engineering. Building machine learning models is an inherently iterative task and data scientists face challenges of reproducing the models and productionalizing model pipelines.</p>
+<p>With Slik-ML, Data scientists can build model pipelines. Slik-ML provides explainability in the pipeline process in the form of DAG showing each step in the build process. With every build process/experiment, Slik-ML logs the metadata for each run.</p>
+<p>Slik-ML provides an easy-to-use solution for supervised machine learning. Here is a link to the staging repository.</p>
 <p>This project tries to help make supervised machine learning more accessible for beginners, and reduce boilerplate for common tasks.</p>
 <p>This library is in very active development, so it’s not recommended for production use.</p>
-<p>Development at <a class="reference external" href="https://github.com/AdesholaAfolabi/slik_python_package/tree/staging">github.com/AdesholaAfolabi/slik_python_package/staging/</a>.</p>
+<p>Development at <a class="reference external" href="https://github.com/AdesholaAfolabi/Slik-ML_python_package/tree/staging">github.com/AdesholaAfolabi/Slik-ML_python_package/staging/</a>.</p>
 <section id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline"></a></h2>
-<p>A minimum example of using slik for preprocessing is:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">slik</span> <span class="kn">import</span> <span class="n">preprocessing</span> <span class="k">as</span> <span class="n">pp</span>
+<p>A minimum example of using Slik-ML for preprocessing is:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">Slik</span><span class="o">-</span><span class="n">ML</span> <span class="kn">import</span> <span class="nn">preprocessing</span> <span class="k">as</span> <span class="nn">pp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">titanic</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">titanic</span><span class="p">(</span><span class="n">return_X_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -128,7 +128,7 @@
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="installs.html">Installing Slik</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="installs.html">Installing Slik-ML</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="installs.html#install-in-existing-environment">Install in existing environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installs.html#install-in-a-new-virtual-environment">Install in a new virtual environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installs.html#test-your-installation">Test your installation</a></li>
@@ -140,15 +140,15 @@
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quickstart to ML with Slik</a></li>
-<li class="toctree-l1"><a class="reference internal" href="titanic.html">SLIK Preprocessing API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quickstart to ML with Slik-ML</a></li>
+<li class="toctree-l1"><a class="reference internal" href="titanic.html">SLIK-ML Preprocessing API</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">slik API:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Slik-ML API:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">slik</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="slik.html">slik package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="slik.html">slik_ml package</a></li>
 </ul>
 </li>
 </ul>
@@ -168,7 +168,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="installs.html" class="btn btn-neutral float-right" title="Installing Slik" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="installs.html" class="btn btn-neutral float-right" title="Installing Slik-ML" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

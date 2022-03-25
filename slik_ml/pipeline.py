@@ -23,7 +23,7 @@ import pandas as pd
 from .loadfile import read_file
 from .preprocessing import identify_columns,preprocess,map_target
 from .utils import load_pickle,print_divider,store_pipeline, HiddenPrints, get_scores, log_plot
-from slik import plot_funcs as pf
+from slik_ml import plot_funcs as pf
 
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler, OneHotEncoder
 

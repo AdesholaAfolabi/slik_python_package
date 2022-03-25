@@ -1,49 +1,49 @@
-slik package
-============
+slik_ml package
+================
 
 Submodules
 ----------
 
-slik.loadfile
+slik_ml.loadfile
 --------------------
 
-.. automodule:: slik.loadfile
+.. automodule:: slik_ml.loadfile
    :members:
    :undoc-members:
    :show-inheritance:
 
 .. note:: Allows keyword arguements from pandas read function.
 
-slik.pipeline
+slik_ml.pipeline
 --------------------
 .. warning:: Transfomers must be passed. Understand how pipeline transformation works before using the build pipeline function.
 
 
-.. automodule:: slik.pipeline
+.. automodule:: slik_ml.pipeline
    :members:
    :undoc-members:
    :show-inheritance:
 
-slik.plot\_funcs
+slik_ml.plot\_funcs
 -----------------------
 
-.. automodule:: slik.plot_funcs
+.. automodule:: slik_ml.plot_funcs
    :members:
    :undoc-members:
    :show-inheritance:
 
-slik.preprocessing
+slik_ml.preprocessing
 -------------------------
 
-.. automodule:: slik.preprocessing
+.. automodule:: slik_ml.preprocessing
    :members:
    :undoc-members:
    :show-inheritance:
 
-slik.utils
+slik_ml.utils
 -----------------
 
-.. automodule:: slik.utils
+.. automodule:: slik_ml.utils
    :members:
    :undoc-members:
    :show-inheritance:
@@ -51,7 +51,7 @@ slik.utils
 Module contents
 ---------------
 
-.. automodule:: slik
+.. automodule:: slik_ml
    :members:
    :undoc-members:
    :show-inheritance:
