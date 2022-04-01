@@ -8,6 +8,7 @@ from sklearn.metrics import (accuracy_score,
                              roc_auc_score,
                              precision_recall_curve,
                              average_precision_score)
+from .messages import log
 
 
 def print_divider(title):
@@ -21,7 +22,7 @@ def print_divider(title):
     Returns:
         None
     """
-    print('\n{} {} {}\n'.format('-' * 15, title, '-' * 15))
+    log('\n{} {} {}\n'.format('-' * 15, title, '-' * 15))
 
 def load_pickle(fp):
 
