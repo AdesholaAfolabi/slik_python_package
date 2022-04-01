@@ -3,6 +3,8 @@
 import pandas as pd
 import csv
 import os
+from .messages import log
+
 
 def read_file(file_path, input_col=None, **kwargs):
 
@@ -29,30 +31,31 @@ def read_file(file_path, input_col=None, **kwargs):
     """
     if file_path.endswith('.csv'):
         data = pd.read_csv(file_path, usecols= input_col,**kwargs)
-        print('\nCSV file read sucessfully')
+        log('\nCSV file read sucessfully', code='success')
         data = data.reindex(columns = input_col)
-        print ('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]))
+        log('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]), code='info')
         return data
             
     elif file_path.endswith('.parquet'):
         data = pd.read_parquet(file_path, engine = 'pyarrow', columns = input_col,**kwargs)
-        print('Parquet file read sucessfully')
+        log('Parquet file read sucessfully', code='success')
         data.columns = data.columns.astype(str)
         data = data.reindex(columns = input_col)
-        print ('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]))
+        log('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]), code='info')
         return data
         
     elif file_path.endswith('.xls') or file_path.endswith('.xlsx'):
         data = pd.read_excel(file_path, usecols = input_col,**kwargs)
-        print('Excel file read successfully')
+        log('Excel file read successfully', code='success')
         data = data.reindex(columns = input_col)
-        print ('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]))
+        log('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]), code='info')
         return data
+    
     elif file_path.endswith('.json'):
         data = pd.read_json(file_path, usecols = input_col)
-        print('JSON file read successfully')
+        log('JSON file read successfully', code='success')
         data = data.reindex(columns = input_col)
-        print ('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]))
+        log('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]), code='info')
         return data
         
     else:
