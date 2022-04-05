@@ -23,16 +23,16 @@ import pandas as pd
 from .loadfile import read_file
 from .preprocessing import identify_columns,preprocess,map_target
 from .utils import load_pickle,print_divider,store_pipeline, HiddenPrints, get_scores, log_plot
-from slik_ml import plot_funcs as pf
+from slik_wrangler import plot_funcs as pf
 
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler, OneHotEncoder
 
 from sklearn.decomposition import PCA
 from imblearn.over_sampling import SMOTE
-from sklearn.compose import ColumnTransformer                   # to transform column of different types
+from sklearn.compose import ColumnTransformer    # to transform column of different types
 from sklearn.model_selection import train_test_split            
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import GridSearchCV             # to find best hyper parameters
+from sklearn.model_selection import GridSearchCV    # to find best hyper parameters
 from sklearn import set_config                      # to change the display
 from sklearn.utils import estimator_html_repr       # to save the diagram into HTML format
 import yaml
