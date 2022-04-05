@@ -4,14 +4,14 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## SLIK-ML Preprocessing API"
+    "## Slik-wrangler Preprocessing API"
    ]
   },
   {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "Brief description on how to use the preprocessing module in the slik-ml package. This sample notebook explains some very important methods in the preprocessing module"
+    "Brief description on how to use the preprocessing module in the slik-wrangler package. This sample notebook explains some very important methods in the preprocessing module"
    ]
   },
   {
@@ -29,11 +29,11 @@
    "metadata": {},
    "source": [
     "\n",
-    "Using slik-ml load file module you only need to specify your data path. \n",
+    "Using slik-wrangler load file module you only need to specify your data path. \n",
     "\n",
-    "slik-ml can infer the file type that was passed and read it as a pandas dataframe.\n",
+    "slik-wrangler can infer the file type that was passed and read it as a pandas dataframe.\n",
     "\n",
-    "`slik-ml.loadfile.read_file` function makes use of the same keyword arguments as pandas read functions. "
+    "`slik-wrangler.loadfile.read_file` function makes use of the same keyword arguments as pandas read functions. "
    ]
   },
   {
@@ -42,14 +42,14 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "from slik-ml import loadfile as lf"
+    "from slik_wrangler import loadfile as lf"
    ]
   },
   {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "You can get a brief summary of the rows and column that was loaded by slik-ml"
+    "You can get a brief summary of the rows and column that was loaded by slik-wrangler"
    ]
   },
   {
@@ -76,7 +76,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "Working with a large csv file and you can not load the whole data to Excel or with pandas, with slik-ml you can split a csv into multiple csv files. \n",
+    "Working with a large csv file and you can not load the whole data to Excel or with pandas, with slik-wrangler you can split a csv into multiple csv files. \n",
     "\n",
     "Specify the number of rows that should be present in each csv file"
    ]
@@ -248,7 +248,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "from slik-ml import preprocessing as pp"
+    "from slik_wrangler import preprocessing as pp"
    ]
   },
   {
@@ -427,7 +427,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "slik-ml will identify the data type of each data point, data points with high cardinality and save it in a file. With slik-ml, data integrity can be done efficiently to validate downstream data points"
+    "slik-wrangler will identify the data type of each data point, data points with high cardinality and save it in a file. With slik-wrangler, data integrity can be done efficiently to validate downstream data points"
    ]
   },
   {
@@ -655,7 +655,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "slik-ml currently relies on the Interquartile range approach to detect outliers present in a data point. slik-ml also fixes the outlier present in the data using different methods like replacing an outlier with the mean of the data point. You can also select the numerical features you want to perform the operation on. You can also display a table identifying at least 'n' outliers in a row."
+    "slik-wrangler currently relies on the Interquartile range approach to detect outliers present in a data point. slik-wrangler also fixes the outlier present in the data using different methods like replacing an outlier with the mean of the data point. You can also select the numerical features you want to perform the operation on. You can also display a table identifying at least 'n' outliers in a row."
    ]
   },
   {
@@ -1075,7 +1075,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "slik-ml helps to handle the missing values in your data intelligently and efficiently. You can choose a strategy to handle your numerical features \n",
+    "slik-wrangler helps to handle the missing values in your data intelligently and efficiently. You can choose a strategy to handle your numerical features \n",
     "\n",
     "and pass a value for fillna params to handle your categorical features or fill it with the mode by default. \n",
     "\n",
@@ -1109,8 +1109,8 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "Beyond slik-ml preprocessing abilities, you can also engineer new features intelligently. \n",
-    "slik-ml can help you bin/discretize your age column intelligently and creating new data points with the transformations"
+    "Beyond slik-wrangler preprocessing abilities, you can also engineer new features intelligently. \n",
+    "slik-wrangler can help you bin/discretize your age column intelligently and creating new data points with the transformations"
    ]
   },
   {
@@ -1380,7 +1380,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "with Slik you can infer the schema of your pandas dataframe and save the schema file in a project path you define"
+    "with Slik-wrangler you can infer the schema of your pandas dataframe and save the schema file in a project path you define"
    ]
   },
   {
@@ -1427,7 +1427,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "with Slik you can also drop uninformative field in your pandas dataframe"
+    "with Slik-wrangler you can also drop uninformative field in your pandas dataframe"
    ]
   },
   {
@@ -1707,7 +1707,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "Slik helps you manage your data points better by handling different management operations techniques on pandas dataframe based on columns. \n",
+    "Slik-wrangler helps you manage your data points better by handling different management operations techniques on pandas dataframe based on columns. \n",
     "\n",
     "Operations include selecting of columns, dropping column and dropping duplicates. By selecting the list data points that you need to perform the transformation on and choosing the particular transformation you want "
    ]
@@ -2148,7 +2148,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "Slik can clean your data in one line of code. The `slik.preprocessing.preprocess` function cleans your data\n",
+    "Slik can clean your data in one line of code. The `slik_wrangler.preprocessing.preprocess` function cleans your data\n",
     "by removing outliers present in the data, handing missing values, featurizing datetime columns, and mapping relevant columns.\n",
     "The functions saves the preprocessed file in a project path that you specify."
    ]
