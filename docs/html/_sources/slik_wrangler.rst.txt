@@ -1,49 +1,49 @@
-slik_ml package
-================
+slik_wrangler package
+======================
 
 Submodules
 ----------
 
-slik_ml.loadfile
---------------------
+slik_wrangler.loadfile
+----------------------
 
-.. automodule:: slik_ml.loadfile
+.. automodule:: slik_wrangler.loadfile
    :members:
    :undoc-members:
    :show-inheritance:
 
 .. note:: Allows keyword arguements from pandas read function.
 
-slik_ml.pipeline
---------------------
+slik_wrangler.pipeline
+----------------------
 .. warning:: Transfomers must be passed. Understand how pipeline transformation works before using the build pipeline function.
 
 
-.. automodule:: slik_ml.pipeline
+.. automodule:: slik_wrangler.pipeline
    :members:
    :undoc-members:
    :show-inheritance:
 
-slik_ml.plot\_funcs
------------------------
-
-.. automodule:: slik_ml.plot_funcs
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-slik_ml.preprocessing
+slik_wrangler.plot\_funcs
 -------------------------
 
-.. automodule:: slik_ml.preprocessing
+.. automodule:: slik_wrangler.plot_funcs
    :members:
    :undoc-members:
    :show-inheritance:
 
-slik_ml.utils
------------------
+slik_wrangler.preprocessing
+---------------------------
 
-.. automodule:: slik_ml.utils
+.. automodule:: slik_wrangler.preprocessing
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+slik_wrangler.utils
+-------------------
+
+.. automodule:: slik_wrangler.utils
    :members:
    :undoc-members:
    :show-inheritance:
@@ -51,7 +51,7 @@ slik_ml.utils
 Module contents
 ---------------
 
-.. automodule:: slik_ml
+.. automodule:: slik_wrangler
    :members:
    :undoc-members:
    :show-inheritance:
