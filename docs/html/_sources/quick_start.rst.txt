@@ -1,6 +1,6 @@
 
 ###############################################
-Quickstart to ML with Slik-ML
+Quickstart to ML with Slik-Wrangler
 ###############################################
 
 Let's dive right in!
@@ -9,12 +9,12 @@ Let's start with the classic. You have the titanic.csv file and want to predict
 whether a passenger survived or not based on the information about the
 passenger in that file.
 We know, for tabular data like this, pandas is our friend.
-Clearly we need to start with loading our data. Slik-ML has a read_file function
+Clearly we need to start with loading our data. slik-wrangler has a read_file function
 that reads either CSV, Excel or parquet files
 
     >>> import pandas as pd
-    >>> import Slik_ML
-    >>> from Slik_ML import loadfile as lf
+    >>> import slik_wrangler
+    >>> from slik_wrangler import loadfile as lf
     >>> titanic = lf.read_file('titanic.csv')
         CSV file read sucessfully
         Data has 891 rows and 12 columns
@@ -37,9 +37,9 @@ columns, what do they look like?
 
 
 So far so good! There's already a bunch of things going on in the data that we
-can see here, Lets ask Slik-ML to check if there are missing values present in the dataset:
+can see here, Lets ask slik-wrangler to check if there are missing values present in the dataset:
 
-    >>> Slik-ML.preprocessing.check_nan(titanic,plot=True,verbose=False)
+    >>> slik_wrangler.preprocessing.check_nan(titanic,plot=True,verbose=False)
 
         .. image:: images/missing_values.png
            :align: center
@@ -48,19 +48,19 @@ This provides us with lots of information about percentage count of missing valu
 In this case, we might have been able to figure this out quickly from the call to head,
 but in larger datasets this might be a bit tricky.
 For example we can see that there are several dirty columns with "NaN" in it.
-let's try and continue with what Slik-ML is doing
-automatically for now. Now we can handle missing values with Slik-ML.
+let's try and continue with what slik-wrangler is doing
+automatically for now. Now we can handle missing values with slik-wrangler.
 
-    >>> Slik-ML.preprocessing.handle_nan(dataframe=titanic,target_name='Survived',strategy='mean',fillna='mode',
+    >>> slik_wrangler.preprocessing.handle_nan(dataframe=titanic,target_name='Survived',strategy='mean',fillna='mode',
     >>>                                thresh_x=50,thresh_y=50)
         Dropping rows with 50% missing value :Number of records dropped from 891 to 891
         Dropping Columns with 50% missing value: ['Cabin']
         New data shape is (891, 11)
 
 
- In Slik-ML, we can also identify each columns present in the data:
+ In slik-wrangler, we can also identify each columns present in the data:
     
-    >>> Slik-ML.preprocessing.identify_columns(titanic,'Survived',id_column='PassengerId',project_path='Titanic')
+    >>> slik_wrangler.preprocessing.identify_columns(titanic,'Survived',id_column='PassengerId',project_path='Titanic')
         --------------- Identifying columns present in the data ---------------
         Target column is Survived. Attribute in target column:[0, 1]
         Features with high cardinality:['Name', 'Ticket', 'Cabin']
@@ -84,11 +84,11 @@ automatically for now. Now we can handle missing values with Slik-ML.
         Attributes are stored in data/metadata
 
 
-Slik-ML can clean your data in one line of code. The `Slik-ML.preprocessing.preprocess` function cleans your data
+slik-wrangler can clean your data in one line of code. The `slik-wrangler.preprocessing.preprocess` function cleans your data
 by removing outliers present in the data, handing missing values, featurizing datetime columns, and mapping relevant columns.
 The functions saves the preprocessed file in a project path that you specify.
 
-    >>> Slik-ML.preprocessing.preprocess(data=train,target_column='Survived',train=True,display_inline=True,
+    >>> slik_wrangler.preprocessing.preprocess(data=train,target_column='Survived',train=True,display_inline=True,
     >>>                                   project_path='./Titanic',logging='display')
             The task for preprocessing is classification
             Dropping rows with 75% missing value: Number of records dropped is 0
