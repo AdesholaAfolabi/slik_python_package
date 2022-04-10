@@ -97,6 +97,15 @@ def change_case(dataframe, columns=None, case='lower', inplace=False):
     def capitalize_case(x):
         """
         Capitalize Case Function
+        
+        Parameters
+        ----------
+        x: str
+            The string to be capitalized
+        
+        Returns
+        -------
+        A capitalized string
         """
 
         return ' '.join([
