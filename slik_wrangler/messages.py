@@ -8,7 +8,7 @@ from colorama import Fore
 DANGER = Fore.RED
 WARNING = Fore.YELLOW
 SUCCESS = Fore.GREEN
-NORMAL = Fore.WHITE
+NORMAL = Fore.RESET
 INFO = Fore.CYAN
 
 
