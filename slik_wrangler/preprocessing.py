@@ -56,7 +56,11 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
     return data
 
 
+<<<<<<< HEAD
 def change_case(dataframe, column=None, case='lower', inplace=False):
+=======
+def change_case(dataframe=None ,column=None,case='lower'):
+>>>>>>> upstream/staging
 
     """
     Change the case of a pandas series to either upper or lower case
@@ -65,6 +69,7 @@ def change_case(dataframe, column=None, case='lower', inplace=False):
     ----------
     dataframe: Dataframe or named Series
     
+<<<<<<< HEAD
     column: str, list
         The column or list of columns to perform the operation on
     
@@ -73,12 +78,20 @@ def change_case(dataframe, column=None, case='lower', inplace=False):
     
     inplace: bool. Default is set to False
         Indicates if changes should by made within the dataframe or not.
+=======
+    column: str.
+        The column to perform the operation on
+    
+    case: str. Default is set to lower 
+        Indicates the type of operation to perform
+>>>>>>> upstream/staging
 
     Returns
     -------
     Pandas Dataframe:
     """
         
+<<<<<<< HEAD
     if type(dataframe) != pd.DataFrame and type(dataframe) != pd.Series:
         raise ValueError(
             "data: Expecting a DataFrame or Series, got 'None'"
@@ -116,6 +129,34 @@ def change_case(dataframe, column=None, case='lower', inplace=False):
         
         if not inplace:
             return dataframe
+=======
+    if dataframe is None:
+        raise ValueError("data: Expecting a DataFrame or Series, got 'None'")
+        
+    if not isinstance(column, str):
+        errstr = f'The given type for column is {type(column).__name__}. Expected type is a string'
+        raise TypeError(errstr)
+
+    df = dataframe.copy()
+
+    def capitalize_case(x):
+        list_of_str = x.split(' ')
+        new_list =[]
+        for item in list_of_str:
+            new_list.append(item.capitalize())
+        JoinedStr = ' '.join(new_list)
+        return JoinedStr
+    
+    if case == 'lower':
+        df[column] = df[column].apply(lambda x: x.lower())
+        return df
+    elif case == 'upper':
+        df[column] = df[column].apply(lambda x: x.upper())
+        return df
+    elif case=='capitalize':
+        df[column] = df[column].apply(lambda x: capitalize_case(x))
+        return df
+>>>>>>> upstream/staging
     else:
         raise ValueError(f"case: expected one of upper,lower or captitalize got {case}")
     
@@ -1283,4 +1324,7 @@ def trim_all_columns(dataframe):
     trim_strings = lambda x: x.strip() if isinstance(x, str) else x
     return dataframe.applymap(trim_strings)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/staging

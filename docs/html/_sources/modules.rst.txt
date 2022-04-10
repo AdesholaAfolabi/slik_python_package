@@ -1,7 +1,7 @@
-slik
-====
+Slik-Wrangler
+=============
 
 .. toctree::
    :maxdepth: 4
 
-   slik
+   slik_wrangler
