@@ -8,7 +8,7 @@ from colorama import Fore
 DANGER = Fore.RED
 WARNING = Fore.YELLOW
 SUCCESS = Fore.GREEN
-NORMAL = Fore.WHITE
+NORMAL = Fore.RESET
 INFO = Fore.CYAN
 
 
@@ -16,7 +16,6 @@ def log(*messages, code='normal', sep=' ', end='\n', file=None):
     """
     Distinguishes log messages from print statements.
     Works like a normal print statement but inclusive of colors
-
     :param messages: Message to be logged
     :param code: Log significance
     :return: distinguished log message
