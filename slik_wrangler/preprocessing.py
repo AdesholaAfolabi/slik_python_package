@@ -172,7 +172,7 @@ def check_nan(dataframe=None, plot=False, display_inline=True):
     check_nan.df = df
 
 
-def create_schema_file(dataframe, target_column, id_column, project_path=None, save=True, display_inline=True):
+def create_schema_file(dataframe, target_column, id_column, project_path='.', save=True, display_inline=True):
 
     """
     
