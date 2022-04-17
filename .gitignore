@@ -6,3 +6,4 @@ slik/__pycache__
 .DS_Store
 .vscode/settings.json
 examples/
+crawler/
