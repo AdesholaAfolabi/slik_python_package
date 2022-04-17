@@ -17,4 +17,4 @@ This README documents the steps that are necessary to get the slik package up an
 * Deployment instructions: To use this package, use the Savepipeline method (which requires a file path and input columns as input parameters) in save_object module and call the compile_functions. The final output is a csv file and a pickle pipeline object.
 
 "README.md" 27L, 1205C
-* Repo owner: afolabimkay@gmail.com
+* Repo owner: Adeshola Afolabi and Akinwande Komolafe
