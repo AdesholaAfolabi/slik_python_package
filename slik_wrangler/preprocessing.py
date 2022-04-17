@@ -1293,8 +1293,3 @@ def trim_all_columns(dataframe):
     """
     trim_strings = lambda x: x.strip() if isinstance(x, str) else x
     return dataframe.applymap(trim_strings)
-
-<<<<<<< HEAD
-
-=======
->>>>>>> upstream/staging
