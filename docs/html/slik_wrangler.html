@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>slik_wrangler package &mdash; Slik 1. documentation</title>
+  <title>slik_wrangler package &mdash; Slik Wrangler 1.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Slik-Wrangler" href="modules.html" /> 
+    <link rel="prev" title="slik_wrangler" href="modules.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -27,7 +27,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Slik
+            <a href="index.html" class="icon icon-home"> Slik Wrangler
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -48,11 +48,13 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">slik-wrangler API:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Slik-Wrangler</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">slik_wrangler</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">slik_wrangler package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-slik_wrangler.dqa">slik_wrangler.dqa</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-slik_wrangler.loadfile">slik_wrangler.loadfile</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#slik-wrangler-pipeline">slik_wrangler.pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-slik_wrangler.messages">slik_wrangler.messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-slik_wrangler.pipeline">slik_wrangler.pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-slik_wrangler.plot_funcs">slik_wrangler.plot_funcs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-slik_wrangler.preprocessing">slik_wrangler.preprocessing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-slik_wrangler.utils">slik_wrangler.utils</a></li>
@@ -69,7 +71,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Slik</a>
+          <a href="index.html">Slik Wrangler</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -77,7 +79,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="modules.html">Slik-Wrangler</a> &raquo;</li>
+          <li><a href="modules.html">slik_wrangler</a> &raquo;</li>
       <li>slik_wrangler package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/slik_wrangler.rst.txt" rel="nofollow"> View page source</a>
@@ -116,6 +118,73 @@
 <h1>slik_wrangler package<a class="headerlink" href="#slik-wrangler-package" title="Permalink to this headline"></a></h1>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-slik_wrangler.dqa">
+<span id="slik-wrangler-dqa"></span><h2>slik_wrangler.dqa<a class="headerlink" href="#module-slik_wrangler.dqa" title="Permalink to this headline"></a></h2>
+<p>Module for Asseting the Data Quality</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="slik_wrangler.dqa.consistent_structure_assessement">
+<span class="sig-prename descclassname"><span class="pre">slik_wrangler.dqa.</span></span><span class="sig-name descname"><span class="pre">consistent_structure_assessement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_findings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik_wrangler.dqa.consistent_structure_assessement" title="Permalink to this definition"></a></dt>
+<dd><p>Checks the consitent nature of each feature column.</p>
+<p>It checks if the dtype across each feature column is consistent.
+i.e. if there is an interger variable and a string variable across
+the various feature columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dataframe</strong> (<em>pandas Dataframe</em>) – Data set to perform assessment on.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="slik_wrangler.dqa.data_cleanness_assessment">
+<span class="sig-prename descclassname"><span class="pre">slik_wrangler.dqa.</span></span><span class="sig-name descname"><span class="pre">data_cleanness_assessment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_findings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik_wrangler.dqa.data_cleanness_assessment" title="Permalink to this definition"></a></dt>
+<dd><p>Checks for the overall cleanness of the dataframe(missing values in the dataset,duplicates,        any inconsistent feature columns)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataframe</strong> (<em>pandas Dataframe</em>) – Data set to perform assessment on.</p></li>
+<li><p><strong>display_findings</strong> (<em>boolean</em><em>, </em><em>Default True</em>) – Whether or not to display a dataframe highlighting
+the missing values count and percentage.</p></li>
+<li><p><strong>report.</strong> (<em>Gives a</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="slik_wrangler.dqa.duplicate_assessment">
+<span class="sig-prename descclassname"><span class="pre">slik_wrangler.dqa.</span></span><span class="sig-name descname"><span class="pre">duplicate_assessment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_findings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik_wrangler.dqa.duplicate_assessment" title="Permalink to this definition"></a></dt>
+<dd><p>Assets the duplicate values from the given datset and generates
+a report of its findings. It does this assessment for both rows
+and feature columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataframe</strong> (<em>pandas Dataframe</em>) – Data set to perform assessment on.</p></li>
+<li><p><strong>display_findings</strong> (<em>boolean</em><em>, </em><em>Default True</em>) – Whether or not to display a dataframe highlighting
+the missing values count and percentage.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="slik_wrangler.dqa.missing_value_assessment">
+<span class="sig-prename descclassname"><span class="pre">slik_wrangler.dqa.</span></span><span class="sig-name descname"><span class="pre">missing_value_assessment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_findings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik_wrangler.dqa.missing_value_assessment" title="Permalink to this definition"></a></dt>
+<dd><p>Assets the missing values from the given datset and generates
+a report of its findings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataframe</strong> (<em>pandas Dataframe</em>) – Data set to perform assessment on.</p></li>
+<li><p><strong>display_findings</strong> (<em>boolean</em><em>, </em><em>Default True</em>) – Whether or not to display a dataframe highlighting
+the missing values count and percentage.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-slik_wrangler.loadfile">
 <span id="slik-wrangler-loadfile"></span><h2>slik_wrangler.loadfile<a class="headerlink" href="#module-slik_wrangler.loadfile" title="Permalink to this headline"></a></h2>
@@ -169,18 +238,24 @@ specified. The files are stored in present working dir by default.</p>
 </dl>
 </dd></dl>
 
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Allows keyword arguements from pandas read function.</p>
-</div>
 </section>
-<section id="slik-wrangler-pipeline">
-<h2>slik_wrangler.pipeline<a class="headerlink" href="#slik-wrangler-pipeline" title="Permalink to this headline"></a></h2>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Transfomers must be passed. Understand how pipeline transformation works before using the build pipeline function.</p>
-</div>
-<span class="target" id="module-slik_wrangler.pipeline"></span><p>Build Data and Model pipelines efficiently.</p>
+<section id="module-slik_wrangler.messages">
+<span id="slik-wrangler-messages"></span><h2>slik_wrangler.messages<a class="headerlink" href="#module-slik_wrangler.messages" title="Permalink to this headline"></a></h2>
+<p>Creates functionality that colors log messages</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="slik_wrangler.messages.log">
+<span class="sig-prename descclassname"><span class="pre">slik_wrangler.messages.</span></span><span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">messages</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'normal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\n'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik_wrangler.messages.log" title="Permalink to this definition"></a></dt>
+<dd><p>Distinguishes log messages from print statements.
+Works like a normal print statement but inclusive of colors
+:param messages: Message to be logged
+:param code: Log significance
+:return: distinguished log message</p>
+</dd></dl>
+
+</section>
+<section id="module-slik_wrangler.pipeline">
+<span id="slik-wrangler-pipeline"></span><h2>slik_wrangler.pipeline<a class="headerlink" href="#module-slik_wrangler.pipeline" title="Permalink to this headline"></a></h2>
+<p>Build Data and Model pipelines efficiently.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="slik_wrangler.pipeline.DenseTransformer">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">slik_wrangler.pipeline.</span></span><span class="sig-name descname"><span class="pre">DenseTransformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik_wrangler.pipeline.DenseTransformer" title="Permalink to this definition"></a></dt>
@@ -506,14 +581,15 @@ most to the predictive power of the model.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="slik_wrangler.preprocessing.change_case">
-<span class="sig-prename descclassname"><span class="pre">slik_wrangler.preprocessing.</span></span><span class="sig-name descname"><span class="pre">change_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lower'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik_wrangler.preprocessing.change_case" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">slik_wrangler.preprocessing.</span></span><span class="sig-name descname"><span class="pre">change_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lower'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik_wrangler.preprocessing.change_case" title="Permalink to this definition"></a></dt>
 <dd><p>Change the case of a pandas series to either upper or lower case</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dataframe</strong> (<em>Dataframe</em><em> or </em><em>named Series</em>) – </p></li>
-<li><p><strong>column</strong> (<em>str.</em>) – The column to perform the operation on</p></li>
+<li><p><strong>columns</strong> (<em>str</em><em>, </em><em>list</em>) – The column or list of columns to perform the operation on</p></li>
 <li><p><strong>case</strong> (<em>str. Default is set to lower</em>) – Indicates the type of operation to perform</p></li>
+<li><p><strong>inplace</strong> (<em>bool. Default is set to False</em>) – Indicates if changes should by made within the dataframe or not.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -569,7 +645,7 @@ in terms of percentages.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="slik_wrangler.preprocessing.create_schema_file">
-<span class="sig-prename descclassname"><span class="pre">slik_wrangler.preprocessing.</span></span><span class="sig-name descname"><span class="pre">create_schema_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_inline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik_wrangler.preprocessing.create_schema_file" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">slik_wrangler.preprocessing.</span></span><span class="sig-name descname"><span class="pre">create_schema_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_inline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#slik_wrangler.preprocessing.create_schema_file" title="Permalink to this definition"></a></dt>
 <dd><p>A data schema of column names and types are automatically inferred and
 saved in a YAML file</p>
 <dl class="field-list simple">
@@ -1033,7 +1109,7 @@ The path to write the output logs of the plot</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="modules.html" class="btn btn-neutral float-left" title="Slik-Wrangler" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral float-left" title="slik_wrangler" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
