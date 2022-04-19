@@ -1,47 +1,61 @@
-slik_wrangler package
+slik\_wrangler package
 ======================
+
+
 
 Submodules
 ----------
 
-slik_wrangler.loadfile
-----------------------
+slik\_wrangler.dqa
+-------------------
+
+.. automodule:: slik_wrangler.dqa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+slik\_wrangler.loadfile 
+------------------------
 
 .. automodule:: slik_wrangler.loadfile
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. note:: Allows keyword arguements from pandas read function.
+slik\_wrangler.messages
+-----------------------
 
-slik_wrangler.pipeline
-----------------------
-.. warning:: Transfomers must be passed. Understand how pipeline transformation works before using the build pipeline function.
+.. automodule:: slik_wrangler.messages
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
+slik\_wrangler.pipeline 
+------------------------
 
 .. automodule:: slik_wrangler.pipeline
    :members:
    :undoc-members:
    :show-inheritance:
 
-slik_wrangler.plot\_funcs
--------------------------
+slik\_wrangler.plot\_funcs 
+---------------------------
 
 .. automodule:: slik_wrangler.plot_funcs
    :members:
    :undoc-members:
    :show-inheritance:
 
-slik_wrangler.preprocessing
----------------------------
+slik\_wrangler.preprocessing 
+-----------------------------
 
 .. automodule:: slik_wrangler.preprocessing
    :members:
    :undoc-members:
    :show-inheritance:
 
-slik_wrangler.utils
--------------------
+slik\_wrangler.utils 
+--------------------
 
 .. automodule:: slik_wrangler.utils
    :members:

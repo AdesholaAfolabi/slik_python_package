@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; Slik 1. documentation</title>
+  <title>Index &mdash; Slik Wrangler 1.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -25,7 +25,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Slik
+            <a href="index.html" class="icon icon-home"> Slik Wrangler
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -46,7 +46,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">slik-wrangler API:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Slik-Wrangler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">slik_wrangler</a></li>
 </ul>
 
         </div>
@@ -55,7 +55,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Slik</a>
+          <a href="index.html">Slik Wrangler</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -117,6 +117,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="slik_wrangler.html#slik_wrangler.plot_funcs.confusion_matrix">confusion_matrix() (in module slik_wrangler.plot_funcs)</a>
 </li>
+      <li><a href="slik_wrangler.html#slik_wrangler.dqa.consistent_structure_assessement">consistent_structure_assessement() (in module slik_wrangler.dqa)</a>
+</li>
       <li><a href="slik_wrangler.html#slik_wrangler.plot_funcs.corr_matrix">corr_matrix() (in module slik_wrangler.plot_funcs)</a>
 </li>
       <li><a href="slik_wrangler.html#slik_wrangler.preprocessing.create_schema_file">create_schema_file() (in module slik_wrangler.preprocessing)</a>
@@ -127,6 +129,8 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="slik_wrangler.html#slik_wrangler.dqa.data_cleanness_assessment">data_cleanness_assessment() (in module slik_wrangler.dqa)</a>
+</li>
       <li><a href="slik_wrangler.html#slik_wrangler.pipeline.DenseTransformer">DenseTransformer (class in slik_wrangler.pipeline)</a>
 </li>
       <li><a href="slik_wrangler.html#slik_wrangler.preprocessing.detect_fix_outliers">detect_fix_outliers() (in module slik_wrangler.preprocessing)</a>
@@ -136,6 +140,8 @@
       <li><a href="slik_wrangler.html#slik_wrangler.preprocessing.drop_duplicate">drop_duplicate() (in module slik_wrangler.preprocessing)</a>
 </li>
       <li><a href="slik_wrangler.html#slik_wrangler.preprocessing.drop_uninformative_fields">drop_uninformative_fields() (in module slik_wrangler.preprocessing)</a>
+</li>
+      <li><a href="slik_wrangler.html#slik_wrangler.dqa.duplicate_assessment">duplicate_assessment() (in module slik_wrangler.dqa)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -201,9 +207,11 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="slik_wrangler.html#slik_wrangler.plot_funcs.label_share">label_share() (in module slik_wrangler.plot_funcs)</a>
 </li>
+      <li><a href="slik_wrangler.html#slik_wrangler.utils.load_pickle">load_pickle() (in module slik_wrangler.utils)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="slik_wrangler.html#slik_wrangler.utils.load_pickle">load_pickle() (in module slik_wrangler.utils)</a>
+      <li><a href="slik_wrangler.html#slik_wrangler.messages.log">log() (in module slik_wrangler.messages)</a>
 </li>
       <li><a href="slik_wrangler.html#slik_wrangler.utils.log_plot">log_plot() (in module slik_wrangler.utils)</a>
 </li>
@@ -221,13 +229,19 @@
 </li>
       <li><a href="slik_wrangler.html#slik_wrangler.plot_funcs.metric">metric() (in module slik_wrangler.plot_funcs)</a>
 </li>
+      <li><a href="slik_wrangler.html#slik_wrangler.dqa.missing_value_assessment">missing_value_assessment() (in module slik_wrangler.dqa)</a>
+</li>
       <li>
     module
 
       <ul>
         <li><a href="slik_wrangler.html#module-slik_wrangler">slik_wrangler</a>
 </li>
+        <li><a href="slik_wrangler.html#module-slik_wrangler.dqa">slik_wrangler.dqa</a>
+</li>
         <li><a href="slik_wrangler.html#module-slik_wrangler.loadfile">slik_wrangler.loadfile</a>
+</li>
+        <li><a href="slik_wrangler.html#module-slik_wrangler.messages">slik_wrangler.messages</a>
 </li>
         <li><a href="slik_wrangler.html#module-slik_wrangler.pipeline">slik_wrangler.pipeline</a>
 </li>
@@ -286,10 +300,24 @@
 </li>
       </ul></li>
       <li>
+    slik_wrangler.dqa
+
+      <ul>
+        <li><a href="slik_wrangler.html#module-slik_wrangler.dqa">module</a>
+</li>
+      </ul></li>
+      <li>
     slik_wrangler.loadfile
 
       <ul>
         <li><a href="slik_wrangler.html#module-slik_wrangler.loadfile">module</a>
+</li>
+      </ul></li>
+      <li>
+    slik_wrangler.messages
+
+      <ul>
+        <li><a href="slik_wrangler.html#module-slik_wrangler.messages">module</a>
 </li>
       </ul></li>
       <li>
@@ -299,6 +327,8 @@
         <li><a href="slik_wrangler.html#module-slik_wrangler.pipeline">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     slik_wrangler.plot_funcs
 
@@ -306,8 +336,6 @@
         <li><a href="slik_wrangler.html#module-slik_wrangler.plot_funcs">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     slik_wrangler.preprocessing
 
