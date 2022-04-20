@@ -1,30 +1,27 @@
 """
-High level support for performing assessment on the quality of datasets
+Module for Asseting the Data Quality
 """
 
 import numpy as np
 
 from .messages import log
-from .preprocessing import check_nan
+from .utils import print_divider
+from .preprocessing import check_nan, get_attributes
 
 from IPython.display import display
 
 
 def missing_value_assessment(dataframe, display_findings=True):
     """
-    Performs assessment of missing values in a dataframe.
+    Checks the missing values from the given datset and generates
+    a report of its findings.
     
-    Function performs an assessment of the missing values from any given dataframe 
-    and generates a report of its findings if requested.
-    
-    Parameters:
-    ------------
-    dataframe: Pandas Dataframe
-        This is the dataset to be evaluated for missing values.
+    dataframe: pandas Dataframe
+        Data set to perform assessment on.
         
     display_findings: boolean, Default True
         Whether or not to display a dataframe highlighting
-        the missing values and percentage of missing values.
+        the missing values count and percentage.
     """
     
     check_nan(dataframe, display_inline=False)
@@ -47,25 +44,21 @@ def missing_value_assessment(dataframe, display_findings=True):
 
 def duplicate_assessment(dataframe, display_findings=True):
     """
-    Performs assessment of duplicate values in a dataframe.
+    Checks the duplicate values from the given datset and generates
+    a report of its findings. It does this assessment for both rows
+    and feature columns.
     
-    Function performs an assessment of the duplicate values from any given dataframe 
-    and generates a report of its findings if requested. It does this assessment for 
-    both rows and feature columns.
-    
-    Parameters:
-    ------------
     dataframe: pandas Dataframe
-        This is the dataset to be evaluated for duplicate values.
+        Data set to perform assessment on.
         
     display_findings: boolean, Default True
         Whether or not to display a dataframe highlighting
-        the duplicated row and columns.
+        the missing values count and percentage.
     """
     
     def check_duplicate_columns(df):
         """
-        Checks for all the duplicates columns in the dataset
+        Checks for all the duplicates rows in the dataset
         """
         
         duplicated = set()
@@ -73,7 +66,7 @@ def duplicate_assessment(dataframe, display_findings=True):
         
         def check(col1, col2):
             """
-            Checks if the two columns are identical
+            Checks the equality between columns
             """
             
             col1, col2 = list(map(
@@ -118,30 +111,68 @@ def duplicate_assessment(dataframe, display_findings=True):
     
     if not len(duplicated_rows) and not len(duplicated_columns):
         log("No duplicate values in both rows and columns!!!", code='success')
-
-
-def structure_assessement(dataframe, display_findings=True):
+        
+        
+def outliers_assessment(dataframe, display_findings=True):
     """
-    Checks the data structure of each feature column.
+    Checks for outliers in the given datset and generates
+    a report of its findings.
     
-    Function checks if the data type of each feature column is consistent.
-    e.g. if there is an interger variable and a string variable within a
-    feature column or more.
-    
-    For categorical columns. Assessment is conducted on similar categories
-    e.g. medium and Medium are the same and one have to be changed 
-    for the other, so it is either medium or Medium.
-    
-    This errors are mainly generated during data collection.
-    
-    Parameters:
-    ------------
     dataframe: pandas Dataframe
-        This is the dataset to be evaluated for consistent data type.
+        Data set to perform assessment on.
         
     display_findings: boolean, Default True
         Whether or not to display a dataframe highlighting
-        the feature columns with poor structures.
+        the missing values count and percentage.
+    """
+    
+    num_attributes, _ = get_attributes(dataframe)
+    
+    def contains_outliers(column):
+        """
+        Checks if the given column contains outliers
+        """
+        
+        dataframe.loc[:,column] = abs(dataframe[column])
+        
+        q25 = np.percentile(dataframe[column].dropna(), 25)
+        q75 = np.percentile(dataframe[column].dropna(), 75)
+
+        outlier_cut_off = ((q75 - q25) * 1.5)
+        lower_bound, upper_bound = (q25 - outlier_cut_off), (q75 + outlier_cut_off)
+
+        outlier_list_col = dataframe[column][(dataframe[column] < lower_bound) | (dataframe[column] > upper_bound)].index
+        
+        return bool(len(outlier_list_col))
+    
+    contains_outliers = [column for column in num_attributes if contains_outliers(column)]
+    
+    if len(contains_outliers):
+        log(
+            f"Ignore if target column is considered an outlier\n",
+            code="info"
+        )
+        log(
+            f"Dataframe contains outliers that you should address. \n\ncolumns={contains_outliers}\n", 
+            code='warning'
+        )
+        
+        if display_findings:
+            display(dataframe[contains_outliers].head())
+    else:
+        log("No outliers in dataset!!!", code='success')
+
+
+def consistent_structure_assessement(dataframe, display_findings=True):
+    """
+    Checks the consitent nature of each feature column.
+    
+    It checks if the dtype across each feature column is consistent.
+    i.e. if there is an interger variable and a string variable across
+    the various feature columns.
+    
+    For categorical columns. assessment is made on duplicate categories
+    i.e. medium and Medium are the same categories and inconsistent.
     """
     
     column_names = list(dataframe.columns)
@@ -149,7 +180,7 @@ def structure_assessement(dataframe, display_findings=True):
     
     def check_consistent_in_type(_col):
         """
-        Checks for consistency in the data type
+        Checks for consistency in the dtype
         """
         
         return all([type(c) == _col.dtype for c in _col.to_numpy()])
@@ -157,6 +188,8 @@ def structure_assessement(dataframe, display_findings=True):
     def check_consistent_in_categories(_col):
         """
         Checks for consistency in the categories
+        
+        For categorical columns
         """
         
         unique_str_cat = [c for c in _col.unique() if type(c) == str]
@@ -198,29 +231,20 @@ def structure_assessement(dataframe, display_findings=True):
 
 def data_cleanness_assessment(dataframe, display_findings=True):
     """
-    Checks for the overall cleanness of the dataframe by:
+    Checks for the overall cleanness of the dataframe:
     
-    1. Checking if there are missing values in the dataset (dataframe)
-    2. Checking if the dataset (dataframe) contains any duplicates
-    3. checking if there are any poor structure among feature columns
+    1. Checks if there are missing values in the dataset
+    2. Checks if the dataset set contains any duplicates
+    3. checks if there are any inconsistent feature columns
     
-    and finally a report is generated based on it's findings if requested
-    
-    Parameters:
-    ------------
-    dataframe: pandas Dataframe
-        This is the dataset to be evaluated on how clean it is.
-        
-    display_findings: boolean, Default True
-        Whether or not to display dataframes highlighting
-        the observations from checking for missing values, 
-        duplicate values and poor structures.
+    Gives a report.
     """
     
     issue_checker = {
         'missing values': missing_value_assessment,
         'duplicate variables': duplicate_assessment,
-        'poor structure': structure_assessement
+        'outliers': outliers_assessment,
+        'inconsistent values': consistent_structure_assessement
     }
     
     for issue in issue_checker.keys():
