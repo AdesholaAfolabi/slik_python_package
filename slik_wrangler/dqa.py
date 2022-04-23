@@ -93,12 +93,12 @@ def duplicate_assessment(dataframe, display_findings=True):
     
     if len(duplicated_rows):
         log(
-            f"Dataframe contains duplicate rows that you should address. \n\ncolumns={list(dupulicated_rows.index)}\n", 
+            f"Dataframe contains duplicate rows that you should address. \n\ncolumns={list(duplicated_rows.index)}\n", 
             code='warning'
         )
         
         if display_findings:
-            display(dupulicated_rows)
+            display(duplicated_rows)
             
     if len(duplicated_columns):
         log(
