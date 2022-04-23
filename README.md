@@ -33,3 +33,4 @@ Slik-wrangler provides an easy-to-use solutions for supervised machine learning.
 
 ### ✨️ Modern and Intuitive Architecture
 We love quality software design and aim to help others on building wonderful applications! Using Slik-wrangler will help cultivate a MLOPS mindset. With Slik, Data scientists can build model pipelines. Slik-wrangler provides explainability in the pipeline process in the form of DAG showing each step in the build process. With every build process/experiment, Slik-wrangler logs the metadata for each run
+
