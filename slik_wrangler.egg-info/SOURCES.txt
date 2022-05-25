@@ -1,0 +1,16 @@
+README.md
+setup.py
+slik_wrangler/__init__.py
+slik_wrangler/dqa.py
+slik_wrangler/loadfile.py
+slik_wrangler/messages.py
+slik_wrangler/pipeline.py
+slik_wrangler/plot_funcs.py
+slik_wrangler/preprocessing.py
+slik_wrangler/utils.py
+slik_wrangler.egg-info/PKG-INFO
+slik_wrangler.egg-info/SOURCES.txt
+slik_wrangler.egg-info/dependency_links.txt
+slik_wrangler.egg-info/not-zip-safe
+slik_wrangler.egg-info/requires.txt
+slik_wrangler.egg-info/top_level.txt

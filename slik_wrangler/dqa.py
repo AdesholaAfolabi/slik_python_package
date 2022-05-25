@@ -6,14 +6,14 @@ import numpy as np
 
 from .messages import log
 from .utils import print_divider
-from .preprocessing import check_nan
+from .preprocessing import check_nan, get_attributes
 
 from IPython.display import display
 
 
 def missing_value_assessment(dataframe, display_findings=True):
     """
-    Assets the missing values from the given datset and generates
+    Checks the missing values from the given datset and generates
     a report of its findings.
     
     dataframe: pandas Dataframe
@@ -44,7 +44,7 @@ def missing_value_assessment(dataframe, display_findings=True):
 
 def duplicate_assessment(dataframe, display_findings=True):
     """
-    Assets the duplicate values from the given datset and generates
+    Checks the duplicate values from the given datset and generates
     a report of its findings. It does this assessment for both rows
     and feature columns.
     
@@ -93,12 +93,12 @@ def duplicate_assessment(dataframe, display_findings=True):
     
     if len(duplicated_rows):
         log(
-            f"Dataframe contains duplicate rows that you should address. \n\ncolumns={list(dupulicated_rows.index)}\n", 
+            f"Dataframe contains duplicate rows that you should address. \n\ncolumns={list(duplicated_rows.index)}\n", 
             code='warning'
         )
         
         if display_findings:
-            display(dupulicated_rows)
+            display(duplicated_rows)
             
     if len(duplicated_columns):
         log(
@@ -111,6 +111,56 @@ def duplicate_assessment(dataframe, display_findings=True):
     
     if not len(duplicated_rows) and not len(duplicated_columns):
         log("No duplicate values in both rows and columns!!!", code='success')
+        
+        
+def outliers_assessment(dataframe, display_findings=True):
+    """
+    Checks for outliers in the given datset and generates
+    a report of its findings.
+    
+    dataframe: pandas Dataframe
+        Data set to perform assessment on.
+        
+    display_findings: boolean, Default True
+        Whether or not to display a dataframe highlighting
+        the missing values count and percentage.
+    """
+    
+    num_attributes, _ = get_attributes(dataframe)
+    
+    def contains_outliers(column):
+        """
+        Checks if the given column contains outliers
+        """
+        
+        dataframe.loc[:,column] = abs(dataframe[column])
+        
+        q25 = np.percentile(dataframe[column].dropna(), 25)
+        q75 = np.percentile(dataframe[column].dropna(), 75)
+
+        outlier_cut_off = ((q75 - q25) * 1.5)
+        lower_bound, upper_bound = (q25 - outlier_cut_off), (q75 + outlier_cut_off)
+
+        outlier_list_col = dataframe[column][(dataframe[column] < lower_bound) | (dataframe[column] > upper_bound)].index
+        
+        return bool(len(outlier_list_col))
+    
+    contains_outliers = [column for column in num_attributes if contains_outliers(column)]
+    
+    if len(contains_outliers):
+        log(
+            f"Ignore if target column is considered an outlier\n",
+            code="info"
+        )
+        log(
+            f"Dataframe contains outliers that you should address. \n\ncolumns={contains_outliers}\n", 
+            code='warning'
+        )
+        
+        if display_findings:
+            display(dataframe[contains_outliers].head())
+    else:
+        log("No outliers in dataset!!!", code='success')
 
 
 def consistent_structure_assessement(dataframe, display_findings=True):
@@ -193,6 +243,7 @@ def data_cleanness_assessment(dataframe, display_findings=True):
     issue_checker = {
         'missing values': missing_value_assessment,
         'duplicate variables': duplicate_assessment,
+        'outliers': outliers_assessment,
         'inconsistent values': consistent_structure_assessement
     }
     

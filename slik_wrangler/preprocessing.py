@@ -1003,7 +1003,7 @@ def _preprocess_non_target_col(data=None,processed_data_path=None,display_inline
         data = handle_nan(dataframe=data,n=3,drop_outliers=False,display_inline=display_inline,thresh_x=1,thresh_y=99,**kwargs)
 
         for column in data.columns:
-            if 'age' in column.lower():
+            if re.search(r'(.*?)[Aa]ge$', column.lower()):
                 match = re.search(r'(.*?)[Aa]ge.*', column).group()
                 age_column = str(match)
                 data = bin_age(data,age_column)
@@ -1097,7 +1097,7 @@ def _preprocess(data=None,target_column=None,train=True,select_columns=None,\
             data = map_target(data,target_column=target_column,drop=True,display_inline=display_inline)
             prefix_name = f'transformed_{target_column}'
             for column in data.columns:
-                if 'age' in column.lower():
+                if re.search(r'(.*?)[Aa]ge$', column.lower()):
                     print_divider('Bucketize Age columns')
                     print(f' Inferred age column: [{column}]')
                     match = re.search(r'(.*?)[Aa]ge.*', column).group()
@@ -1293,8 +1293,3 @@ def trim_all_columns(dataframe):
     """
     trim_strings = lambda x: x.strip() if isinstance(x, str) else x
     return dataframe.applymap(trim_strings)
-
-<<<<<<< HEAD
-
-=======
->>>>>>> upstream/staging

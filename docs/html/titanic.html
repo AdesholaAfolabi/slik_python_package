@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Slik-wrangler Preprocessing API &mdash; Slik Wrangler 1.0.1 documentation</title>
+  <title>slik-wrangler Preprocessing API &mdash; Slik Wrangler 1.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -21,7 +21,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Slik-Wrangler" href="modules.html" />
+    <link rel="next" title="slik_wrangler" href="modules.html" />
     <link rel="prev" title="Quickstart to ML with Slik-Wrangler" href="quick_start.html" /> 
 </head>
 
@@ -47,11 +47,11 @@
 <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quickstart to ML with Slik-Wrangler</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Slik-wrangler Preprocessing API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">slik-wrangler Preprocessing API</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">slik-wrangler API:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Slik-Wrangler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">slik_wrangler</a></li>
 </ul>
 
         </div>
@@ -68,7 +68,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Slik-wrangler Preprocessing API</li>
+      <li>slik-wrangler Preprocessing API</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/titanic.ipynb.txt" rel="nofollow"> View page source</a>
       </li>
@@ -348,20 +348,19 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<section id="Slik-wrangler-Preprocessing-API">
-<h1>Slik-wrangler Preprocessing API<a class="headerlink" href="#Slik-wrangler-Preprocessing-API" title="Permalink to this headline"></a></h1>
+<section id="slik-wrangler-Preprocessing-API">
+<h1>slik-wrangler Preprocessing API<a class="headerlink" href="#slik-wrangler-Preprocessing-API" title="Permalink to this headline"></a></h1>
 <p>Brief description on how to use the preprocessing module in the slik-wrangler package. This sample notebook explains some very important methods in the preprocessing module</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;/Users/akinwande.komolafe/Downloads/slik_python_package/&#39;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset_path</span> <span class="o">=</span> <span class="s1">&#39;data/titanic.csv&#39;</span>
 </pre></div>
 </div>
 </div>
-<p>Using slik-wrangler load file module you only need to specify your data path.</p>
-<p>slik-wrangler can infer the file type that was passed and read it as a pandas dataframe.</p>
+<p>Using Slik-wrangler load file module you only need to specify your data path.</p>
+<p>Slik-wrangler can infer the file type that was passed and read it as a pandas dataframe.</p>
 <p><code class="docutils literal notranslate"><span class="pre">slik-wrangler.loadfile.read_file</span></code> function makes use of the same keyword arguments as pandas read functions.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
@@ -371,12 +370,12 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<p>You can get a brief summary of the rows and column that was loaded by slik-wrangler</p>
+<p>You can get a brief summary of the rows and column that was loaded by Slik-wrangler</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">train</span> <span class="o">=</span> <span class="n">lf</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s1">&#39;data/titanic.csv&#39;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">train</span> <span class="o">=</span> <span class="n">lf</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -385,24 +384,24 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-
+<span class="ansi-green-fg">
 CSV file read sucessfully
-
-Data has 891 rows and 12 columns
+</span><span class="ansi-cyan-fg">
+Data has 891 rows and 12 columns</span>
 </pre></div></div>
 </div>
 <p>Working with a large csv file and you can not load the whole data to Excel or with pandas, with slik-wrangler you can split a csv into multiple csv files.</p>
 <p>Specify the number of rows that should be present in each csv file</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lf</span><span class="o">.</span><span class="n">split_csv_file</span><span class="p">(</span><span class="s1">&#39;data/titanic.csv&#39;</span><span class="p">,</span><span class="n">row_limit</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lf</span><span class="o">.</span><span class="n">split_csv_file</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span><span class="n">row_limit</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">train</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -410,7 +409,7 @@ Data has 891 rows and 12 columns
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -526,8 +525,113 @@ Data has 891 rows and 12 columns
 </table>
 </div></div>
 </div>
+<p>Before any step in preprocessing your dataset, it is essential to look at the overall state of your dataset.</p>
+<p>Pandas provide a means to achieve this by its <code class="docutils literal notranslate"><span class="pre">info()</span></code> method, which gives us an insight into the missing values, data type, data size, and data memory usage.</p>
+<p>While this is useful, with Slik-wrangler you could quickly get an overview of all you need to adjust to make a balanced dataset. By balanced dataset here, we’re implying a dataset void of missing values, duplicate values, and inconsistency in the data type of one or more feature columns.</p>
+<p>Slik-wrangler provides a data quality assessment module (<code class="docutils literal notranslate"><span class="pre">slik-wrangler.dqa</span></code>) for this purpose entirely.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">slik_wrangler.dqa</span> <span class="kn">import</span> <span class="n">data_cleanness_assessment</span>
+</pre></div>
+</div>
+</div>
+<p>With the <code class="docutils literal notranslate"><span class="pre">slik-wrangler.dqa.data_cleanness_assessment</span></code> You could get a general overview of how balanced your dataset is.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_cleanness_assessment</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-cyan-fg">Checking for missing values
+
+</span><span class="ansi-yellow-fg">Dataframe contains missing values that you should address.
+
+columns=[&#39;Age&#39;, &#39;Cabin&#39;, &#39;Embarked&#39;]
+</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>missing_counts</th>
+      <th>missing_percent</th>
+    </tr>
+    <tr>
+      <th>features</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Age</th>
+      <td>177</td>
+      <td>19.9</td>
+    </tr>
+    <tr>
+      <th>Cabin</th>
+      <td>687</td>
+      <td>77.1</td>
+    </tr>
+    <tr>
+      <th>Embarked</th>
+      <td>2</td>
+      <td>0.2</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+
+<span class="ansi-cyan-fg">Checking for duplicate variables
+
+</span><span class="ansi-green-fg">No duplicate values in both rows and columns!!!
+</span>
+
+<span class="ansi-cyan-fg">Checking for inconsistent values
+
+</span><span class="ansi-green-fg">No inconsistent feature columns values!!!
+</span>
+
+</pre></div></div>
+</div>
+<p>Knowing this, you can proceed to preprocess your dataset using the <code class="docutils literal notranslate"><span class="pre">slik-wrangler.preprocessing</span></code> module.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">slik_wrangler</span> <span class="kn">import</span> <span class="n">preprocessing</span> <span class="k">as</span> <span class="n">pp</span>
@@ -535,7 +639,7 @@ Data has 891 rows and 12 columns
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pp</span><span class="o">.</span><span class="n">check_datefield</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="s1">&#39;Ticket&#39;</span><span class="p">)</span>
@@ -543,7 +647,7 @@ Data has 891 rows and 12 columns
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -552,7 +656,7 @@ False
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pp</span><span class="o">.</span><span class="n">change_case</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="s1">&#39;Name&#39;</span><span class="p">,</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -560,7 +664,7 @@ False
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -678,7 +782,7 @@ False
 </div>
 <p>slik-wrangler will identify the data type of each data point, data points with high cardinality and save it in a file. With slik-wrangler, data integrity can be done efficiently to validate downstream data points</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pp</span><span class="o">.</span><span class="n">identify_columns</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="s1">&#39;Survived&#39;</span><span class="p">,</span><span class="s1">&#39;PassengerId&#39;</span><span class="p">,</span><span class="n">project_path</span><span class="o">=</span><span class="s1">&#39;./data&#39;</span><span class="p">)</span>
@@ -715,13 +819,13 @@ Features with high cardinality:[&#39;Name&#39;, &#39;Ticket&#39;, &#39;Cabin&#39
  &#39;parse_dates&#39;: [],
  &#39;target_column&#39;: &#39;Survived&#39;}
 
-Attributes are stored in data/metadata
+Attributes are stored in data\metadata
 
 </pre></div></div>
 </div>
 <p>You can map your data observations more efficiently with Slik by passing the dictionary of the observation you want to map/rename</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pp</span><span class="o">.</span><span class="n">map_column</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="n">column_name</span><span class="o">=</span><span class="s1">&#39;Sex&#39;</span><span class="p">,</span><span class="n">items</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;male&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;female&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">})</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -743,7 +847,7 @@ female was mapped to 0
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -867,7 +971,7 @@ female was mapped to 0
 </div>
 <p>slik-wrangler currently relies on the Interquartile range approach to detect outliers present in a data point. slik-wrangler also fixes the outlier present in the data using different methods like replacing an outlier with the mean of the data point. You can also select the numerical features you want to perform the operation on. You can also display a table identifying at least ‘n’ outliers in a row.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">det</span> <span class="o">=</span> <span class="n">pp</span><span class="o">.</span><span class="n">detect_fix_outliers</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="n">target_column</span><span class="o">=</span><span class="s1">&#39;Survived&#39;</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -1090,9 +1194,9 @@ female was mapped to 0
 </table>
 </div></div>
 </div>
-<p>With slik you can check the mssing values in your data and even plot a percentage distribution to see the top 30 missing values in your dataset</p>
+<p>As we have seen with the data quality assessment module, with slik you can also check the mssing values in your data and even plot a percentage distribution to see the top 30 missing values in your dataset</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pp</span><span class="o">.</span><span class="n">check_nan</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -1103,7 +1207,7 @@ female was mapped to 0
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/titanic_20_0.png" src="_images/titanic_20_0.png" />
+<img alt="_images/titanic_25_0.png" src="_images/titanic_25_0.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -1224,7 +1328,7 @@ female was mapped to 0
 <p>and pass a value for fillna params to handle your categorical features or fill it with the mode by default.</p>
 <p>You can also drop missing values across the rows and columns using threshold parameters.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pp</span><span class="o">.</span><span class="n">handle_nan</span><span class="p">(</span><span class="n">dataframe</span><span class="o">=</span><span class="n">train</span><span class="p">,</span><span class="n">target_name</span><span class="o">=</span><span class="s1">&#39;Survived&#39;</span><span class="p">,</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span><span class="n">fillna</span><span class="o">=</span><span class="s1">&#39;mode&#39;</span><span class="p">,</span>
@@ -1247,7 +1351,7 @@ New data shape is (891, 11)
 </div>
 <p>Beyond slik-wrangler preprocessing abilities, you can also engineer new features intelligently. slik-wrangler can help you bin/discretize your age column intelligently and creating new data points with the transformations</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pp</span><span class="o">.</span><span class="n">bin_age</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s1">&#39;Age&#39;</span><span class="p">)</span>
@@ -1255,7 +1359,7 @@ New data shape is (891, 11)
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1462,9 +1566,9 @@ New data shape is (891, 11)
 <p>891 rows × 12 columns</p>
 </div></div>
 </div>
-<p>with Slik-wrangler you can infer the schema of your pandas dataframe and save the schema file in a project path you define</p>
+<p>with Slik you can infer the schema of your pandas dataframe and save the schema file in a project path you define</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># import ,yaml</span>
@@ -1501,9 +1605,9 @@ New data shape is (891, 11)
   &#39;Embarked&#39;: &#39;object&#39;}}
 </pre></div></div>
 </div>
-<p>with Slik-wrangler you can also drop uninformative field in your pandas dataframe</p>
+<p>with Slik you can also drop uninformative field in your pandas dataframe</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pp</span><span class="o">.</span><span class="n">drop_uninformative_fields</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="n">exclude</span><span class="o">=</span><span class="s1">&#39;Parch&#39;</span><span class="p">)</span>
@@ -1522,7 +1626,7 @@ uninformative fields dropped: []
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1729,10 +1833,10 @@ uninformative fields dropped: []
 <p>891 rows × 12 columns</p>
 </div></div>
 </div>
-<p>Slik-wrangler helps you manage your data points better by handling different management operations techniques on pandas dataframe based on columns.</p>
+<p>Slik helps you manage your data points better by handling different management operations techniques on pandas dataframe based on columns.</p>
 <p>Operations include selecting of columns, dropping column and dropping duplicates. By selecting the list data points that you need to perform the transformation on and choosing the particular transformation you want</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pp</span><span class="o">.</span><span class="n">manage_columns</span><span class="p">(</span><span class="n">train</span><span class="p">,[</span><span class="s1">&#39;PassengerId&#39;</span><span class="p">],</span><span class="n">drop_duplicates</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -1751,7 +1855,7 @@ New datashape is (891, 12)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1869,7 +1973,7 @@ New datashape is (891, 12)
 </div>
 <p>Trim whitespaces from ends of each value across all data points in a pandas dataframe</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pp</span><span class="o">.</span><span class="n">trim_all_columns</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
@@ -1877,7 +1981,7 @@ New datashape is (891, 12)
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -2084,9 +2188,9 @@ New datashape is (891, 12)
 <p>891 rows × 12 columns</p>
 </div></div>
 </div>
-<p>Slik can clean your data in one line of code. The <code class="docutils literal notranslate"><span class="pre">slik_wrangler.preprocessing.preprocess</span></code> function cleans your data by removing outliers present in the data, handing missing values, featurizing datetime columns, and mapping relevant columns. The functions saves the preprocessed file in a project path that you specify.</p>
+<p>Slik can clean your data in one line of code. The <code class="docutils literal notranslate"><span class="pre">slik.preprocessing.preprocess</span></code> function cleans your data by removing outliers present in the data, handing missing values, featurizing datetime columns, and mapping relevant columns. The functions saves the preprocessed file in a project path that you specify.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pp</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">train</span><span class="p">,</span><span class="n">target_column</span><span class="o">=</span><span class="s1">&#39;Survived&#39;</span><span class="p">,</span><span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">display_inline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">project_path</span><span class="o">=</span><span class="s1">&#39;./Titanic&#39;</span><span class="p">,</span><span class="n">logging</span><span class="o">=</span><span class="s1">&#39;display&#39;</span><span class="p">)</span>
@@ -2159,7 +2263,7 @@ uninformative fields dropped: []
 <div class="highlight"><pre>
 
 
-Schema file stored in Titanic/data/metadata
+Schema file stored in Titanic\data\metadata
 
 --------------- Preview the preprocessed data ---------------
 
@@ -2290,7 +2394,7 @@ Schema file stored in Titanic/data/metadata
 --------------- Preprocessed data saved ---------------
 
 
- Input data preprocessed successfully and stored in ./Titanic/data/train_data.pkl
+ Input data preprocessed successfully and stored in ./Titanic\data\train_data.pkl
 
 </pre></div></div>
 </div>
@@ -2309,7 +2413,7 @@ Schema file stored in Titanic/data/metadata
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="quick_start.html" class="btn btn-neutral float-left" title="Quickstart to ML with Slik-Wrangler" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="modules.html" class="btn btn-neutral float-right" title="Slik-Wrangler" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="modules.html" class="btn btn-neutral float-right" title="slik_wrangler" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
