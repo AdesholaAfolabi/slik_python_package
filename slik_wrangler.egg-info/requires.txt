@@ -6,3 +6,4 @@ imblearn
 numpy
 matplotlib
 seaborn
+colorama
