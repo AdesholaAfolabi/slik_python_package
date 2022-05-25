@@ -84,7 +84,7 @@ def duplicate_assessment(dataframe, display_findings=True):
                     if c.lower() == col.lower():
                         log("Two columns bears identical names", c, "address this problem", code='danger')
                     elif check(c, col):
-                        duplicated.add(c, col)
+                        duplicated.add((c, col))
         
         return list(duplicated)
     
