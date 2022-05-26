@@ -84,7 +84,8 @@ def duplicate_assessment(dataframe, display_findings=True):
                     if c.lower() == col.lower():
                         log("Two columns bears identical names", c, "address this problem", code='danger')
                     elif check(c, col):
-                        duplicated.add((c, col))
+                        duplicated.add(c)
+                        duplicated.add(col)
         
         return list(duplicated)
     
@@ -93,12 +94,12 @@ def duplicate_assessment(dataframe, display_findings=True):
     
     if len(duplicated_rows):
         log(
-            f"Dataframe contains duplicate rows that you should address. \n\ncolumns={list(dupulicated_rows.index)}\n", 
+            f"Dataframe contains duplicate rows that you should address. \n\ncolumns={list(duplicated_rows.index)}\n", 
             code='warning'
         )
         
         if display_findings:
-            display(dupulicated_rows)
+            display(duplicated_rows)
             
     if len(duplicated_columns):
         log(
@@ -149,7 +150,7 @@ def outliers_assessment(dataframe, display_findings=True):
     
     if len(contains_outliers):
         log(
-            f"Ignore if target column is considered an outlier\n",
+            f"Ignore target column, if target column is considered an outlier\n",
             code="info"
         )
         log(
@@ -251,3 +252,4 @@ def data_cleanness_assessment(dataframe, display_findings=True):
         log(f"Checking for {issue}", end="\n\n", code='info')
         issue_checker[issue](dataframe, display_findings)
         log(end="\n\n")
+
