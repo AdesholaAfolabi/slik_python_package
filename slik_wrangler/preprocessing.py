@@ -269,10 +269,11 @@ def check_datefield(dataframe=None, column=None):
     if not isinstance(column, str):
         errstr = f'The given type for column is {type(column).__name__}. Expected type is a string'
         raise TypeError(errstr)
-
+    
     if isinstance(dataframe.dtypes[column],object):
         return False
-    if pd.to_datetime(dataframe[column], infer_datetime_format=True):
+    
+    if pd.to_datetime(dataframe.loc[:, [column]], infer_datetime_format=True):
         return True
 
     
