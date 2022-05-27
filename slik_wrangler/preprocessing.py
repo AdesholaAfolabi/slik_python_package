@@ -269,10 +269,11 @@ def check_datefield(dataframe=None, column=None):
     if not isinstance(column, str):
         errstr = f'The given type for column is {type(column).__name__}. Expected type is a string'
         raise TypeError(errstr)
-
+    
     if isinstance(dataframe.dtypes[column],object):
         return False
-    if pd.to_datetime(dataframe[column], infer_datetime_format=True):
+    
+    if pd.to_datetime(dataframe.loc[:, [column]], infer_datetime_format=True):
         return True
 
     
@@ -436,7 +437,7 @@ def drop_duplicate(dataframe=None,columns=None,method='rows',display_inline=True
     elif method == 'columns':
         if columns is None:
             raise ValueError("columns: A list/string is expected as part of the inputs to columns, got 'None'")
-        dataframe = dataframe.drop_duplicates(subset=columns)
+        dataframe = dataframe.T.drop_duplicates().T
     
     elif method is None:
         pass
@@ -1293,3 +1294,4 @@ def trim_all_columns(dataframe):
     """
     trim_strings = lambda x: x.strip() if isinstance(x, str) else x
     return dataframe.applymap(trim_strings)
+
