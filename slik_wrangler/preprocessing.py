@@ -266,15 +266,11 @@ def check_datefield(dataframe=None, column=None):
     if dataframe is None:
         raise ValueError("data: Expecting a DataFrame or Series") 
         
-    if not isinstance(column, str):
-        errstr = f'The given type for column is {type(column).__name__}. Expected type is a string'
-        raise TypeError(errstr)
-    
-    if isinstance(dataframe.dtypes[column],object):
-        return False
-    
-    if pd.to_datetime(dataframe.loc[:, [column]], infer_datetime_format=True):
+    try:
+        pd.to_datetime(dataframe[column], infer_datetime_format=True,utc=True).dt.tz_localize(None)
         return True
+    except:
+        return False
 
     
 def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,fix_method='mean',display_inline=True):
