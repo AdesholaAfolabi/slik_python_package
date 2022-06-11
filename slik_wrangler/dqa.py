@@ -49,9 +49,13 @@ def missing_value_assessment(dataframe, display_findings=True):
     df.set_index('features', inplace=True)
     df = df[df.missing_counts > 0]
     
+    missing_columns = list(df.index)
+    
+    missing_value_assessment.missing_columns = missing_columns
+    
     if len(df):
         log(
-            f"Dataframe contains missing values that you should address. \n\ncolumns={__summarise_results(list(df.index))}\n", 
+            f"Dataframe contains missing values that you should address. \n\ncolumns={__summarise_results(missing_columns)}\n", 
             code='warning'
         )
         
@@ -111,6 +115,9 @@ def duplicate_assessment(dataframe, display_findings=True):
     duplicated_rows = dataframe[dataframe.duplicated()]
     duplicated_columns = check_duplicate_columns(dataframe)
     
+    duplicate_assessment.duplicated_rows = list(duplicated_rows.index)
+    duplicate_assessment.duplicated_columns = duplicated_columns
+    
     if len(duplicated_rows):
         log(
             f"Dataframe contains duplicate rows that you should address. \n\nrows={__summarise_results(list((duplicated_rows.index)))}\n", 
@@ -167,6 +174,8 @@ def outliers_assessment(dataframe, display_findings=True):
     
     contains_outliers = [column for column in num_attributes if contains_outliers(column)]
     
+    outliers_assessment.contains_outliers = contains_outliers
+    
     if len(contains_outliers):
         log(
             f"Ignore target column, if target column is considered an outlier\n",
@@ -195,9 +204,6 @@ def consistent_structure_assessement(dataframe, display_findings=True):
     i.e. medium and Medium are the same categories and inconsistent.
     """
     
-    column_names = list(dataframe.columns)
-    inconsistent_cols = []
-    
     def check_consistent_in_type(_col):
         """
         Checks for consistency in the dtype
@@ -223,6 +229,9 @@ def consistent_structure_assessement(dataframe, display_findings=True):
         
         return True
     
+    column_names = list(dataframe.columns)
+    inconsistent_cols = []
+    
     for col in column_names:
         col_data = dataframe[col]
         
@@ -236,6 +245,8 @@ def consistent_structure_assessement(dataframe, display_findings=True):
         
         if check_result:
             inconsistent_cols.append(col)
+    
+    consistent_structure_assessement.inconsistent_cols = inconsistent_cols
     
     if len(inconsistent_cols):
         log(
