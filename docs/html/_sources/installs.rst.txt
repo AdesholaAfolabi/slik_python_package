@@ -13,7 +13,7 @@ Install in existing environment
 If you have an existing Python environment activated, you can install Slik-wrangler with the command:
 
 
->>> $ pip install slik_wrangler
+>>> $ pip install slik-wrangler
 
 
 Install in a new virtual environment
