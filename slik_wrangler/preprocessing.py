@@ -266,15 +266,11 @@ def check_datefield(dataframe=None, column=None):
     if dataframe is None:
         raise ValueError("data: Expecting a DataFrame or Series") 
         
-    if not isinstance(column, str):
-        errstr = f'The given type for column is {type(column).__name__}. Expected type is a string'
-        raise TypeError(errstr)
-    
-    if isinstance(dataframe.dtypes[column],object):
-        return False
-    
-    if pd.to_datetime(dataframe.loc[:, [column]], infer_datetime_format=True):
+    try:
+        pd.to_datetime(dataframe[column], infer_datetime_format=True,utc=True).dt.tz_localize(None)
         return True
+    except:
+        return False
 
     
 def detect_fix_outliers(dataframe=None,target_column=None,n=1,num_features=None,fix_method='mean',display_inline=True):
@@ -494,11 +490,13 @@ def featurize_datetime(dataframe=None, column_name=None, date_features=None, dro
     expected_list = ['Year', 'Month', 'Day', 'Dayofweek', 'Dayofyear','Week',\
             'Is_month_end', 'Is_month_start', 'Is_quarter_end','Hour','Minute',\
                  'Is_quarter_start', 'Is_year_end', 'Is_year_start','Date']
-    if date_features is None:
-        date_features = expected_list
+    if date_features:
         for elem in date_features:
             if elem not in expected_list:
                 raise KeyError(f'List should contain any of {expected_list}')
+        
+    else:
+        date_features = expected_list
 
     fld = df[column_name]
     if not np.issubdtype(fld.dtype, np.datetime64):
@@ -1004,22 +1002,20 @@ def _preprocess_non_target_col(data=None,processed_data_path=None,display_inline
         data = handle_nan(dataframe=data,n=3,drop_outliers=False,display_inline=display_inline,thresh_x=1,thresh_y=99,**kwargs)
 
         for column in data.columns:
-            if re.search(r'(.*?)[Aa]ge$', column.lower()):
-                match = re.search(r'(.*?)[Aa]ge.*', column).group()
-                age_column = str(match)
-                data = bin_age(data,age_column)
+                if re.search(r'(.*?)[Aa]ge$', column.lower()):
+                    print_divider('Bucketize Age columns')
+                    print(f' Inferred age column: [{column}]')
+                    match = re.search(r'(.*?)[Aa]ge.*', column).group()
+                    age_column = str(match)
+                    data = bin_age(data,age_column)
 
         for name, dtype in data.dtypes.iteritems():
-            if 'datetime64' in dtype.name:
-                print_divider('Featurize Datetime columns')
-                print(f'column with datetime type: [{name}]\n') 
-                data = featurize_datetime(data,name,False)#generic #methods to bin
-
-            elif 'object' in dtype.name:
+            if 'datetime64' in dtype.name or 'time' in name.lower() or 'date' in name.lower():
+                
                 output = check_datefield(data, name)
                 if output:
                     print_divider('Featurize Datetime columns')
-                    print(f'Inferred column with datetime type: [{name}]\n') 
+                    print(f'column with datetime type: [{name}]\n') 
                     data = featurize_datetime(data,name,drop=False)
             else:
                 pass
@@ -1032,6 +1028,9 @@ def _preprocess_non_target_col(data=None,processed_data_path=None,display_inline
                     counter.append(i)
                 items = dict(zip(num_unique,counter))
                 data = map_column(data,column_name=column,items=items)
+                data = manage_columns(data,columns=column,drop_columns=True)
+
+        data = drop_uninformative_fields(data,display_inline=display_inline)
     
     if display_inline:
         print_divider('Display the preprocessed data')
@@ -1107,24 +1106,13 @@ def _preprocess(data=None,target_column=None,train=True,select_columns=None,\
 
             for name, dtype in data.dtypes.iteritems():
                 if 'datetime64' in dtype.name or 'time' in name.lower() or 'date' in name.lower():
-                    date_feature = True
+                    
                     output = check_datefield(data, name)
                     if output:
                         print_divider('Featurize Datetime columns')
                         print(f'column with datetime type: [{name}]\n') 
-                        data = featurize_datetime(data,name,False)
+                        data = featurize_datetime(data,name,drop=False)
 
-                elif 'object' in dtype.name:
-                    output = check_datefield(data, name)
-                    if output:
-                        if date_feature:
-                            print(f'Inferred column with datetime type: [{name}]\n') 
-                            data = featurize_datetime(data,name,False)
-
-                        else:
-                            print_divider('Featurize Datetime columns')
-                            print(f'Inferred column with datetime type: [{name}]\n') 
-                            data = featurize_datetime(data,name,False)
                 else:
                     pass
 
@@ -1166,7 +1154,7 @@ def _preprocess(data=None,target_column=None,train=True,select_columns=None,\
                                  select_columns=select_columns,**kwargs)
 
 
-def preprocess(data=None,target_column=None,train=False,select_columns=None,\
+def preprocess(data=None,target_column=None,train=True,select_columns=None,\
                display_inline=True,project_path=None,**kwargs): 
     
     """

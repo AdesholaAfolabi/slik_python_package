@@ -11,6 +11,25 @@ from .preprocessing import check_nan, get_attributes
 from IPython.display import display
 
 
+def __summarise_results(results, limit=10):
+    """
+    Hidden Function
+    
+    Computes a summary of results given a list object
+    """
+    
+    assert type(results) == list, "Results must be a list object"
+    
+    f = limit // 2
+    ff = f + limit % 2
+    
+    results = results[:ff] + ['...'] + results[-f:] if len(results) > limit else results
+    
+    result = '[' + ', '.join(map(str, results)) + ']'
+    
+    return result
+
+
 def missing_value_assessment(dataframe, display_findings=True):
     """
     Checks the missing values from the given datset and generates
@@ -30,9 +49,13 @@ def missing_value_assessment(dataframe, display_findings=True):
     df.set_index('features', inplace=True)
     df = df[df.missing_counts > 0]
     
+    missing_columns = list(df.index)
+    
+    missing_value_assessment.missing_columns = missing_columns
+    
     if len(df):
         log(
-            f"Dataframe contains missing values that you should address. \n\ncolumns={list(df.index)}\n", 
+            f"Dataframe contains missing values that you should address. \n\ncolumns={__summarise_results(missing_columns)}\n", 
             code='warning'
         )
         
@@ -92,9 +115,12 @@ def duplicate_assessment(dataframe, display_findings=True):
     duplicated_rows = dataframe[dataframe.duplicated()]
     duplicated_columns = check_duplicate_columns(dataframe)
     
+    duplicate_assessment.duplicated_rows = list(duplicated_rows.index)
+    duplicate_assessment.duplicated_columns = duplicated_columns
+    
     if len(duplicated_rows):
         log(
-            f"Dataframe contains duplicate rows that you should address. \n\ncolumns={list(duplicated_rows.index)}\n", 
+            f"Dataframe contains duplicate rows that you should address. \n\nrows={__summarise_results(list((duplicated_rows.index)))}\n", 
             code='warning'
         )
         
@@ -103,7 +129,7 @@ def duplicate_assessment(dataframe, display_findings=True):
             
     if len(duplicated_columns):
         log(
-            f"Dataframe contains duplicate columns that you should address. \n\ncolumns={duplicated_columns}\n", 
+            f"Dataframe contains duplicate columns that you should address. \n\ncolumns={__summarise_results(duplicated_columns)}\n", 
             code='warning'
         )
         
@@ -148,13 +174,15 @@ def outliers_assessment(dataframe, display_findings=True):
     
     contains_outliers = [column for column in num_attributes if contains_outliers(column)]
     
+    outliers_assessment.contains_outliers = contains_outliers
+    
     if len(contains_outliers):
         log(
             f"Ignore target column, if target column is considered an outlier\n",
             code="info"
         )
         log(
-            f"Dataframe contains outliers that you should address. \n\ncolumns={contains_outliers}\n", 
+            f"Dataframe contains outliers that you should address. \n\ncolumns={__summarise_results(contains_outliers)}\n", 
             code='warning'
         )
         
@@ -175,9 +203,6 @@ def consistent_structure_assessement(dataframe, display_findings=True):
     For categorical columns. assessment is made on duplicate categories
     i.e. medium and Medium are the same categories and inconsistent.
     """
-    
-    column_names = list(dataframe.columns)
-    inconsistent_cols = []
     
     def check_consistent_in_type(_col):
         """
@@ -204,6 +229,9 @@ def consistent_structure_assessement(dataframe, display_findings=True):
         
         return True
     
+    column_names = list(dataframe.columns)
+    inconsistent_cols = []
+    
     for col in column_names:
         col_data = dataframe[col]
         
@@ -218,9 +246,11 @@ def consistent_structure_assessement(dataframe, display_findings=True):
         if check_result:
             inconsistent_cols.append(col)
     
+    consistent_structure_assessement.inconsistent_cols = inconsistent_cols
+    
     if len(inconsistent_cols):
         log(
-            f"Dataframe contains inconsistent feature columns that you should address. \n\ncolumns={inconsistent_cols}\n", 
+            f"Dataframe contains inconsistent feature columns that you should address. \n\ncolumns={__summarise_results(inconsistent_cols)}\n", 
             code='warning'
         )
         
