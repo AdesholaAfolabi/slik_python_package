@@ -1002,22 +1002,20 @@ def _preprocess_non_target_col(data=None,processed_data_path=None,display_inline
         data = handle_nan(dataframe=data,n=3,drop_outliers=False,display_inline=display_inline,thresh_x=1,thresh_y=99,**kwargs)
 
         for column in data.columns:
-            if re.search(r'(.*?)[Aa]ge$', column.lower()):
-                match = re.search(r'(.*?)[Aa]ge.*', column).group()
-                age_column = str(match)
-                data = bin_age(data,age_column)
+                if re.search(r'(.*?)[Aa]ge$', column.lower()):
+                    print_divider('Bucketize Age columns')
+                    print(f' Inferred age column: [{column}]')
+                    match = re.search(r'(.*?)[Aa]ge.*', column).group()
+                    age_column = str(match)
+                    data = bin_age(data,age_column)
 
         for name, dtype in data.dtypes.iteritems():
-            if 'datetime64' in dtype.name:
-                print_divider('Featurize Datetime columns')
-                print(f'column with datetime type: [{name}]\n') 
-                data = featurize_datetime(data,name,False)#generic #methods to bin
-
-            elif 'object' in dtype.name:
+            if 'datetime64' in dtype.name or 'time' in name.lower() or 'date' in name.lower():
+                
                 output = check_datefield(data, name)
                 if output:
                     print_divider('Featurize Datetime columns')
-                    print(f'Inferred column with datetime type: [{name}]\n') 
+                    print(f'column with datetime type: [{name}]\n') 
                     data = featurize_datetime(data,name,drop=False)
             else:
                 pass
@@ -1030,6 +1028,9 @@ def _preprocess_non_target_col(data=None,processed_data_path=None,display_inline
                     counter.append(i)
                 items = dict(zip(num_unique,counter))
                 data = map_column(data,column_name=column,items=items)
+                data = manage_columns(data,columns=column,drop_columns=True)
+
+        data = drop_uninformative_fields(data,display_inline=display_inline)
     
     if display_inline:
         print_divider('Display the preprocessed data')
@@ -1110,7 +1111,7 @@ def _preprocess(data=None,target_column=None,train=True,select_columns=None,\
                     if output:
                         print_divider('Featurize Datetime columns')
                         print(f'column with datetime type: [{name}]\n') 
-                        data = featurize_datetime(data,name,False)
+                        data = featurize_datetime(data,name,drop=False)
 
                 else:
                     pass
