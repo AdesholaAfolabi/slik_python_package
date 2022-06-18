@@ -490,11 +490,13 @@ def featurize_datetime(dataframe=None, column_name=None, date_features=None, dro
     expected_list = ['Year', 'Month', 'Day', 'Dayofweek', 'Dayofyear','Week',\
             'Is_month_end', 'Is_month_start', 'Is_quarter_end','Hour','Minute',\
                  'Is_quarter_start', 'Is_year_end', 'Is_year_start','Date']
-    if date_features is None:
-        date_features = expected_list
+    if date_features:
         for elem in date_features:
             if elem not in expected_list:
                 raise KeyError(f'List should contain any of {expected_list}')
+        
+    else:
+        date_features = expected_list
 
     fld = df[column_name]
     if not np.issubdtype(fld.dtype, np.datetime64):
@@ -1103,24 +1105,13 @@ def _preprocess(data=None,target_column=None,train=True,select_columns=None,\
 
             for name, dtype in data.dtypes.iteritems():
                 if 'datetime64' in dtype.name or 'time' in name.lower() or 'date' in name.lower():
-                    date_feature = True
+                    
                     output = check_datefield(data, name)
                     if output:
                         print_divider('Featurize Datetime columns')
                         print(f'column with datetime type: [{name}]\n') 
                         data = featurize_datetime(data,name,False)
 
-                elif 'object' in dtype.name:
-                    output = check_datefield(data, name)
-                    if output:
-                        if date_feature:
-                            print(f'Inferred column with datetime type: [{name}]\n') 
-                            data = featurize_datetime(data,name,False)
-
-                        else:
-                            print_divider('Featurize Datetime columns')
-                            print(f'Inferred column with datetime type: [{name}]\n') 
-                            data = featurize_datetime(data,name,False)
                 else:
                     pass
 
