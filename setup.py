@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='slik_wrangler',
-      version='1.0.7',
+      version='1.0.8',
       description='A data preprocessing and modeling tool',
       packages=['slik_wrangler'],
       author = 'Adeshola Afolabi/Akinwande Komolafe',
@@ -16,6 +16,7 @@ setup(name='slik_wrangler',
             "numpy", 
             "matplotlib", 
             "seaborn",
-            "colorama"
+            "colorama",
+            "pyyaml"
       ],
       zip_safe=False)
