@@ -18,7 +18,7 @@ def __summarise_results(results, limit=10):
     Computes a summary of results given a list object
     """
     
-    assert type(results) == list, "Results must be a list object"
+    results = list(results)
     
     f = limit // 2
     ff = f + limit % 2
@@ -79,44 +79,22 @@ def duplicate_assessment(dataframe, display_findings=True):
         the missing values count and percentage.
     """
     
-    def check_duplicate_columns(df):
-        """
-        Checks for all the duplicates rows in the dataset
-        """
-        
-        duplicated = set()
-        column_names = list(df.columns)
-        
-        def check(col1, col2):
-            """
-            Checks the equality between columns
-            """
-            
-            col1, col2 = list(map(
-                lambda x: df[x].to_numpy().ravel(), (col1, col2)
-            ))
-            
-            return (col1 == col2).all()
-        
-        for col in column_names:
-            if col not in duplicated:
-                _col = column_names.copy()
-                _col.pop(_col.index(col))
-
-                for c in _col:
-                    if c.lower() == col.lower():
-                        log("Two columns bears identical names", c, "address this problem", code='danger')
-                    elif check(c, col):
-                        duplicated.add(c)
-                        duplicated.add(col)
-        
-        return list(duplicated)
+    transfromed_dataframe = dataframe.T.copy()
     
+    duplicated_columns = transfromed_dataframe[transfromed_dataframe.duplicated()]
     duplicated_rows = dataframe[dataframe.duplicated()]
-    duplicated_columns = check_duplicate_columns(dataframe)
     
+    duplicate_assessment.duplicated_columns = list(duplicated_columns.index)
     duplicate_assessment.duplicated_rows = list(duplicated_rows.index)
-    duplicate_assessment.duplicated_columns = duplicated_columns
+    
+    if len(duplicated_columns):
+        log(
+            f"Dataframe contains duplicate columns that you should address. \n\ncolumns={__summarise_results(list(duplicated_columns.index))}\n", 
+            code='warning'
+        )
+        
+        if display_findings:
+            display(duplicated_columns.T)
     
     if len(duplicated_rows):
         log(
@@ -126,15 +104,6 @@ def duplicate_assessment(dataframe, display_findings=True):
         
         if display_findings:
             display(duplicated_rows)
-            
-    if len(duplicated_columns):
-        log(
-            f"Dataframe contains duplicate columns that you should address. \n\ncolumns={__summarise_results(duplicated_columns)}\n", 
-            code='warning'
-        )
-        
-        if display_findings:
-            display(dataframe[duplicated_columns])
     
     if not len(duplicated_rows) and not len(duplicated_columns):
         log("No duplicate values in both rows and columns!!!", code='success')
@@ -209,7 +178,7 @@ def consistent_structure_assessement(dataframe, display_findings=True):
         Checks for consistency in the dtype
         """
         
-        return all([type(c) == _col.dtype for c in _col.to_numpy()])
+        return all(map(lambda c: type(c) == _col.dtype, _col.to_numpy()))
     
     def check_consistent_in_categories(_col):
         """
@@ -218,13 +187,13 @@ def consistent_structure_assessement(dataframe, display_findings=True):
         For categorical columns
         """
         
-        unique_str_cat = [c for c in _col.unique() if type(c) == str]
+        unique_str_cat = filter(lambda c: type(c) == str, _col.unique())
         
-        categories = list(map(lambda x: x.lower(), unique_str_cat))
+        categories = map(lambda x: x.lower(), unique_str_cat)
         unique_categories = set(categories)
         
         for cat in unique_categories:
-            if categories.count(cat) > 1:
+            if list(categories).count(cat) > 1:
                 return False
         
         return True
@@ -282,4 +251,5 @@ def data_cleanness_assessment(dataframe, display_findings=True):
         log(f"Checking for {issue}", end="\n\n", code='info')
         issue_checker[issue](dataframe, display_findings)
         log(end="\n\n")
+
 
