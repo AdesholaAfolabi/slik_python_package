@@ -30,7 +30,7 @@ def __summarise_results(results, limit=10):
     return result
 
 
-def missing_value_assessment(dataframe, display_findings=True):
+def missing_value_assessment(dataframe, display_findings=True, return_as_str=False):
     """
     Checks the missing values from the given datset and generates
     a report of its findings.
@@ -54,18 +54,26 @@ def missing_value_assessment(dataframe, display_findings=True):
     missing_value_assessment.missing_columns = missing_columns
     
     if len(df):
-        log(
-            f"Dataframe contains missing values that you should address. \n\ncolumns={__summarise_results(missing_columns)}\n", 
-            code='warning'
+        message = (
+            f"Dataframe contains missing values that you should address. "
+            f"\n\ncolumns={__summarise_results(missing_columns)}\n",
+            df
         )
+
+        log(message[0], code='warning')
         
         if display_findings:
             display(df)
     else:
-        log("No missing values!!!", code='success')
+        message = ("No missing values!!!",)
+
+        log(message[0], code='success')
+
+    if return_as_str:
+        return message
 
 
-def duplicate_assessment(dataframe, display_findings=True):
+def duplicate_assessment(dataframe, display_findings=True, return_as_str=False):
     """
     Checks the duplicate values from the given datset and generates
     a report of its findings. It does this assessment for both rows
@@ -86,30 +94,39 @@ def duplicate_assessment(dataframe, display_findings=True):
     
     duplicate_assessment.duplicated_columns = list(duplicated_columns.index)
     duplicate_assessment.duplicated_rows = list(duplicated_rows.index)
+
+    message = ()
     
     if len(duplicated_columns):
-        log(
-            f"Dataframe contains duplicate columns that you should address. \n\ncolumns={__summarise_results(list(duplicated_columns.index))}\n", 
-            code='warning'
-        )
+        log_message = f"Dataframe contains duplicate columns that you should address. " \
+                      f"\n\ncolumns={__summarise_results(list(duplicated_columns.index))}\n"
+
+        message += log_message,
+        log(log_message, code='warning')
         
         if display_findings:
             display(duplicated_columns.T)
     
     if len(duplicated_rows):
-        log(
-            f"Dataframe contains duplicate rows that you should address. \n\nrows={__summarise_results(list((duplicated_rows.index)))}\n", 
-            code='warning'
-        )
+        log_message = f"Dataframe contains duplicate rows that you should address. " \
+                      f"\n\nrows={__summarise_results(list(duplicated_rows.index))}\n"
+
+        message += log_message,
+        log(log_message, code='warning')
         
         if display_findings:
             display(duplicated_rows)
     
     if not len(duplicated_rows) and not len(duplicated_columns):
-        log("No duplicate values in both rows and columns!!!", code='success')
+        log_message = "No duplicate values in both rows and columns!!!"
+        message += log_message,
+        log(log_message, code='success')
+
+    if return_as_str:
+        return message
         
         
-def outliers_assessment(dataframe, display_findings=True):
+def outliers_assessment(dataframe, display_findings=True, return_as_str=False):
     """
     Checks for outliers in the given datset and generates
     a report of its findings.
@@ -146,22 +163,28 @@ def outliers_assessment(dataframe, display_findings=True):
     outliers_assessment.contains_outliers = contains_outliers
     
     if len(contains_outliers):
-        log(
-            f"Ignore target column, if target column is considered an outlier\n",
-            code="info"
+        message = (
+            "Ignore target column, if target column is considered an outlier\n",
+            f"Dataframe contains outliers that you should address. "
+            f"\n\ncolumns={__summarise_results(contains_outliers)}\n",
+            dataframe[contains_outliers]
         )
-        log(
-            f"Dataframe contains outliers that you should address. \n\ncolumns={__summarise_results(contains_outliers)}\n", 
-            code='warning'
-        )
+
+        log(message[0], code="info")
+        log(message[1], code='warning')
         
         if display_findings:
             display(dataframe[contains_outliers].head())
     else:
-        log("No outliers in dataset!!!", code='success')
+        message = ("No outliers in dataset!!!",)
+
+        log(message[0], code='success')
+
+    if return_as_str:
+        return message
 
 
-def consistent_structure_assessement(dataframe, display_findings=True):
+def consistent_structure_assessement(dataframe, display_findings=True, return_as_str=False):
     """
     Checks the consitent nature of each feature column.
     
@@ -218,18 +241,25 @@ def consistent_structure_assessement(dataframe, display_findings=True):
     consistent_structure_assessement.inconsistent_cols = inconsistent_cols
     
     if len(inconsistent_cols):
-        log(
-            f"Dataframe contains inconsistent feature columns that you should address. \n\ncolumns={__summarise_results(inconsistent_cols)}\n", 
-            code='warning'
+        message = (
+            f"Dataframe contains inconsistent feature columns that you should address. "
+            f"\n\ncolumns={__summarise_results(inconsistent_cols)}\n",
+            dataframe[inconsistent_cols]
         )
+
+        log(message[0], code='warning')
         
         if display_findings:
             display(dataframe[inconsistent_cols].head())
     else:
-        log("No inconsistent feature columns values!!!", code='success')
+        message = ("No inconsistent feature columns values!!!",)
+        log(message[0], code='success')
+
+    if return_as_str:
+        return message
 
 
-def data_cleanness_assessment(dataframe, display_findings=True):
+def data_cleanness_assessment(dataframe, display_findings=True, return_as_str=False):
     """
     Checks for the overall cleanness of the dataframe:
     
@@ -246,10 +276,21 @@ def data_cleanness_assessment(dataframe, display_findings=True):
         'outliers': outliers_assessment,
         'inconsistent values': consistent_structure_assessement
     }
-    
-    for issue in issue_checker.keys():
-        log(f"Checking for {issue}", end="\n\n", code='info')
-        issue_checker[issue](dataframe, display_findings)
-        log(end="\n\n")
+
+    if return_as_str:
+        message = ()
+        for issue in issue_checker.keys():
+            message += f"**Checking for {issue}**",
+            message += '\n\n',
+            message += issue_checker[issue](dataframe, display_findings, return_as_str)
+            message += '\n\n',
+
+        return message
+    else:
+        for issue in issue_checker.keys():
+            log(f"Checking for {issue}", end="\n\n", code='info')
+            issue_checker[issue](dataframe, display_findings)
+            log(end="\n\n")
+
 
 

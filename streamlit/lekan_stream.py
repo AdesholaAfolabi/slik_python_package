@@ -49,17 +49,17 @@ def main():
         if st.button("Read File"):
             dataframe = collect_data(data_file)
             st.write("### Your dataframe:", dataframe.head())
-
-            st.write("After uploading the file you can asserst it below...")
+            st.write("After uploading the file you can assert it below")
 
     if data_file is not None:
         if st.button("Perform Quality Assessment"):
             dataframe = collect_data(data_file)
-            st.write("### Your dataframe:", data_cleanness_assessment(dataframe))
-            st.write(final_message)
+            st.write("### Your dataframe:")
+            st.write(*data_cleanness_assessment(dataframe, return_as_str=True))
 
 
 if __name__ == '__main__':
     main()
 
-# With ❤️Lekan
+# With ❤️ Lekan
+
