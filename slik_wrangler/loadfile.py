@@ -112,3 +112,59 @@ def split_csv_file(file_path=None, delimiter= ',' , row_limit=1000000, output_pa
             if keep_headers:
                 current_out_writer.writerow(headers)
         current_out_writer.writerow(row)
+
+
+def _read_file(file_path, input_col=None, **kwargs):
+
+    """
+    Load a file path into a dataframe.
+    
+    This funtion takes in a file path - CSV, excel or parquet and reads 
+    the data based on the input columns specified. Can only load  one file at 
+    a time. 
+    
+    Parameters
+    ----------
+    file_path: str/file path
+        path to where data is stored.
+    input_col: list
+        select columns to be loaded as a pandas dataframe
+    **kwargs:
+        use keyword arguements from pandas read file method
+        
+    Returns
+    -----------
+    pandas Dataframe
+        
+    """
+    if file_path.name.endswith('.csv'):
+        data = pd.read_csv(file_path, usecols= input_col,**kwargs)
+        log('\nCSV file read sucessfully', code='success')
+        data = data.reindex(columns = input_col)
+        log('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]), code='info')
+        return data
+            
+    elif file_path.name.endswith('.parquet'):
+        data = pd.read_parquet(file_path, engine = 'pyarrow', columns = input_col,**kwargs)
+        log('Parquet file read sucessfully', code='success')
+        data.columns = data.columns.astype(str)
+        data = data.reindex(columns = input_col)
+        log('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]), code='info')
+        return data
+        
+    elif file_path.name.endswith('.xls') or file_path.endswith('.xlsx'):
+        data = pd.read_excel(file_path, usecols = input_col,**kwargs)
+        log('Excel file read successfully', code='success')
+        data = data.reindex(columns = input_col)
+        log('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]), code='info')
+        return data
+    
+    elif file_path.endswith('.json'):
+        data = pd.read_json(file_path, usecols = input_col)
+        log('JSON file read successfully', code='success')
+        data = data.reindex(columns = input_col)
+        log('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]), code='info')
+        return data
+        
+    else:
+        raise ValueError("file_path: Only supports one of ['csv','xls','xlsx','parquet'] format")

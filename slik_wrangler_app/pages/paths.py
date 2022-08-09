@@ -12,5 +12,5 @@ def create_absolute_path(dir_path):
     return os.path.join(os.getcwd(), dir_path)
 
 
-INTRO_VIDEO_PATH = create_absolute_path("../data/video_data/Intro_video.mp4")
-DATA_LOAD_IMAGE_PATH = create_absolute_path("../data/image_data/slik_wrangler_logo.jpeg")
+INTRO_VIDEO_PATH = create_absolute_path("slik_wrangler_app/data/video_data/Intro_video.mp4")
+DATA_LOAD_IMAGE_PATH = create_absolute_path("slik_wrangler_app/data/image_data/slik_wrangler_logo.jpeg")
