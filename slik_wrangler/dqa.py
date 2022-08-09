@@ -43,10 +43,9 @@ def missing_value_assessment(dataframe, display_findings=True, return_as_str=Fal
         the missing values count and percentage.
     """
     
-    df = check_nan(dataframe, display_inline=True)
-    # print(df)
+    check_nan(dataframe, display_inline=False)
     
-    # df = check_nan.df
+    df = check_nan.df
     df.set_index('features', inplace=True)
     df = df[df.missing_counts > 0]
     
@@ -56,7 +55,7 @@ def missing_value_assessment(dataframe, display_findings=True, return_as_str=Fal
     
     if len(df):
         message = (
-            f"\nDataframe contains missing values that you should address. "
+            f"Dataframe contains missing values that you should address. "
             f"\n\ncolumns={__summarise_results(missing_columns)}\n",
             df
         )
@@ -64,7 +63,7 @@ def missing_value_assessment(dataframe, display_findings=True, return_as_str=Fal
         log(message[0], code='warning')
         
         if display_findings:
-            return df
+            display(df)
     else:
         message = ("No missing values!!!",)
 

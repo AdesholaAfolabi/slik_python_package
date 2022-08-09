@@ -56,7 +56,7 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
     return data
 
 
-def change_case(dataframe, columns=None, case='lower', inplace=True):
+def change_case(dataframe, columns=None, case='lower', inplace=False):
     """
     Change the case of a pandas series to either upper or lower case
 
@@ -114,7 +114,7 @@ def change_case(dataframe, columns=None, case='lower', inplace=True):
         ])
 
     def perform_case(func):
-        return dataframe[columns].applymap(func)
+        dataframe[columns] = dataframe[columns].applymap(func)
 
     action = {
         'lower': lambda x: x.lower(),
@@ -123,17 +123,15 @@ def change_case(dataframe, columns=None, case='lower', inplace=True):
     }
 
     if case in action.keys():
-        if inplace:
-            dataframe[columns] = perform_case(action[case])
-            return dataframe
-        else:
-            return perform_case(action[case])
+        perform_case(action[case])
 
+        if not inplace:
+            return dataframe
     else:
         raise ValueError(f"case: expected one of upper,lower or captitalize got {case}")
     
 
-def check_nan(dataframe=None, plot=False, display_inline=True,*args,**kwargs):
+def check_nan(dataframe=None, plot=False, display_inline=True):
     
     """
     Display missing values as a pandas dataframe and give a proportion
@@ -163,15 +161,15 @@ def check_nan(dataframe=None, plot=False, display_inline=True,*args,**kwargs):
 
     missing_percent = round((df['missing_counts'] / data.shape[0]) * 100, 1)
     df['missing_percent'] = missing_percent
+    nan_values = df.set_index('features')['missing_percent']
     
     
-    print_divider('Count and Percentage of missing value')
     if plot:
-        plot_nan(df,**kwargs)
+        plot_nan(nan_values)
     if display_inline:
-        return df
-    else:
-        check_nan.df = df
+        print_divider('Count and Percentage of missing value')
+        display(df)
+    check_nan.df = df
 
 
 def create_schema_file(dataframe, target_column, id_column, project_path='.', save=True, display_inline=True):
@@ -418,7 +416,7 @@ def drop_duplicate(dataframe=None,columns=None,method='rows',display_inline=True
         Data set to perform operation on.
     columns: List/String.
         list of column names 
-    method: 'rows' or 'columns' or 'both', default is 'rows'
+    method: 'rows' or 'columns', default is 'rows'
         Drop duplicate values across rows, columns. 
     
     display_inline: Bool. Default is True.
@@ -433,23 +431,19 @@ def drop_duplicate(dataframe=None,columns=None,method='rows',display_inline=True
         dataframe = dataframe.drop_duplicates()
         
     elif method == 'columns':
-        # if columns is None:
-        #     raise ValueError("columns: A list/string is expected as part of the inputs to columns, got 'None'")
+        if columns is None:
+            raise ValueError("columns: A list/string is expected as part of the inputs to columns, got 'None'")
         dataframe = dataframe.T.drop_duplicates().T
     
-    elif method == 'both':
-        dataframe = dataframe.drop_duplicates()
-        dataframe = dataframe.T.drop_duplicates().T
-
     elif method is None:
         pass
         
     else:
-        raise ValueError("method: must specify a drop_duplicate method, one of ['rows' or 'columns' or 'both']'")
+        raise ValueError("method: must specify a drop_duplicate method, one of ['rows' or 'columns']'")
         
     if display_inline:
         print_divider(f'Dropping duplicates across the {method}')
-        print(f'The new datashape is {dataframe.shape}')
+        print(f'New datashape is {dataframe.shape}')
     return dataframe
 
 
@@ -797,7 +791,7 @@ def manage_columns(dataframe=None,columns=None, select_columns=False, drop_colum
     drop_columns: Boolean True or False, default is False
         The columns you want to drop from your dataset. Requires a list to be passed into the columns param
         
-    drop_duplicates: 'rows' or 'columns' or 'both', default is None
+    drop_duplicates: 'rows' or 'columns', default is None
         Drop duplicate values across rows, columns. If columns, a list is required to be passed into the columns param
     
     Returns
@@ -817,7 +811,7 @@ def manage_columns(dataframe=None,columns=None, select_columns=False, drop_colum
         errstr = f'The given type for items is {type(drop_columns).__name__}. Expected type is boolean True/False'
         raise TypeError(errstr)
 
-    if drop_columns and columns is None:
+    if columns is None:
         raise ValueError("columns: A list/string is expected as part of the inputs to drop columns, got 'None'") 
 
     if select_columns and drop_columns:
