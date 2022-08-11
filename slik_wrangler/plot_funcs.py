@@ -82,7 +82,7 @@ def plot_nan(data,streamlit=False,**kwargs):
         fig = px.bar(df, x='missing_percent', y='features', text='missing_percent',orientation='h',
                     range_x=[start,end],title=title)
         fig.update_traces(texttemplate='%{text:.2s}', textposition='outside')
-        fig.update_layout(uniformtext_minsize=6, uniformtext_mode='hide')
+        fig.update_layout(uniformtext_minsize=6, uniformtext_mode='hide',xaxis=dict(showgrid=False))
         st.write(fig)
 
 

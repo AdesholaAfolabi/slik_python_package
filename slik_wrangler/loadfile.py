@@ -152,14 +152,14 @@ def _read_file(file_path, input_col=None, **kwargs):
         log('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]), code='info')
         return data
         
-    elif file_path.name.endswith('.xls') or file_path.endswith('.xlsx'):
+    elif file_path.name.endswith('.xls') or file_path.name.endswith('.xlsx'):
         data = pd.read_excel(file_path, usecols = input_col,**kwargs)
         log('Excel file read successfully', code='success')
         data = data.reindex(columns = input_col)
         log('\nData has {} rows and {} columns'.format(data.shape[0],data.shape[1]), code='info')
         return data
     
-    elif file_path.endswith('.json'):
+    elif file_path.name.endswith('.json'):
         data = pd.read_json(file_path, usecols = input_col)
         log('JSON file read successfully', code='success')
         data = data.reindex(columns = input_col)
