@@ -145,7 +145,7 @@ def main():
 
     if choice == 'Home':
 
-        file = st.file_uploader('Upload a file', type = ['pdf','csv','parquet'])
+        file = st.file_uploader('Upload a file', type = ['pdf','csv','parquet','xlsx','json'])
         if file is not None:
             dataframe = load_data(file)
             # st.text('Columns present in the dataframe')
