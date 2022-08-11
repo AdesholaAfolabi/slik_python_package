@@ -174,7 +174,7 @@ def check_nan(dataframe=None, plot=False, display_inline=True,*args,**kwargs):
         check_nan.df = df
 
 
-def create_schema_file(dataframe, target_column, id_column, project_path='.', save=True, display_inline=True):
+def create_schema_file(dataframe, project_path='.', save=True, display_inline=True):
 
     """
     
@@ -185,12 +185,6 @@ def create_schema_file(dataframe, target_column, id_column, project_path='.', sa
     ------------
     dataframe: DataFrame or name Series.
         Data set to perform operation on.
-
-    target_column: the name of the target column in the dataset. A string is expected
-        The column to perform the operation on.
-        
-    id_column: str
-        Unique Identifier column.
         
     project_path:  str.
         The path of the schema file you want to create.
@@ -226,8 +220,8 @@ def create_schema_file(dataframe, target_column, id_column, project_path='.', sa
             datatype_map[name] = dtype.name
     
     
-    schema = dict(dtype=datatype_map)
-    
+    schema = dict(datatype_map)
+    create_schema_file.schema = schema
     # write to YAML file
     if save:
         output_path =  os.path.join(project_path,'metadata')
@@ -402,7 +396,10 @@ def drop_uninformative_fields(dataframe = None, exclude= None, display_inline=Tr
         single = [column_name for column_name in single if column_name not in exclude]
     if display_inline:
         print_divider('Dropping uninformative fields')
-        print(f'uninformative fields dropped: {single}')
+        if len(single)<1:
+            print('No field was dropped')
+        else:
+            print(f'uninformative fields dropped: {single}')
     data = manage_columns(data,single,drop_columns=True,drop_duplicates=None)
     return data
     

@@ -31,6 +31,14 @@ def plot_wordcloud(docx):
     plt.axis('off')
     st.pyplot(fig)
 
+
+@st.cache
+def convert_df(df):
+     # IMPORTANT: Cache the conversion to prevent computation on every rerun
+    return df.to_csv().encode('utf-8')
+
+
+
 from contextlib import contextmanager
 from io import StringIO
 
@@ -41,9 +49,10 @@ import sys
 
 
 @contextmanager
-def st_redirect(src, dst):
+def st_redirect(src, dst,how=None):
     placeholder = st.empty()
     output_func = getattr(placeholder, dst)
+    s = []
 
     with StringIO() as buffer:
         old_write = src.write
@@ -51,7 +60,10 @@ def st_redirect(src, dst):
         def new_write(b):
             if getattr(current_thread(), script_run_context.SCRIPT_RUN_CONTEXT_ATTR_NAME, None):
                 buffer.write(b)
-                output_func(buffer.getvalue())
+                value = buffer.getvalue()
+                s.append(value)
+                if not how:
+                    output_func(value)
             else:
                 old_write(b)
 
@@ -62,9 +74,14 @@ def st_redirect(src, dst):
             src.write = old_write
 
 
+    if how == 'json':
+        st.json(s[0])
+        # st_redirect.value = new_write.value
+
+
 @contextmanager
-def st_stdout(dst):
-    with st_redirect(sys.stdout, dst):
+def st_stdout(dst,how=None):
+    with st_redirect(sys.stdout, dst,how):
         yield
 
 
@@ -74,7 +91,15 @@ def st_stderr(dst):
         yield
 
 
+                
 
+# @st.cache(allow_output_mutation=True)
+def plot_corr(dataframe):
+    fig = px.imshow(dataframe.corr(method='pearson'), 
+                title='Correlation Plot', height=500, width=700)
+    fig.update_layout(uniformtext_minsize=6, uniformtext_mode='hide',yaxis=dict(showgrid=False))
+               
+    st.write(fig)
     
 def sub_text(text):
     '''
@@ -122,18 +147,41 @@ def main():
 
         file = st.file_uploader('Upload a file', type = ['pdf','csv','parquet'])
         if file is not None:
-            dataframe = pd.read_csv(file)
+            dataframe = load_data(file)
             # st.text('Columns present in the dataframe')
             # st.write(dataframe.columns.tolist())
             st.write("## Dataframe:", dataframe.head())
+            # st.text('')
+            project_name = st.text_input('project name',help="""Specify a project name where the 
+            preprocessed data and other metadata will be stored""")
+            transformed_df = dataframe.copy()
+            col_list = transformed_df.columns.tolist()
+            schema_fn = st.checkbox('view data schema')
+            if schema_fn:
+                save=False
+                with st_stdout("info",how='json'):
+                    pp.create_schema_file(transformed_df,save=save)
+                    save_schema_fn = st.checkbox('save schema')
+                    if save_schema_fn:
+                        output_path =  os.path.join(os.getcwd(),project_name)
+                        
+                        if project_name:
+                            save=True
+                            pp.create_schema_file(transformed_df,project_path= output_path,save=save)
+                        else:
+                            st.warning('Project name is yet to be defined')
 
-            dqa_fn = st.sidebar.checkbox('Data quality assessment')
-            bin_age_fn = st.sidebar.checkbox('Convert age columns to bins')
+            st.sidebar.subheader('Quick Preprocessing')
+            datefield_fn = st.sidebar.checkbox('Assert Datefield')
+            bin_age_fn = st.sidebar.checkbox('Bin Age columns')
             change_case_fn = st.sidebar.checkbox('Change case')
+            dqa_fn = st.sidebar.checkbox('Data quality assessment')
+            dui_fn = st.sidebar.checkbox('Drop uninformative fields')
             check_nan_fn = st.sidebar.checkbox('Explore missing values')
             manage_col_fn = st.sidebar.checkbox('Handle/Manage columns')
-
-            transformed_df = dataframe.copy()
+            
+            options = bin_age_fn,change_case_fn,manage_col_fn,dui_fn
+            
 
             if dqa_fn:
                 choice = st.sidebar.radio('quality assessment',['missing value','duplicate assessment'])
@@ -142,6 +190,22 @@ def main():
                         st.write(dqa.missing_value_assessment(dataframe))
                     else:
                         print('Function currenly undergoing development')
+
+            if dui_fn:
+                with st_stdout("info"):
+                    col_list_ap = col_list.append(None)
+                    index = len(col_list) -1
+                    choice = st.sidebar.selectbox('exclude columns', col_list,key='dui',help="""
+                    columns to be excluded from being dropped""",index=index)
+                    pp.drop_uninformative_fields(transformed_df,exclude=choice)
+
+            if datefield_fn:
+                choice = st.sidebar.selectbox('select column', col_list,key='date')
+                placeholder = st.empty()
+                with placeholder.container():
+                    st.markdown(f'###### Asserting {choice} is a date field:')
+                    st.write(pp.check_datefield(transformed_df,choice))
+
             if bin_age_fn:
                 choice = st.sidebar.selectbox('select age column', transformed_df.columns.tolist())
                 add_prefix = st.sidebar.radio("add prefix",(True, False),horizontal=True)
@@ -169,7 +233,9 @@ def main():
                         pp.check_nan(transformed_df,plot=True,streamlit=True)
                         # plot_nan(df)
                     else:
-                        st.dataframe(pp.check_nan(transformed_df,display_inline=True))
+                        df = pp.check_nan(transformed_df,display_inline=True)
+                        df = df[df.missing_counts > 0]
+                        st.dataframe(df)
 
             if manage_col_fn:
                 manage_sel = st.sidebar.radio(
@@ -187,18 +253,40 @@ def main():
                 elif manage_sel=='':
                     pass
                 else:
-                    choice = st.sidebar.multiselect('select columns',dataframe.columns.tolist())
+                    choice = st.sidebar.multiselect('select columns',transformed_df.columns.tolist())
                     transformed_df = pp.manage_columns(transformed_df,columns=choice,select_columns=True)
 
                 if drop_dupl_col:
                     choice = st.sidebar.selectbox('drop duplicates across', ['rows','columns','both'])
                     with st_stdout("info"):
                         transformed_df = pp.manage_columns(transformed_df,drop_duplicates=choice)
+            
+            if any((options)):
+                preview_button = st.checkbox(label='preview transformed data')
+                if preview_button:
+                    st.write("## Transformed Dataframe:")
+                    st.dataframe(transformed_df)
+
                     
-            preview_button = st.checkbox(label='preview transformed data')
-            if preview_button:
-                st.write("## Transformed Dataframe:")
-                st.dataframe(transformed_df)
+                csv = convert_df(transformed_df)
+
+                st.download_button(
+                    label="Download data as CSV",
+                    data=csv,
+                    file_name='preprocess_data.csv',
+                    mime='text/csv',
+                )
+
+            st.sidebar.subheader('EDA by Visualization')
+            corr_fn = st.sidebar.checkbox('Correlation Plot')
+            if corr_fn:
+                choice = st.multiselect('select columns',transformed_df.columns.tolist())
+                if choice:
+                    plot_corr(transformed_df[choice])
+                else:
+                    plot_corr(transformed_df)
+
+            
 
             
     else:
