@@ -201,7 +201,7 @@ def main():
                     index = len(col_list) -1
                     choice = st.sidebar.selectbox('exclude columns', col_list,key='dui',help="""
                     columns to be excluded from being dropped""",index=index)
-                    pp.drop_uninformative_fields(transformed_df,exclude=choice)
+                    transformed_df = pp.drop_uninformative_fields(transformed_df,exclude=choice)
 
             if datefield_fn:
                 choice = st.sidebar.selectbox('select column', col_list,key='date')
