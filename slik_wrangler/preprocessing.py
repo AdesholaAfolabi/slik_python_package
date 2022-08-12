@@ -546,7 +546,7 @@ def get_attributes(data=None,target_column=None):
         cat_attributes.remove(target_column)
     else:
         pass
-    return num_attributes, cat_attributes
+    return {"Numerical Features": num_attributes, "Categorical Features": cat_attributes}
         
     
 def _handle_cat_feat(data,fillna,cat_attr):
