@@ -179,8 +179,12 @@ def main():
             dui_fn = st.sidebar.checkbox('Drop uninformative fields')
             check_nan_fn = st.sidebar.checkbox('Explore missing values')
             manage_col_fn = st.sidebar.checkbox('Handle/Manage columns')
+            featurize_dt_fn = st.sidebar.checkbox('Featurize Datatime columns')
+            get_attr_fn = st.sidebar.checkbox('Get Attributes')
+
+
             
-            options = bin_age_fn,change_case_fn,manage_col_fn,dui_fn
+            options = bin_age_fn,change_case_fn,manage_col_fn,dui_fn,featurize_dt_fn
             
 
             if dqa_fn:
@@ -197,7 +201,7 @@ def main():
                     index = len(col_list) -1
                     choice = st.sidebar.selectbox('exclude columns', col_list,key='dui',help="""
                     columns to be excluded from being dropped""",index=index)
-                    pp.drop_uninformative_fields(transformed_df,exclude=choice)
+                    transformed_df = pp.drop_uninformative_fields(transformed_df,exclude=choice)
 
             if datefield_fn:
                 choice = st.sidebar.selectbox('select column', col_list,key='date')
@@ -260,6 +264,28 @@ def main():
                     choice = st.sidebar.selectbox('drop duplicates across', ['rows','columns','both'])
                     with st_stdout("info"):
                         transformed_df = pp.manage_columns(transformed_df,drop_duplicates=choice)
+
+            
+            if featurize_dt_fn:
+                choice = st.sidebar.selectbox('select date/datetime column', transformed_df.columns.tolist())
+                if choice: 
+                    date_feat = ['Year', 'Month', 'Day', 'Dayofweek', 'Dayofyear','Week',\
+                                'Is_month_end', 'Is_month_start', 'Is_quarter_end','Hour','Minute',\
+                                'Is_quarter_start', 'Is_year_end', 'Is_year_start','Date']
+                    feat_choice = st.sidebar.multiselect('select a date feature',date_feat)
+                    drop = st.sidebar.radio("drop original datetime column",(True, False),horizontal=True)
+                    with st_stdout("info"):
+                        transformed_df = pp.featurize_datetime(transformed_df,choice,feat_choice, drop)
+
+            if get_attr_fn:
+                #choice = st.sidebar.selectbox('select target column', transformed_df.columns.tolist())
+                col_list_ap = col_list.append(None)
+                index = len(col_list) -1
+                choice = st.sidebar.selectbox('exclude target column', col_list,key='get_attr',help="""
+                target column to be excluded""",index=index)
+                with st_stdout("info"):
+                    st.write(pp.get_attributes(transformed_df, choice))
+
             
             if any((options)):
                 preview_button = st.checkbox(label='preview transformed data')
