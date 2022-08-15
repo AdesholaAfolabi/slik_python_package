@@ -281,10 +281,12 @@ def main():
                 #choice = st.sidebar.selectbox('select target column', transformed_df.columns.tolist())
                 col_list_ap = col_list.append(None)
                 index = len(col_list) -1
-                choice = st.sidebar.selectbox('exclude target column', col_list,key='get_attr',help="""
+                choice = st.sidebar.selectbox('select target column', col_list,key='get_attr',help="""
                 target column to be excluded""",index=index)
+                num_feat, cat_feat =  pp.get_attributes(transformed_df, choice)
+
                 with st_stdout("info"):
-                    st.write(pp.get_attributes(transformed_df, choice))
+                    st.write({"Numerical Features": num_feat, "Categorical Features": cat_feat})
 
             
             if any((options)):
