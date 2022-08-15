@@ -173,6 +173,45 @@ def check_nan(dataframe=None, plot=False, display_inline=True,*args,**kwargs):
     else:
         check_nan.df = df
 
+def convert_dtype(dataframe:pd.DataFrame, columns: list, convert_type: str):
+    
+    '''
+    Convert data types in a dataframe from string to int, int to string and int to float.
+    Parameters:
+    ------------------------
+    dataframe: DataFrame or name Series.
+        Data set to perform operation on.
+    columns: List, Series, Array.
+        Dataframe columns to perform operation on.
+    convert_type: string
+        The type of operation to be perfromed.
+    Returns:
+    -------
+        Dataframe
+            A new dataframe with dtype conversion.
+    '''
+    if dataframe is None:
+        raise ValueError("data: Expecting a DataFrame or Series, got 'None'") 
+    if not isinstance(convert_type, str):
+        errstr = f'The given type for convert_type is {type(convert_type).__name__}. Expected type is str'
+        raise TypeError(errstr)
+    if not isinstance(columns, list):
+        errstr = f'The given type for columns is {type(columns).__name__}. Expected type is a list'
+        raise TypeError(errstr)
+
+    data = dataframe.copy()
+    try:
+        if convert_type == 'str':
+            data[columns] = data[columns].astype(str)
+        elif convert_type == 'float':
+            data[columns] = data[columns].astype(int).astype(float)
+        elif convert_type == 'int':
+            data[columns] = data[columns].astype(int)
+    except:
+        pass
+#     except ValueError:
+#         raise ValueError("Cannot convert string to int/float")    
+    return data
 
 def create_schema_file(dataframe, project_path='.', save=True, display_inline=True):
 
