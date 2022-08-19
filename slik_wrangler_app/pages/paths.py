@@ -1,4 +1,5 @@
 import os
+import random
 
 
 def create_absolute_path(dir_path):
@@ -12,5 +13,15 @@ def create_absolute_path(dir_path):
     return os.path.join(os.getcwd(), dir_path)
 
 
-INTRO_VIDEO_PATH = create_absolute_path("slik_wrangler_app/data/video_data/Intro_video.mp4")
-DATA_LOAD_IMAGE_PATH = create_absolute_path("slik_wrangler_app/data/image_data/slik_wrangler_logo.jpeg")
+def randomly_generate_plain_image_path():
+    """
+    Randomly generates one of the 10 plain images
+    available in the package
+    """
+
+    return create_absolute_path(f"../data/image_data/plain{random.randint(0, 9)}.png")
+
+
+INTRO_VIDEO_PATH = create_absolute_path("../data/video_data/Intro_video.mp4")
+DATA_LOAD_IMAGE_PATH = create_absolute_path("../data/image_data/slik_wrangler_logo.jpeg")
+SITE_LOGO_PATH = create_absolute_path("../data/image_data/sw.png")
