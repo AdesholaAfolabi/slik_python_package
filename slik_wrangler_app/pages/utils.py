@@ -5,7 +5,23 @@ import streamlit as st
 from slik_wrangler import loadfile
 
 
-# Functions
+# Hidden Functions
+def _convert_to_html(opt):
+    text = opt[1: opt.index(']')]
+    link = opt[opt.index('(') + 1: opt.index(')')]
+
+    return f"<b><a href='{link}' style='color: #fff'>{text}</a></b>"
+
+
+def _divider():
+    """
+    Sub-routine to create a divider for webpage contents
+    """
+
+    st.markdown("""---""")
+
+
+# Non Hidden Functions
 def app_section_button(*options):
     """
     Code Inspiration: https://github.com/soft-nougat/dqw-ivves
@@ -17,13 +33,7 @@ def app_section_button(*options):
                     Maximum of 4 and minimum of 2 allowed
     """
 
-    def convert_to_html(opt):
-        text = opt[1: opt.index(']')]
-        link = opt[opt.index('(') + 1: opt.index(')')]
-
-        return f"<b><a href='{link}' style='color: #fff'>{text}</a></b>"
-
-    options = tuple(map(convert_to_html, options))
+    options = tuple(map(_convert_to_html, options))
 
     def call_col(col_1, col_2, col_3=None, col_4=None):
         for i, col in enumerate((col_1, col_2, col_3, col_4)):
@@ -92,12 +102,14 @@ def display_app_header(main_txt, sub_txt, is_sidebar=False):
         st.markdown(html_temp, unsafe_allow_html=True)
 
 
-def divider():
-    """
-    Sub-routine to create a divider for webpage contents
-    """
-
-    st.markdown("""---""")
+def display_sidebar_url_log(_docs, _urls):
+    for _doc, _url in zip(_docs, _urls):
+        st.write(_doc)
+        st.markdown(
+            _convert_to_html(_url),
+            unsafe_allow_html=True
+        )
+        _divider()
 
 
 @st.cache(allow_output_mutation=True)
@@ -136,4 +148,5 @@ class Executor:
                     func(self.dataframe)
                 else:
                     docs.section_not_available(add_plain_image=True)
+
 

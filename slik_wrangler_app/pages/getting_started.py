@@ -3,7 +3,7 @@ import streamlit as st
 
 from PIL import Image
 from utils import (
-    app_meta, divider, load_data, convert_df,
+    _divider, app_meta, load_data, convert_df,
     display_app_header, Executor
 )
 from operations import (
@@ -19,8 +19,6 @@ app_meta()
 
 with st.sidebar:
     st.image(Image.open("../data/image_data/start.png"))
-    st.markdown("**Step 1**")
-    st.markdown("**Data Quality Assessment (DQA)**")
     start_project = st.checkbox(
         label="Start Project",
         help="Starts the Slik-Wrangler Project"
@@ -33,7 +31,7 @@ if start_project:
         main_txt='Slik-Wrangler Web Application',
         sub_txt='Clean, describe, visualise and model'
     )
-    divider()
+    _divider()
 
     data_file = st.file_uploader(
         label="Data File",
@@ -44,18 +42,20 @@ if start_project:
     if data_file is not None:
         dataset = load_data(data_file)
         st.write(dataset)
-        divider()
+        _divider()
 
         with st.sidebar:
+            st.markdown("**Step 1**")
+            st.markdown("**Data Quality Assessment (DQA)**")
             st.markdown("Data loaded successfully ✔")
             dqa_operations = st.expander("Data Quality Assessment Operations")
-            divider()
+            _divider()
             st.image(Image.open("../data/image_data/processing.png"))
             st.markdown("**Step 2**")
             st.markdown("**Data Pre-processing**")
             st.markdown("Able to preprocess dataset ✔")
             pp_operations = st.expander("Data Pre-processing Operations")
-            divider()
+            _divider()
             st.markdown("<b style='font-size: 30px'>Control Menu 🎛️</b>", unsafe_allow_html=True)
 
         with dqa_operations:
@@ -106,3 +106,8 @@ if start_project:
 
 else:
     docs.section_not_available(docs.FOLLOW_SIDEBAR_INSTRUCTION)
+
+
+# When you begin to see God's good plans for you
+# in your thinking, you will begin to walk in it.
+

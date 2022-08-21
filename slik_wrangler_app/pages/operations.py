@@ -5,7 +5,7 @@ import streamlit as st
 from streamlit.scriptrunner import script_run_context
 
 from io import StringIO
-from utils import divider
+from utils import _divider
 from threading import current_thread
 from contextlib import contextmanager
 
@@ -23,7 +23,7 @@ def operation_on(operation):
 
     def __internal(dataframe):
         operation(dataframe)
-        divider()
+        _divider()
 
     return __internal
 
@@ -192,3 +192,4 @@ def perform_manage_col_operation(dataframe):
         choice = st.sidebar.selectbox('drop duplicates across', ['rows', 'columns', 'both'])
         with st_stdout("info"):
             st.dataframe(pp.manage_columns(transformed_df, drop_duplicates=choice))
+
