@@ -39,8 +39,9 @@ def st_redirect(src, dst, how=None):
     with StringIO() as buffer:
         old_write = src.write
 
+#script_run_context
         def new_write(b):
-            if getattr(current_thread(), script_run_context.SCRIPT_RUN_CONTEXT_ATTR_NAME, None):
+            if getattr(current_thread(), get_script_run_ctx.SCRIPT_RUN_CONTEXT_ATTR_NAME, None):
                 buffer.write(b)
                 value = buffer.getvalue()
                 s.append(value)
