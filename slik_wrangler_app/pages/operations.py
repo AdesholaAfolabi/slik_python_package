@@ -2,7 +2,9 @@ import sys
 import docs
 
 import streamlit as st
-from streamlit.scriptrunner import script_run_context
+#from streamlit.scriptrunner import script_run_context
+from streamlit.runtime.scriptrunner.script_run_context import get_script_run_ctx
+
 
 from io import StringIO
 from utils import _divider
