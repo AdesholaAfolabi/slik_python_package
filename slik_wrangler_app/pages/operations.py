@@ -1,9 +1,21 @@
+"""
+Package encapsulates all the function responsible for
+handling the webapps operations.
+
+Format should follow:
+
+@operation_on
+def perform_{operation-name}_operation(dataframe):
+    >>> ["CODE"]
+    return changed_dataframe
+"""
+
 import sys
 import docs
 
 import streamlit as st
-#from streamlit.scriptrunner import script_run_context
-from streamlit.runtime.scriptrunner.script_run_context import get_script_run_ctx
+from streamlit.scriptrunner import script_run_context
+# from streamlit.scriptrunner.script_run_context import get_script_run_ctx
 
 
 from io import StringIO
@@ -39,9 +51,9 @@ def st_redirect(src, dst, how=None):
     with StringIO() as buffer:
         old_write = src.write
 
-#script_run_context
+        #script_run_context
         def new_write(b):
-            if getattr(current_thread(), get_script_run_ctx.SCRIPT_RUN_CONTEXT_ATTR_NAME, None):
+            if getattr(current_thread(), script_run_context.SCRIPT_RUN_CONTEXT_ATTR_NAME, None):
                 buffer.write(b)
                 value = buffer.getvalue()
                 s.append(value)
@@ -94,6 +106,8 @@ def perform_check_nan_operation(dataframe):
             df = df[df.missing_counts > 0]
             st.dataframe(df)
 
+    return dataframe
+
 
 @operation_on
 def perform_date_field_operation(dataframe):
@@ -111,6 +125,8 @@ def perform_date_field_operation(dataframe):
         st.markdown(f'###### Asserting {choice} is a date field:')
         st.write(pp.check_datefield(dataframe, choice))
 
+    return dataframe
+
 
 @operation_on
 def perform_dui_operation(dataframe):
@@ -123,6 +139,7 @@ def perform_dui_operation(dataframe):
             help="""columns to be excluded from being dropped""",
             index=index
         )
+
     return pp.drop_uninformative_fields(dataframe, exclude=choice)
 
 
@@ -135,6 +152,8 @@ def perform_dqa_operation(dataframe):
             st.write(dqa.missing_value_assessment(dataframe))
         else:
             docs.section_not_available(add_plain_image=True)
+
+    return dataframe
 
 
 @operation_on
@@ -152,8 +171,11 @@ def perform_featurize_dt_operation(dataframe):
 
         drop = st.sidebar.radio("drop original datetime column", (True, False), horizontal=True)
 
+        dataframe = pp.featurize_datetime(dataframe, choice, feat_choice, drop)
         with st_stdout("info"):
-            st.dataframe(pp.featurize_datetime(dataframe, choice, feat_choice, drop))
+            st.dataframe(dataframe)
+
+    return dataframe
 
 
 @operation_on
@@ -172,6 +194,8 @@ def perform_get_attr_operation(dataframe):
 
     with st_stdout("info"):
         st.write({"Numerical Features": num_feat, "Categorical Features": cat_feat})
+
+    return dataframe
 
 
 @operation_on
@@ -196,3 +220,4 @@ def perform_manage_col_operation(dataframe):
         with st_stdout("info"):
             st.dataframe(pp.manage_columns(transformed_df, drop_duplicates=choice))
 
+    return transformed_df

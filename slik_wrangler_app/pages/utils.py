@@ -133,6 +133,7 @@ class Executor:
         self.dataframe = dataframe
         self.operations = []
         self.functions = []
+        self.transformed_df = dataframe
 
     def add_operation(self, operation, function):
         self.operations.append(operation)
@@ -145,7 +146,7 @@ class Executor:
         ):
             if opr:
                 if func is not None:
-                    func(self.dataframe)
+                    self.transformed_df = func(self.dataframe)
                 else:
                     docs.section_not_available(add_plain_image=True)
 
