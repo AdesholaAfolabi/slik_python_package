@@ -87,14 +87,12 @@ if start_project:
         executor.add_operation(get_attr_fn, perform_get_attr_operation)
         executor.execute()
 
-        if any(options):
-            preview_button = st.sidebar.checkbox(label='preview transformed data')
+        preview_button = st.sidebar.checkbox(label='preview transformed data')
 
-            if preview_button:
-                st.write("### Transformed Dataframe:")
-                st.dataframe(dataset)
-
-            csv = convert_df(dataset)
+        if preview_button:
+            st.write("### Transformed Dataframe:")
+            st.dataframe(executor.transformed_df)
+            csv = convert_df(executor.transformed_df)
 
             with st.sidebar:
                 st.download_button(
@@ -103,7 +101,6 @@ if start_project:
                     file_name='preprocess_data.csv',
                     mime='text/csv',
                 )
-
 else:
     docs.section_not_available(docs.FOLLOW_SIDEBAR_INSTRUCTION)
 
