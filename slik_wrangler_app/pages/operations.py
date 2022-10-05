@@ -221,3 +221,45 @@ def perform_manage_col_operation(dataframe):
             st.dataframe(pp.manage_columns(transformed_df, drop_duplicates=choice))
 
     return transformed_df
+
+@operation_on
+def perform_detect_fix_outliers_operation(dataframe):
+    col_list_ap = col_list.append(None)
+    index = len(col_list) -1
+    choice = st.sidebar.selectbox('select target column', col_list,key='get_attr',help="""
+    target column to be excluded""",index=index)
+
+    n = st.sidebar.number_input("Minimum number of outliers", 1)
+    num_feat = transformed_df.select_dtypes(include=np.number).columns.tolist()
+    fix_method = st.sidebar.selectbox("Outlier fix method", ['mean', 'log_transformation'])
+
+    display_inline = st.sidebar.radio('Inline display', ['False', 'True'])
+
+    num_feat_option = st.sidebar.selectbox ( 'Select numerical features', [False,True] )
+
+    if choice ==None and num_feat_option==False:
+        with st_stdout("info"):
+            transformed_df = pp.detect_fix_outliers(transformed_df,choice,n,num_feat, fix_method, display_inline)
+    elif choice ==None and num_feat_option==True:
+        num_choice = st.sidebar.multiselect('select numerical features', num_feat, default=None)
+
+        with st_stdout("info"):
+            transformed_df = pp.detect_fix_outliers(transformed_df,choice,n,num_choice, fix_method, display_inline)
+    
+    else:
+
+    
+        if choice in num_feat:
+            num_feat.remove(choice)
+        else:
+            pass
+
+        if num_feat_option==False:
+            num_choice = num_feat
+        else:
+            num_choice = st.sidebar.multiselect('select numerical features', num_feat, default=None)
+
+            
+
+            with st_stdout("info"):
+                    transformed_df = pp.detect_fix_outliers(transformed_df,choice,n,num_choice, fix_method, display_inline)

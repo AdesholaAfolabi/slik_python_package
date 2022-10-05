@@ -10,7 +10,8 @@ from operations import (
     perform_dqa_operation, perform_bin_age_operation,
     perform_check_nan_operation, perform_date_field_operation,
     perform_dui_operation, perform_featurize_dt_operation,
-    perform_get_attr_operation, perform_manage_col_operation
+    perform_get_attr_operation, perform_manage_col_operation,
+    perform_detect_fix_outliers_operation
 )
 
 
@@ -70,10 +71,12 @@ if start_project:
             manage_col_fn = st.checkbox('Handle/Manage columns')
             featurize_dt_fn = st.checkbox('Featurize Datatime columns')
             get_attr_fn = st.checkbox('Get Attributes')
+            detect_fix_outliers_fn = st.checkbox('Detect/Fix Outliers')
 
         options = [
             log_dqa_fn, dui_fn, check_nan_fn, date_field_fn, bin_age_fn,
-            change_case_fn, manage_col_fn, featurize_dt_fn, get_attr_fn
+            change_case_fn, manage_col_fn, featurize_dt_fn, get_attr_fn,
+            detect_fix_outliers_fn
         ]
 
         executor = Executor(dataset)
@@ -85,6 +88,7 @@ if start_project:
         executor.add_operation(manage_col_fn, perform_manage_col_operation)
         executor.add_operation(featurize_dt_fn, perform_featurize_dt_operation)
         executor.add_operation(get_attr_fn, perform_get_attr_operation)
+        executor.add_operation(detect_fix_outliers_fn, perform_detect_fix_outliers_operation)
         executor.execute()
 
         preview_button = st.sidebar.checkbox(label='preview transformed data')
