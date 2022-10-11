@@ -186,19 +186,14 @@ class Executor:
 
     def execute(self):
         for opr, func in zip(self.operations, self.functions):
-            print("Hello")
             if opr:
                 if func is not None:
                     try:
                         evaluation_results = func(self.transformed_df)
-                        print("help(func)")
                         self.transformation_func_param.append(evaluation_results)
 
                         if evaluation_results:
                             self.transformed_df = evaluation_results[0](**evaluation_results[1])
-                            print("Even Got Here!!!!!")
-
-                        print(evaluation_results, self.transformed_df)
                     except:
                         docs.section_not_available(
                             message="Function appears to be faulty! "
@@ -207,5 +202,6 @@ class Executor:
                         )
                 else:
                     docs.section_not_available(add_plain_image=True)
+
 
 
