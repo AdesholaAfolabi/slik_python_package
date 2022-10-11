@@ -1,8 +1,16 @@
+import sys
 import docs
 import paths
-import streamlit as st
+
+from io import StringIO
 
 from slik_wrangler import loadfile
+
+import streamlit as st
+from streamlit.scriptrunner import script_run_context
+
+from threading import current_thread
+from contextlib import contextmanager
 
 
 # Hidden Functions
@@ -112,6 +120,42 @@ def display_sidebar_url_log(_docs, _urls):
         _divider()
 
 
+@contextmanager
+def st_redirect(src, dst, how=None):
+    placeholder = st.empty()
+    output_func = getattr(placeholder, dst)
+    s = []
+
+    with StringIO() as buffer:
+        old_write = src.write
+
+        #script_run_context
+        def new_write(b):
+            if getattr(current_thread(), script_run_context.SCRIPT_RUN_CONTEXT_ATTR_NAME, None):
+                buffer.write(b)
+                value = buffer.getvalue()
+                s.append(value)
+                if not how:
+                    output_func(value)
+            else:
+                old_write(b)
+
+        try:
+            src.write = new_write
+            yield
+        finally:
+            src.write = old_write
+
+    if how == 'json':
+        st.json(s[0])
+
+
+@contextmanager
+def st_stdout(dst, how=None):
+    with st_redirect(sys.stdout, dst, how):
+        yield
+
+
 @st.cache(allow_output_mutation=True)
 def load_data(file):
     """
@@ -133,20 +177,34 @@ class Executor:
         self.dataframe = dataframe
         self.operations = []
         self.functions = []
-        self.transformed_df = dataframe
+        self.transformation_func_param = []
+        self.transformed_df = self.dataframe
 
     def add_operation(self, operation, function):
         self.operations.append(operation)
         self.functions.append(function)
 
     def execute(self):
-        for opr, func in zip(
-                self.operations,
-                self.functions
-        ):
+        for opr, func in zip(self.operations, self.functions):
+            print("Hello")
             if opr:
                 if func is not None:
-                    self.transformed_df = func(self.dataframe)
+                    try:
+                        evaluation_results = func(self.transformed_df)
+                        print("help(func)")
+                        self.transformation_func_param.append(evaluation_results)
+
+                        if evaluation_results:
+                            self.transformed_df = evaluation_results[0](**evaluation_results[1])
+                            print("Even Got Here!!!!!")
+
+                        print(evaluation_results, self.transformed_df)
+                    except:
+                        docs.section_not_available(
+                            message="Function appears to be faulty! "
+                                    "Please review it's entry level parameters",
+                            add_plain_image=True
+                        )
                 else:
                     docs.section_not_available(add_plain_image=True)
 
