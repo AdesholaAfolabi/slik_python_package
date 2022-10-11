@@ -80,6 +80,7 @@ if start_project:
         ]
 
         executor = Executor(dataset)
+        executor.add_operation(change_case_fn, None)
         executor.add_operation(log_dqa_fn, perform_dqa_operation)
         executor.add_operation(date_field_fn, perform_date_field_operation)
         executor.add_operation(bin_age_fn, perform_bin_age_operation)
@@ -91,7 +92,7 @@ if start_project:
         executor.add_operation(detect_fix_outliers_fn, perform_detect_fix_outliers_operation)
         executor.execute()
 
-        preview_button = st.sidebar.checkbox(label='preview transformed data')
+        preview_button = st.sidebar.checkbox(label='Preview transformed data')
 
         if preview_button:
             st.write("### Transformed Dataframe:")
