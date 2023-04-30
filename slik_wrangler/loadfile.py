@@ -6,7 +6,7 @@ import os
 from .messages import log
 
 
-def read_file(file_path, input_col=None, **kwargs):
+def read_file(file_path: str, input_col: list[str] | None = None, **kwargs) -> pd.DataFrame:
 
     """
     Load a file path into a dataframe.
@@ -62,7 +62,7 @@ def read_file(file_path, input_col=None, **kwargs):
         raise ValueError("file_path: Only supports one of ['csv','xls','xlsx','parquet'] format")
 
 
-def split_csv_file(file_path=None, delimiter= ',' , row_limit=1000000, output_path='.', keep_headers=True):
+def split_csv_file(file_path: str | None =None, delimiter: str= ',' , row_limit=1000000, output_path='.', keep_headers=True) -> None:
 
     """
     Split large csv files to small csv files.
