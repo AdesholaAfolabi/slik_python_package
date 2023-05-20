@@ -32,5 +32,5 @@ If you're dealing with dataframe, you can easily clean your data with one line o
 Slik-wrangler provides an easy-to-use solutions for supervised machine learning. This project tries to help make supervised machine learning more accessible for beginners, and reduce boiler plate for common tasks.
 
 ### ✨️ Modern and Intuitive Architecture
-We love quality software design and aim to help others on building wonderful applications! Using Slik-wrangler will help cultivate a MLOPS mindset. With Slik, Data scientists can build model pipelines. Slik-wrangler provides explainability in the pipeline process in the form of DAG showing each step in the build process. With every build process/experiment, Slik-wrangler logs the metadata for each run
+We love quality software design and aim to help others on building wonderful applications! Using Slik-wrangler will help cultivate a MLOPS mindset. With Slik, Data scientists can build model pipelines. Slik-wrangler provides explainability in the pipeline process in the form of DAG showing each step in the build process. With every build process/experiment, Slik-wrangler logs the metadata for each run.
 
