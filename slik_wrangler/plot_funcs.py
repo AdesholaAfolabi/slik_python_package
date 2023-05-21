@@ -3,9 +3,11 @@ from numpy import percentile
 import matplotlib.pyplot as plt
 import matplotlib
 import seaborn as sns
+import streamlit as st
+import plotly.express as px
 
 
-def plot_nan(data):
+def plot_nan(data,streamlit=False,**kwargs):
 
     
     """
@@ -21,50 +23,68 @@ def plot_nan(data):
         The bar plot of top n values.
     
     """
-    plot = data.sort_values(ascending=False)[:30]
+    nan_values = data.set_index('features')['missing_percent']
+    plot = nan_values.sort_values(ascending=False)[:30]
     
+    if not streamlit:
     # Figure Size 
-    fig, ax = plt.subplots(figsize =(16, 9)) 
+        fig, ax = plt.subplots(figsize =(16, 9)) 
 
-    # Horizontal Bar Plot 
-    ax.barh(plot.index, plot.values) 
+        # Horizontal Bar Plot 
+        ax.barh(plot.index, plot.values) 
 
-    # Remove axes splines 
-    for s in ['top', 'bottom', 'left', 'right']: 
-        ax.spines[s].set_visible(False) 
-    # Remove x, y Ticks 
-    ax.xaxis.set_ticks_position('none') 
-    ax.yaxis.set_ticks_position('none') 
+        # Remove axes splines 
+        for s in ['top', 'bottom', 'left', 'right']: 
+            ax.spines[s].set_visible(False) 
+        # Remove x, y Ticks 
+        ax.xaxis.set_ticks_position('none') 
+        ax.yaxis.set_ticks_position('none') 
 
-    # Add padding between axes and labels 
-    ax.xaxis.set_tick_params(pad = 5) 
-    ax.yaxis.set_tick_params(pad = 10) 
+        # Add padding between axes and labels 
+        ax.xaxis.set_tick_params(pad = 5) 
+        ax.yaxis.set_tick_params(pad = 10) 
 
-    # Add x, y gridlines 
-    ax.grid(b = True, color ='grey', 
-            linestyle ='-.', linewidth = 0.5, 
-            alpha = 0.2) 
+        # Add x, y gridlines 
+        ax.grid(b = True, color ='grey', 
+                linestyle ='-.', linewidth = 0.5, 
+                alpha = 0.2) 
 
-    # Show top values  
-    ax.invert_yaxis() 
+        # Show top values  
+        ax.invert_yaxis() 
 
-    # Add annotation to bars 
-    for i in ax.patches: 
-        plt.text(i.get_width()+0.2, i.get_y()+0.5,  
-                    str(round((i.get_width()), 2)), 
-                    fontsize = 10, fontweight ='bold', 
-                    color ='grey') 
-    # Add Plot Title 
-    ax.set_title('Chart showing the top 30 missing values in the dataset', 
-                    loc ='left', ) 
+        # Add annotation to bars 
+        for i in ax.patches: 
+            plt.text(i.get_width()+0.2, i.get_y()+0.5,  
+                        str(round((i.get_width()), 2)), 
+                        fontsize = 10, fontweight ='bold', 
+                        color ='grey') 
+        # Add Plot Title 
+        ax.set_title('Chart showing the top 30 missing values in the dataset', 
+                        loc ='left', ) 
 
-    # Add Text watermark 
-    fig.text(0.9, 0.15, 'Alvaro', fontsize = 12, 
-                color ='grey', ha ='right', va ='bottom', 
-                alpha = 0.7) 
+        # Add Text watermark 
+        fig.text(0.9, 0.15, 'Alvaro', fontsize = 12, 
+                    color ='grey', ha ='right', va ='bottom', 
+                    alpha = 0.7) 
 
-    # Show Plot 
-    plt.show() 
+        # Show Plot 
+        plt.show() 
+    
+    else:
+        title = 'Chart showing the top 15 missing values in the dataset'
+        df = data.sort_values(by='missing_percent',ascending=True)[:15]
+        if df.missing_percent.min()==df.missing_percent.max():
+            start = df.missing_percent.min()
+            end = (df.missing_percent.max() + 1)*100
+        else:
+            start = df.missing_percent.min()
+            end = df.missing_percent.max()
+        fig = px.bar(df, x='missing_percent', y='features', text='missing_percent',orientation='h',
+                    range_x=[start,end],title=title)
+        fig.update_traces(texttemplate='%{text:.2s}', textposition='outside')
+        fig.update_layout(uniformtext_minsize=6, uniformtext_mode='hide',xaxis=dict(showgrid=False))
+        st.write(fig)
+
 
 sns.set()
 

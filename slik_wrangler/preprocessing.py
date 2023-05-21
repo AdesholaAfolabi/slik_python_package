@@ -56,7 +56,7 @@ def bin_age(dataframe=None, age_col=None, add_prefix=True):
     return data
 
 
-def change_case(dataframe, columns=None, case='lower', inplace=False):
+def change_case(dataframe, columns=None, case='lower', inplace=True):
     """
     Change the case of a pandas series to either upper or lower case
 
@@ -114,7 +114,7 @@ def change_case(dataframe, columns=None, case='lower', inplace=False):
         ])
 
     def perform_case(func):
-        dataframe[columns] = dataframe[columns].applymap(func)
+        return dataframe[columns].applymap(func)
 
     action = {
         'lower': lambda x: x.lower(),
@@ -123,15 +123,17 @@ def change_case(dataframe, columns=None, case='lower', inplace=False):
     }
 
     if case in action.keys():
-        perform_case(action[case])
-
-        if not inplace:
+        if inplace:
+            dataframe[columns] = perform_case(action[case])
             return dataframe
+        else:
+            return perform_case(action[case])
+
     else:
         raise ValueError(f"case: expected one of upper,lower or captitalize got {case}")
     
 
-def check_nan(dataframe=None, plot=False, display_inline=True):
+def check_nan(dataframe=None, plot=False, display_inline=True,*args,**kwargs):
     
     """
     Display missing values as a pandas dataframe and give a proportion
@@ -161,18 +163,57 @@ def check_nan(dataframe=None, plot=False, display_inline=True):
 
     missing_percent = round((df['missing_counts'] / data.shape[0]) * 100, 1)
     df['missing_percent'] = missing_percent
-    nan_values = df.set_index('features')['missing_percent']
     
     
+    print_divider('Count and Percentage of missing value')
     if plot:
-        plot_nan(nan_values)
+        plot_nan(df,**kwargs)
     if display_inline:
-        print_divider('Count and Percentage of missing value')
-        display(df)
-    check_nan.df = df
+        return df
+    else:
+        check_nan.df = df
 
+def convert_dtype(dataframe:pd.DataFrame, columns: list, convert_type: str):
+    
+    '''
+    Convert data types in a dataframe from string to int, int to string and int to float.
+    Parameters:
+    ------------------------
+    dataframe: DataFrame or name Series.
+        Data set to perform operation on.
+    columns: List, Series, Array.
+        Dataframe columns to perform operation on.
+    convert_type: string
+        The type of operation to be perfromed.
+    Returns:
+    -------
+        Dataframe
+            A new dataframe with dtype conversion.
+    '''
+    if dataframe is None:
+        raise ValueError("data: Expecting a DataFrame or Series, got 'None'") 
+    if not isinstance(convert_type, str):
+        errstr = f'The given type for convert_type is {type(convert_type).__name__}. Expected type is str'
+        raise TypeError(errstr)
+    if not isinstance(columns, list):
+        errstr = f'The given type for columns is {type(columns).__name__}. Expected type is a list'
+        raise TypeError(errstr)
 
-def create_schema_file(dataframe, target_column, id_column, project_path='.', save=True, display_inline=True):
+    data = dataframe.copy()
+    try:
+        if convert_type == 'str':
+            data[columns] = data[columns].astype(str)
+        elif convert_type == 'float':
+            data[columns] = data[columns].astype(int).astype(float)
+        elif convert_type == 'int':
+            data[columns] = data[columns].astype(int)
+    except:
+        pass
+#     except ValueError:
+#         raise ValueError("Cannot convert string to int/float")    
+    return data
+
+def create_schema_file(dataframe, project_path='.', save=True, display_inline=True):
 
     """
     
@@ -183,12 +224,6 @@ def create_schema_file(dataframe, target_column, id_column, project_path='.', sa
     ------------
     dataframe: DataFrame or name Series.
         Data set to perform operation on.
-
-    target_column: the name of the target column in the dataset. A string is expected
-        The column to perform the operation on.
-        
-    id_column: str
-        Unique Identifier column.
         
     project_path:  str.
         The path of the schema file you want to create.
@@ -224,8 +259,8 @@ def create_schema_file(dataframe, target_column, id_column, project_path='.', sa
             datatype_map[name] = dtype.name
     
     
-    schema = dict(dtype=datatype_map)
-    
+    schema = dict(datatype_map)
+    create_schema_file.schema = schema
     # write to YAML file
     if save:
         output_path =  os.path.join(project_path,'metadata')
@@ -400,7 +435,10 @@ def drop_uninformative_fields(dataframe = None, exclude= None, display_inline=Tr
         single = [column_name for column_name in single if column_name not in exclude]
     if display_inline:
         print_divider('Dropping uninformative fields')
-        print(f'uninformative fields dropped: {single}')
+        if len(single)<1:
+            print('No field was dropped')
+        else:
+            print(f'uninformative fields dropped: {single}')
     data = manage_columns(data,single,drop_columns=True,drop_duplicates=None)
     return data
     
@@ -416,7 +454,7 @@ def drop_duplicate(dataframe=None,columns=None,method='rows',display_inline=True
         Data set to perform operation on.
     columns: List/String.
         list of column names 
-    method: 'rows' or 'columns', default is 'rows'
+    method: 'rows' or 'columns' or 'both', default is 'rows'
         Drop duplicate values across rows, columns. 
     
     display_inline: Bool. Default is True.
@@ -431,19 +469,23 @@ def drop_duplicate(dataframe=None,columns=None,method='rows',display_inline=True
         dataframe = dataframe.drop_duplicates()
         
     elif method == 'columns':
-        if columns is None:
-            raise ValueError("columns: A list/string is expected as part of the inputs to columns, got 'None'")
+        # if columns is None:
+        #     raise ValueError("columns: A list/string is expected as part of the inputs to columns, got 'None'")
         dataframe = dataframe.T.drop_duplicates().T
     
+    elif method == 'both':
+        dataframe = dataframe.drop_duplicates()
+        dataframe = dataframe.T.drop_duplicates().T
+
     elif method is None:
         pass
         
     else:
-        raise ValueError("method: must specify a drop_duplicate method, one of ['rows' or 'columns']'")
+        raise ValueError("method: must specify a drop_duplicate method, one of ['rows' or 'columns' or 'both']'")
         
     if display_inline:
         print_divider(f'Dropping duplicates across the {method}')
-        print(f'New datashape is {dataframe.shape}')
+        print(f'The new datashape is {dataframe.shape}')
     return dataframe
 
 
@@ -791,7 +833,7 @@ def manage_columns(dataframe=None,columns=None, select_columns=False, drop_colum
     drop_columns: Boolean True or False, default is False
         The columns you want to drop from your dataset. Requires a list to be passed into the columns param
         
-    drop_duplicates: 'rows' or 'columns', default is None
+    drop_duplicates: 'rows' or 'columns' or 'both', default is None
         Drop duplicate values across rows, columns. If columns, a list is required to be passed into the columns param
     
     Returns
@@ -811,7 +853,7 @@ def manage_columns(dataframe=None,columns=None, select_columns=False, drop_colum
         errstr = f'The given type for items is {type(drop_columns).__name__}. Expected type is boolean True/False'
         raise TypeError(errstr)
 
-    if columns is None:
+    if drop_columns and columns is None:
         raise ValueError("columns: A list/string is expected as part of the inputs to drop columns, got 'None'") 
 
     if select_columns and drop_columns:
