@@ -3,6 +3,7 @@ Creates functionality that colors log messages
 """
 
 from colorama import Fore
+from typing import Literal, IO
 
 
 DANGER = Fore.RED
@@ -12,7 +13,7 @@ NORMAL = Fore.RESET
 INFO = Fore.CYAN
 
 
-def log(*messages, code='normal', sep=' ', end='\n', file=None):
+def log(*messages: tuple[str, ...], code: Literal['danger', 'warning', 'success', 'normal', 'info'] | None = 'normal', sep: str | None = ' ', end: str ='\n', file: IO[str] = None):
     """
     Distinguishes log messages from print statements.
     Works like a normal print statement but inclusive of colors
