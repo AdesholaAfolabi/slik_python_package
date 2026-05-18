@@ -9,7 +9,6 @@ exceptiongroup==1.1.1
 executing==1.2.0
 fonttools==4.39.3
 imbalanced-learn==0.10.1
-imblearn==0.0
 iniconfig==2.0.0
 ipython==8.13.1
 jedi==0.18.2
@@ -38,7 +37,6 @@ scikit-learn==1.2.2
 scipy==1.10.1
 seaborn==0.12.2
 six==1.16.0
-sklearn==0.0.post4
 stack-data==0.6.2
 threadpoolctl==3.1.0
 tomli==2.0.1
